@@ -1,50 +1,73 @@
-// 서울메이트 (Seoulmate) - 실제 에이블리(A-bly) 100% 이식 모바일 웹 엔진 (v3)
-// - 인터랙티브 히어로 배너 슬라이더 (좌우 넘기기, 카운터, 자동 롤링)
-// - 세부 페이지/모달 포함 100% 전역 영어(EN)/루마니아어(RO) 번역
-// - 전역 뒤로가기(Back) 내비게이션 지원
-// - 가로 스크롤 잘림 없는 슬라이더 (서브탭 & 퀵 카테고리)
-// - 실시간 검색 및 토스트 피드백
+// 서울메이트 (Seoulmate) - K-뷰티 버티컬 커머스 모바일 웹 애플리케이션
+// - 상단 체계적 쇼핑 GNB (투데이 · 베스트 · 스킨케어 · 메이크업 · 브랜드 · 루틴특가)
+// - 하단 5대 쇼핑 탭바 (홈 · 카테고리 · 크리에이터 · 찜 · 마이) - 상하단 메뉴 중복 제로
+// - 화장품 쇼핑 시 피부고민·피부타입·퍼스널컬러 카테고리 필터 및 정렬 지원
+// - 다국어 (RO / EN / 한국어) 실시간 전환, easybox 락커 배송, EU CPNP 정품 보증
 
 document.addEventListener("DOMContentLoaded", () => {
   const data = window.SEOULMATE_DATA;
   const i18n = window.SEOULMATE_I18N;
 
-  // 인라인 SVG 벡터 아이콘
+  // 인라인 SVG 벡터 아이콘 시스템
   const ICONS = {
     back: `<svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>`,
     search: `<svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>`,
     bag: `<svg viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>`,
     heart: `<svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>`,
-    home: `<svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>`,
-    feed: `<svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>`,
-    sparkle: `<svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>`,
-    shop: `<svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>`,
+    home: `<svg viewBox="0 0 24 24"><path d="M3 9.5L12 3l9 6.5V20a1.5 1.5 0 0 1-1.5 1.5h-15A1.5 1.5 0 0 1 3 20V9.5z"/><polyline points="9 21.5 9 13 15 13 15 21.5"/></svg>`,
+    category: `<svg viewBox="0 0 24 24"><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="18" x2="14" y2="18"/></svg>`,
+    feed: `<svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="3.5"/><circle cx="17.2" cy="6.8" r="0.8" fill="currentColor"/></svg>`,
     user: `<svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>`,
     shield: `<svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/></svg>`,
     droplet: `<svg viewBox="0 0 24 24"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/></svg>`,
-    flask: `<svg viewBox="0 0 24 24"><path d="M9 3h6"/><path d="M10 9l-6 10a2 2 0 0 0 1.7 3h12.6a2 2 0 0 0 1.7-3L14 9V3h-4v6z"/></svg>`,
-    sun: `<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>`,
+    flask: `<svg viewBox="0 0 24 24"><path d="M9 3h6"/><path d="M10 9l-5.5 9.5A2 2 0 0 0 6.2 21h11.6a2 2 0 0 0 1.7-2.5L14 9V3h-4v6z"/></svg>`,
+    cream: `<svg viewBox="0 0 24 24"><rect x="4" y="10" width="16" height="10" rx="3"/><path d="M6 10V7a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v3"/><line x1="4" y1="14" x2="20" y2="14"/></svg>`,
+    sun: `<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4.5"/><line x1="12" y1="2" x2="12" y2="4"/><line x1="12" y1="20" x2="12" y2="22"/><line x1="4.93" y1="4.93" x2="6.34" y2="6.34"/><line x1="17.66" y1="17.66" x2="19.07" y2="19.07"/><line x1="2" y1="12" x2="4" y2="12"/><line x1="20" y1="12" x2="22" y2="12"/><line x1="4.93" y1="19.07" x2="6.34" y2="17.66"/><line x1="17.66" y1="6.34" x2="19.07" y2="4.93"/></svg>`,
+    bubbles: `<svg viewBox="0 0 24 24"><circle cx="9.5" cy="14.5" r="5.5"/><circle cx="16.5" cy="7.5" r="3.5"/><circle cx="18" cy="16.5" r="2"/></svg>`,
+    lipstick: `<svg viewBox="0 0 24 24"><path d="M9 11h6v10H9z"/><path d="M10 11V5.5c0-1.5 4-2.5 4 0V11"/><line x1="8" y1="21" x2="16" y2="21"/></svg>`,
+    mask: `<svg viewBox="0 0 24 24"><ellipse cx="12" cy="12" rx="8" ry="9.5"/><circle cx="9" cy="10.5" r="1.2"/><circle cx="15" cy="10.5" r="1.2"/><path d="M9.5 15.5c1.5 1 3.5 1 5 0"/></svg>`,
+    gift: `<svg viewBox="0 0 24 24"><rect x="3" y="8" width="18" height="4" rx="1"/><path d="M12 8v13"/><path d="M19 12v7a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-7"/><path d="M7.5 8a2.5 2.5 0 0 1 0-5C10 3 12 8 12 8s2-5 4.5-5a2.5 2.5 0 0 1 0 5"/></svg>`,
+    sparkle: `<svg viewBox="0 0 24 24"><path d="M12 2l2.6 5.8L20.5 10l-5.9 2.2L12 18l-2.6-5.8L3.5 10l5.9-2.2L12 2z"/></svg>`,
     chevronLeft: `<svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>`,
     chevronRight: `<svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>`
   };
 
-  // 애플리케이션 상태
+  // 애플리케이션 전역 상태
   const state = {
-    lang: "ro", // 'ro' | 'en'
-    activeTab: "home", // 'home' | 'creators' | 'diagnostic' | 'shop' | 'auth' | 'profile'
-    homeSubTab: "today",
-    viewMode: "mobile-frame",
-    historyStack: ["home"], // 뒤로가기 스택
-    
-    // 배너 슬라이더
+    lang: "ro", // 'ro' | 'en' | 'ko'
+    activeTab: "home", // 'home' | 'category' | 'creators' | 'wishlist' | 'my' | 'shop' | 'auth'
+    homeSubTab: "today", // 'today' | 'best' | 'skincare' | 'makeup' | 'brands' | 'sets'
+    historyStack: ["home"],
+
+    // 히어로 배너 슬라이더
     currentSlide: 0,
     totalSlides: data.heroSlides.length,
     slideInterval: null,
 
-    // 검색어
+    // 실시간 검색어
     searchQuery: "",
 
-    // 회원가입 전용 상태
+    // 홈 & 버티컬 탭별 필터 상태
+    homeConcern: "all", // 'all' | 'soothing' | 'pores' | 'hydration' | 'glow'
+    bestCategory: "all",
+    bestSkinType: "all", // 'all' | 'Mixt' | 'Gras' | 'Sensibil' | 'Uscat'
+    skincareCategory: "all",
+    skincareConcern: "all",
+    skincareSkinType: "all",
+    makeupSub: "all", // 'all' | 'base' | 'lip'
+    makeupTone: "all", // 'all' | 'Rece' | 'Cald' | 'Neutru'
+    selectedBrand: "all",
+    setsSkinType: "all",
+    creatorSkinFilter: "all",
+
+    // 상품 목록(shop) 필터 및 정렬 상태
+    selectedCategory: "all",
+    shopConcern: "all",
+    shopSkinType: "all",
+    shopBrand: "all",
+    sortBy: "popular", // 'popular' | 'reviews' | 'priceLow' | 'discount'
+
+    // 회원 및 크리에이터 입점
     authRole: "consumer",
     authSubmitted: false,
     currentUser: {
@@ -54,26 +77,12 @@ document.addEventListener("DOMContentLoaded", () => {
       city: "București"
     },
 
-    // 퀴즈 상태
-    quizStep: 1,
-    quizStatus: "idle",
-    quizAnswers: {
-      type: "Mixt",
-      concern: "Pori",
-      undertone: "Rece",
-      style: "Natural",
-      experience: "Intermediate",
-      budget: "Mid"
-    },
-    matchedCreators: [],
-
-    // 쇼핑 및 장바구니
-    selectedCategory: "all",
+    // 장바구니 / 찜 / 팔로우
     cart: [],
-    wishlist: new Set(["anua-toner-77", "skin1004-centella-ampoule"]),
+    wishlist: new Set(["anua-toner-77", "skin1004-centella-ampoule", "boj-relief-sun"]),
     followedCreators: new Set(["mariazvinca"]),
-    
-    // 물류/결제
+
+    // 물류 / 결제
     selectedLocker: data.easyboxLockers[0],
     paymentMethod: "ramburs",
     lastOrder: null,
@@ -90,7 +99,147 @@ document.addEventListener("DOMContentLoaded", () => {
     return dict[key] !== undefined ? dict[key] : key;
   }
 
-  // 토스트 메시지 함수
+  function tr(roText, enText, koText) {
+    if (state.lang === "ko") return koText;
+    if (state.lang === "en") return enText;
+    return roText;
+  }
+
+  function getProductDisplayName(prod) {
+    if (state.lang === "ko") return prod.koreanName || prod.name;
+    if (state.lang === "en") return prod.englishName || prod.name;
+    return prod.name;
+  }
+
+  function getSkinTypeLabel(typeKey) {
+    const map = {
+      all: t("skinAll"),
+      Mixt: t("skinMixt"),
+      Gras: t("skinGras"),
+      Sensibil: t("skinSensibil"),
+      Uscat: t("skinUscat")
+    };
+    return map[typeKey] || typeKey;
+  }
+
+  function getConcernLabel(concernKey) {
+    const map = {
+      all: t("concernAll"),
+      soothing: t("concernSoothing"),
+      pores: t("concernPores"),
+      hydration: t("concernHydration"),
+      glow: t("concernGlow")
+    };
+    return map[concernKey] || concernKey;
+  }
+
+  function getUndertoneLabel(toneKey) {
+    const map = {
+      all: t("toneAll"),
+      Rece: t("toneCool"),
+      Cald: t("toneWarm"),
+      Neutru: t("toneNeutral")
+    };
+    return map[toneKey] || toneKey;
+  }
+
+  function getCategoriesMeta() {
+    return [
+      {
+        key: "all",
+        label: t("catAllSkincare"),
+        shortLabel: t("concernAll"),
+        iconSvg: ICONS.sparkle,
+        count: data.products.length
+      },
+      {
+        key: "Toner & Tampoane",
+        label: t("quickToners"),
+        shortLabel: t("quickToners"),
+        iconSvg: ICONS.droplet,
+        count: data.products.filter((p) => p.category === "Toner & Tampoane").length
+      },
+      {
+        key: "Serum & Fiole",
+        label: t("quickSerums"),
+        shortLabel: t("quickSerums"),
+        iconSvg: ICONS.flask,
+        count: data.products.filter((p) => p.category === "Serum & Fiole").length
+      },
+      {
+        key: "Creme & Hidratare",
+        label: t("quickCreams"),
+        shortLabel: t("quickCreams"),
+        iconSvg: ICONS.cream,
+        count: data.products.filter((p) => p.category === "Creme & Hidratare").length
+      },
+      {
+        key: "Protecție Solară",
+        label: t("quickSPF"),
+        shortLabel: t("quickSPF"),
+        iconSvg: ICONS.sun,
+        count: data.products.filter((p) => p.category === "Protecție Solară").length
+      },
+      {
+        key: "Curățare",
+        label: t("quickCleanser"),
+        shortLabel: t("quickCleanser"),
+        iconSvg: ICONS.bubbles,
+        count: data.products.filter((p) => p.category === "Curățare").length
+      },
+      {
+        key: "Machiaj",
+        label: t("quickMakeup"),
+        shortLabel: t("quickMakeup"),
+        iconSvg: ICONS.lipstick,
+        count: data.products.filter((p) => p.category === "Machiaj").length
+      },
+      {
+        key: "Măști & Tampoane",
+        label: t("quickMask"),
+        shortLabel: t("quickMask"),
+        iconSvg: ICONS.mask,
+        count: data.products.filter((p) => p.category === "Măști & Tampoane").length
+      }
+    ];
+  }
+
+  function sortProducts(list, sortKey) {
+    const cloned = [...list];
+    if (sortKey === "reviews") {
+      cloned.sort((a, b) => b.reviewsCount - a.reviewsCount);
+    } else if (sortKey === "priceLow") {
+      cloned.sort((a, b) => a.price - b.price);
+    } else if (sortKey === "discount") {
+      cloned.sort((a, b) => b.discount - a.discount || b.reviewsCount - a.reviewsCount);
+    } else {
+      // popular (기본)
+      cloned.sort((a, b) => (b.rating * 120 + b.reviewsCount) - (a.rating * 120 + a.reviewsCount));
+    }
+    return cloned;
+  }
+
+  function filterBySearch(query) {
+    const q = (query || "").trim().toLowerCase();
+    if (!q) return data.products;
+    return data.products.filter((p) => {
+      const haystack = [
+        p.name,
+        p.koreanName,
+        p.romanianName,
+        p.englishName,
+        p.brand,
+        p.category,
+        ...(p.concerns || []).map((c) => getConcernLabel(c)),
+        ...(p.skinTypes || []).map((s) => getSkinTypeLabel(s))
+      ]
+        .filter(Boolean)
+        .join(" ")
+        .toLowerCase();
+      return haystack.includes(q);
+    });
+  }
+
   function showToast(msg) {
     if (state.toastTimer) clearTimeout(state.toastTimer);
     state.toastMessage = msg;
@@ -101,7 +250,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }, 2200);
   }
 
-  // 네비게이션 & 뒤로가기
   function resetScroll() {
     window.scrollTo(0, 0);
     const mainArea = document.getElementById("main-scroll-area");
@@ -115,7 +263,25 @@ document.addEventListener("DOMContentLoaded", () => {
       state.authSubmitted = false;
       render();
       resetScroll();
+    } else if (tab === "home") {
+      state.homeSubTab = "today";
+      state.searchQuery = "";
+      render();
+      resetScroll();
     }
+  }
+
+  function openShopWithFilters({ category = "all", concern = "all", skinType = "all", brand = "all" } = {}) {
+    state.selectedCategory = category;
+    state.shopConcern = concern;
+    state.shopSkinType = skinType;
+    state.shopBrand = brand;
+    if (state.activeTab !== "shop") {
+      state.historyStack.push("shop");
+      state.activeTab = "shop";
+    }
+    render();
+    resetScroll();
   }
 
   function goBack() {
@@ -134,7 +300,6 @@ document.addEventListener("DOMContentLoaded", () => {
     resetScroll();
   }
 
-  // 슬라이더 이동
   function nextSlide() {
     state.currentSlide = (state.currentSlide + 1) % state.totalSlides;
     updateSliderDOM();
@@ -152,46 +317,14 @@ document.addEventListener("DOMContentLoaded", () => {
       track.style.transform = `translateX(-${state.currentSlide * 100}%)`;
     }
     if (counter) {
-      counter.innerText = `${state.currentSlide + 1} / ${state.totalSlides} >`;
+      counter.innerText = `${state.currentSlide + 1} / ${state.totalSlides} ›`;
     }
   }
 
-  // 매칭 알고리즘
-  function calculateMatching() {
-    const answers = state.quizAnswers;
-    const scored = data.creators.map(c => {
-      let score = 0;
-      if (c.skinProfile.type === answers.type) score += 35;
-      else if (answers.type === "Mixt") score += 24;
-      else score += 10;
-
-      if (c.skinProfile.concerns.includes(answers.concern)) score += 30;
-      else score += 12;
-
-      if (c.skinProfile.undertone === answers.undertone) score += 20;
-      else score += 10;
-
-      if (c.skinProfile.style === answers.style) score += 15;
-      else score += 8;
-
-      return {
-        ...c,
-        matchScore: Math.min(98, Math.max(74, score))
-      };
-    });
-
-    scored.sort((a, b) => b.matchScore - a.matchScore);
-    state.matchedCreators = scored;
-    return scored;
-  }
-
-  calculateMatching();
-
-  // 자동 배너 슬라이딩 (4초 간격)
   function startAutoSlide() {
     if (state.slideInterval) clearInterval(state.slideInterval);
     state.slideInterval = setInterval(() => {
-      if (state.activeTab === "home") {
+      if (state.activeTab === "home" && state.homeSubTab === "today" && !state.searchQuery.trim()) {
         nextSlide();
       }
     }, 4500);
@@ -201,128 +334,138 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const appContainer = document.getElementById("app-root");
 
+  function getHeaderTitle() {
+    if (state.activeTab === "shop") {
+      if (state.shopBrand !== "all") return state.shopBrand;
+      if (state.selectedCategory !== "all") {
+        const found = getCategoriesMeta().find((c) => c.key === state.selectedCategory);
+        if (found) return found.label;
+      }
+      if (state.shopConcern !== "all") return getConcernLabel(state.shopConcern);
+      if (state.shopSkinType !== "all") return getSkinTypeLabel(state.shopSkinType);
+      return t("tabShop");
+    }
+    const map = {
+      category: t("tabCategory"),
+      creators: t("tabCreators"),
+      wishlist: t("tabWishlist"),
+      my: t("tabMy"),
+      auth: t("tabAuth")
+    };
+    return map[state.activeTab] || "";
+  }
+
   function render() {
     const isHome = state.activeTab === "home";
-    const currentTabTitle = {
-      creators: t("tabCreators"),
-      diagnostic: t("tabDiagnostic"),
-      shop: t("tabShop"),
-      auth: t("tabAuth"),
-      profile: t("tabProfile")
-    }[state.activeTab] || "";
+    const cartQty = state.cart.reduce((acc, item) => acc + item.qty, 0);
+    const wishCount = state.wishlist.size;
 
     appContainer.innerHTML = `
-      <div class="seoulmate-wrapper ${state.viewMode === 'mobile-frame' ? 'mobile-mode' : 'desktop-mode'}">
-        <!-- 토스트 알림 메시지 -->
-        ${state.toastMessage ? `<div class="ably-toast">${state.toastMessage}</div>` : ''}
+      <div class="seoulmate-wrapper">
+        ${state.toastMessage ? `<div class="ably-toast">${state.toastMessage}</div>` : ""}
 
-        <!-- 상단 툴바 -->
-        <header class="capstone-bar">
-          <div class="capstone-bar-left">
-            <span class="brand-sub">Seoulmate</span>
-          </div>
-          <div class="capstone-bar-right">
-            <div class="lang-selector" title="언어 선택 / Language / Limbă">
-              <button class="lang-pill ${state.lang === 'ro' ? 'active' : ''}" data-set-lang="ro">RO</button>
-              <button class="lang-pill ${state.lang === 'en' ? 'active' : ''}" data-set-lang="en">EN</button>
-              <button class="lang-pill ${state.lang === 'ko' ? 'active' : ''}" data-set-lang="ko">한국어</button>
-            </div>
-            <button id="btn-toggle-view" class="capstone-btn view-toggle-btn" title="모바일/넓은 화면 전환">
-              ${state.viewMode === 'mobile-frame' ? '넓게' : '모바일'}
-            </button>
-            <button id="btn-open-guide" class="capstone-btn highlight" title="심사위원 가이드">
-              ${t("guideBtn")}
-            </button>
-          </div>
-        </header>
-
-        <!-- 에이블리 모바일 폰 뷰포트 -->
         <div class="phone-frame">
-          <!-- 에이블리 헤더 (홈이 아닐 때는 뒤로가기 버튼 노출) -->
+          <!-- 상단 스토어 헤더 -->
           <header class="ably-header">
             <div class="ably-header-top">
               <div class="ably-header-left">
-                ${!isHome ? `
+                ${
+                  !isHome
+                    ? `
                   <button class="ably-back-btn" id="btn-global-back" title="${t("backBtn")}">
                     ${ICONS.back}
-                    <span class="ably-page-title">${currentTabTitle}</span>
+                    <span class="ably-page-title">${getHeaderTitle()}</span>
                   </button>
-                ` : `
-                  <div class="ably-logo" data-tab="home">
+                `
+                    : `
+                  <div class="ably-logo" id="btn-logo-home">
                     SEOULMATE<span class="logo-dot">.</span>
                   </div>
-                `}
+                `
+                }
               </div>
+
               <div class="ably-header-actions">
-                <button class="icon-btn" id="btn-nav-search" title="Caută">${ICONS.search}</button>
-                <button class="icon-btn" id="btn-header-cart" title="Coș">
+                <div class="lang-selector" role="group" aria-label="Language">
+                  <button class="lang-pill ${state.lang === "ro" ? "active" : ""}" data-set-lang="ro">RO</button>
+                  <button class="lang-pill ${state.lang === "en" ? "active" : ""}" data-set-lang="en">EN</button>
+                  <button class="lang-pill ${state.lang === "ko" ? "active" : ""}" data-set-lang="ko">한국어</button>
+                </div>
+                <button class="icon-btn" id="btn-nav-search" aria-label="Search">${ICONS.search}</button>
+                <button class="icon-btn" id="btn-header-cart" aria-label="Cart">
                   ${ICONS.bag}
-                  ${state.cart.length > 0 ? `<span class="icon-badge">${state.cart.reduce((a, b) => a + b.qty, 0)}</span>` : ''}
+                  ${cartQty > 0 ? `<span class="icon-badge">${cartQty}</span>` : ""}
                 </button>
               </div>
             </div>
 
-            <!-- 홈 탭일 때 노출되는 검색창 & 가로 스크롤 서브 탭 -->
-            ${isHome ? `
+            ${
+              isHome
+                ? `
               <div class="ably-search-bar">
                 ${ICONS.search}
-                <input type="text" id="main-search-input" placeholder="${t("searchPlaceholder")}" value="${state.searchQuery}" />
-                ${state.searchQuery ? `<button class="btn-clear-search" id="btn-clear-search">✕</button>` : ''}
+                <input type="text" id="main-search-input" placeholder="${t("searchPlaceholder")}" value="${state.searchQuery.replace(/"/g, "&quot;")}" autocomplete="off" />
+                <button class="btn-clear-search ${state.searchQuery ? "" : "hidden"}" id="btn-clear-search" aria-label="Clear">✕</button>
               </div>
 
-              <!-- 가로 스크롤 서브 GNB (잘림 없이 부드러운 스크롤) -->
+              <!-- 에이블리·올리브영형 상단 버티컬 쇼핑 GNB (하단 탭바와 중복 제로) -->
               <div class="ably-subnav-container">
                 <nav class="ably-subnav" id="subnav-scroll">
-                  <button class="subnav-tab ${state.homeSubTab === 'today' ? 'active' : ''}" data-subtab="today">${t("tabHome")}</button>
-                  <button class="subnav-tab ${state.homeSubTab === 'best' ? 'active' : ''}" data-subtab="best">${t("trendingTitle")}</button>
-                  <button class="subnav-tab" data-tab="creators">${t("tabCreators")}</button>
-                  <button class="subnav-tab" data-tab="diagnostic">${t("tabDiagnostic")} ✨</button>
-                  <button class="subnav-tab" id="btn-subnav-cert">100% CPNP</button>
+                  <button class="subnav-tab ${state.homeSubTab === "today" ? "active" : ""}" data-subtab="today">${t("gnbToday")}</button>
+                  <button class="subnav-tab ${state.homeSubTab === "best" ? "active" : ""}" data-subtab="best">${t("gnbBest")}</button>
+                  <button class="subnav-tab ${state.homeSubTab === "skincare" ? "active" : ""}" data-subtab="skincare">${t("gnbSkincare")}</button>
+                  <button class="subnav-tab ${state.homeSubTab === "makeup" ? "active" : ""}" data-subtab="makeup">${t("gnbMakeup")}</button>
+                  <button class="subnav-tab ${state.homeSubTab === "brands" ? "active" : ""}" data-subtab="brands">${t("gnbBrands")}</button>
+                  <button class="subnav-tab ${state.homeSubTab === "sets" ? "active" : ""}" data-subtab="sets">${t("gnbSets")}</button>
                 </nav>
               </div>
-            ` : ''}
+            `
+                : ""
+            }
 
-            <!-- 정품 및 easybox 신뢰 띠배너 -->
             <div class="ably-trust-strip" id="btn-show-trust">
               <div class="trust-strip-left">
                 <span class="trust-badge-mini">CPNP</span>
-                <span>${t("trustTicker")}</span>
+                <span class="trust-strip-text">${t("trustTicker")}</span>
               </div>
               <span class="trust-strip-arrow">›</span>
             </div>
           </header>
 
-          <!-- 메인 스크롤 콘텐츠 영역 -->
+          <!-- 메인 스크롤 영역 -->
           <main class="app-main-content" id="main-scroll-area">
-            ${renderActiveTab()}
+            ${renderActiveView()}
           </main>
 
-          <!-- 하단 고정 5대 탭바 -->
+          <!-- 하단 고정 5대 쇼핑 탭바 (홈 · 카테고리 · 크리에이터 · 찜 · 마이) -->
           <nav class="app-bottom-nav">
-            <button class="nav-item ${state.activeTab === 'home' ? 'active' : ''}" data-tab="home">
+            <button class="nav-item ${state.activeTab === "home" ? "active" : ""}" data-bottom-tab="home">
               ${ICONS.home}
               <span class="nav-label">${t("tabHome")}</span>
             </button>
-            <button class="nav-item ${state.activeTab === 'creators' ? 'active' : ''}" data-tab="creators">
+            <button class="nav-item ${state.activeTab === "category" || state.activeTab === "shop" ? "active" : ""}" data-bottom-tab="category">
+              ${ICONS.category}
+              <span class="nav-label">${t("tabCategory")}</span>
+            </button>
+            <button class="nav-item ${state.activeTab === "creators" ? "active" : ""}" data-bottom-tab="creators">
               ${ICONS.feed}
               <span class="nav-label">${t("tabCreators")}</span>
             </button>
-            <button class="nav-item highlight ${state.activeTab === 'diagnostic' ? 'active' : ''}" data-tab="diagnostic">
-              ${ICONS.sparkle}
-              <span class="nav-label">${t("tabDiagnostic")}</span>
+            <button class="nav-item ${state.activeTab === "wishlist" ? "active" : ""}" data-bottom-tab="wishlist">
+              <span class="nav-icon-wrap">
+                ${ICONS.heart}
+                ${wishCount > 0 ? `<span class="nav-dot-badge">${wishCount}</span>` : ""}
+              </span>
+              <span class="nav-label">${t("tabWishlist")}</span>
             </button>
-            <button class="nav-item ${state.activeTab === 'shop' ? 'active' : ''}" data-tab="shop">
-              ${ICONS.shop}
-              <span class="nav-label">${t("tabShop")}</span>
-            </button>
-            <button class="nav-item ${(state.activeTab === 'auth' || state.activeTab === 'profile') ? 'active' : ''}" data-tab="${state.lastOrder ? 'profile' : 'auth'}">
+            <button class="nav-item ${state.activeTab === "my" || state.activeTab === "auth" ? "active" : ""}" data-bottom-tab="my">
               ${ICONS.user}
-              <span class="nav-label">${state.lastOrder ? t("tabProfile") : t("tabAuth")}</span>
+              <span class="nav-label">${t("tabMy")}</span>
             </button>
           </nav>
         </div>
 
-        <!-- 모달 컨테이너 -->
+        <!-- 모달 / 바텀시트 컨테이너 -->
         <div id="modal-container">
           ${renderActiveModal()}
         </div>
@@ -332,49 +475,103 @@ document.addEventListener("DOMContentLoaded", () => {
     attachEventListeners();
   }
 
-  function renderActiveTab() {
+  function renderActiveView() {
     switch (state.activeTab) {
       case "home":
-        return renderHomeTab();
-      case "creators":
-        return renderCreatorsTab();
-      case "diagnostic":
-        return renderDiagnosticTab();
+        return `<div class="ably-home-page" id="home-dynamic-body">${renderHomeBody()}</div>`;
+      case "category":
+        return renderCategoryTab();
       case "shop":
         return renderShopTab();
+      case "creators":
+        return renderCreatorsTab();
+      case "wishlist":
+        return renderWishlistTab();
+      case "my":
+        return renderMyTab();
       case "auth":
         return renderAuthTab();
-      case "profile":
-        return renderProfileTab();
       default:
-        return renderHomeTab();
+        return `<div class="ably-home-page" id="home-dynamic-body">${renderHomeBody()}</div>`;
     }
   }
 
-  // [탭 1: Acasă]
-  function renderHomeTab() {
-    const topCreator = state.matchedCreators[0] || data.creators[0];
-    const topRoutine = topCreator.routine;
-    const routineTitle = state.lang === 'ko' ? (topRoutine.titleKo || topRoutine.titleEn) : (state.lang === 'en' ? topRoutine.titleEn : topRoutine.title);
+  // ==========================================================================
+  // [홈 & 상단 6대 쇼핑 GNB 버티컬]
+  // ==========================================================================
+  function renderHomeBody() {
+    if (state.searchQuery.trim()) {
+      return renderSearchResultsView();
+    }
+    switch (state.homeSubTab) {
+      case "best":
+        return renderHomeBestSubTab();
+      case "skincare":
+        return renderHomeSkincareSubTab();
+      case "makeup":
+        return renderHomeMakeupSubTab();
+      case "brands":
+        return renderHomeBrandsSubTab();
+      case "sets":
+        return renderHomeSetsSubTab();
+      case "today":
+      default:
+        return renderHomeTodaySubTab();
+    }
+  }
 
-    // 검색 필터링된 상품 목록
-    const filteredProducts = state.searchQuery
-      ? data.products.filter(p => 
-          p.name.toLowerCase().includes(state.searchQuery.toLowerCase()) ||
-          p.brand.toLowerCase().includes(state.searchQuery.toLowerCase())
-        )
-      : data.products;
+  function renderSearchResultsView() {
+    const results = filterBySearch(state.searchQuery);
+    const popularKeywords = ["Anua", "SKIN1004", "SPF", "PDRN", "Cushion", "Rom&nd"];
+    return `
+      <section class="ably-section">
+        <div class="sort-toolbar" style="margin-bottom:14px;">
+          <span class="sort-count">
+            <strong>"${state.searchQuery.replace(/</g, "&lt;")}"</strong> · ${results.length} ${t("totalCountSuffix")}
+          </span>
+          <button class="filter-reset-inline" id="btn-reset-search-inline">
+            ${tr("Șterge căutarea ✕", "Clear search ✕", "검색 초기화 ✕")}
+          </button>
+        </div>
+
+        ${
+          results.length > 0
+            ? `<div class="ably-product-grid">
+                ${results.map((prod, idx) => renderProductCard(prod, idx + 1, false)).join("")}
+              </div>`
+            : `<div class="empty-state-box">
+                <p class="empty-state-text">${tr("Niciun produs găsit pentru această căutare.", "No matching products found.", "일치하는 상품이 없습니다. 추천 키워드로 검색해 보세요.")}</p>
+                <div class="keyword-suggest-row">
+                  ${popularKeywords.map((kw) => `<button class="filter-chip" data-search-kw="${kw}">#${kw}</button>`).join("")}
+                </div>
+              </div>`
+        }
+      </section>
+    `;
+  }
+
+  // 1) 투데이 (메인 스토어 홈)
+  function renderHomeTodaySubTab() {
+    const concernFiltered =
+      state.homeConcern === "all"
+        ? data.products
+        : data.products.filter((p) => (p.concerns || []).includes(state.homeConcern));
+
+    const bestTop6 = [...data.products].sort((a, b) => b.reviewsCount - a.reviewsCount).slice(0, 6);
+    const featuredCreator = data.creators[0];
+    const featuredRoutine = featuredCreator.routine;
+    const routineTitle = tr(featuredRoutine.title, featuredRoutine.titleEn, featuredRoutine.titleKo || featuredRoutine.titleEn);
 
     return `
-      <div class="ably-home-page">
-        <!-- 1. 인터랙티브 히어로 롤링 배너 (좌우 버튼, 4개 슬라이드 전환) -->
-        <section class="hero-slider-wrap" id="hero-slider-section">
-          <div class="hero-slider-track" id="hero-track" style="transform: translateX(-${state.currentSlide * 100}%);">
-            ${data.heroSlides.map((slide, idx) => {
-              const tag = state.lang === 'ko' ? (slide.tagKo || slide.tagEn) : (state.lang === 'en' ? slide.tagEn : slide.tagRo);
-              const headline = state.lang === 'ko' ? (slide.headlineKo || slide.headlineEn) : (state.lang === 'en' ? slide.headlineEn : slide.headlineRo);
-              const subline = state.lang === 'ko' ? (slide.sublineKo || slide.sublineEn) : (state.lang === 'en' ? slide.sublineEn : slide.sublineRo);
-              const cleanHeadline = headline.replace(/<br\s*\/?>/gi, ' ').replace(/'/g, "\\'");
+      <!-- 1. 인터랙티브 히어로 배너 슬라이더 -->
+      <section class="hero-slider-wrap" id="hero-slider-section">
+        <div class="hero-slider-track" id="hero-track" style="transform: translateX(-${state.currentSlide * 100}%);">
+          ${data.heroSlides
+            .map((slide, idx) => {
+              const tag = tr(slide.tagRo, slide.tagEn, slide.tagKo || slide.tagEn);
+              const headline = tr(slide.headlineRo, slide.headlineEn, slide.headlineKo || slide.headlineEn);
+              const subline = tr(slide.sublineRo, slide.sublineEn, slide.sublineKo || slide.sublineEn);
+              const cleanHeadline = headline.replace(/<br\s*\/?>/gi, " ").replace(/'/g, "\\'");
               const cleanTag = tag.replace(/'/g, "\\'");
               return `
                 <div class="hero-slide">
@@ -386,167 +583,833 @@ document.addEventListener("DOMContentLoaded", () => {
                   </div>
                 </div>
               `;
-            }).join('')}
+            })
+            .join("")}
+        </div>
+        <button class="hero-arrow-btn prev" id="btn-hero-prev" aria-label="Previous">${ICONS.chevronLeft}</button>
+        <button class="hero-arrow-btn next" id="btn-hero-next" aria-label="Next">${ICONS.chevronRight}</button>
+        <div class="hero-counter-badge" id="hero-counter-num">${state.currentSlide + 1} / ${state.totalSlides} ›</div>
+      </section>
+
+      <!-- 2. 에이블리·올리브영 스타일 4x2 품목 퀵 카테고리 그리드 -->
+      <section class="quick-cat-section">
+        <div class="quick-cat-grid">
+          <button class="quick-cat-item" data-open-cat="Toner & Tampoane">
+            <div class="quick-cat-icon tone-blue">${ICONS.droplet}</div>
+            <span class="quick-cat-label">${t("quickToners")}</span>
+          </button>
+          <button class="quick-cat-item" data-open-cat="Serum & Fiole">
+            <div class="quick-cat-icon tone-rose">${ICONS.flask}</div>
+            <span class="quick-cat-label">${t("quickSerums")}</span>
+          </button>
+          <button class="quick-cat-item" data-open-cat="Creme & Hidratare">
+            <div class="quick-cat-icon tone-green">${ICONS.cream}</div>
+            <span class="quick-cat-label">${t("quickCreams")}</span>
+          </button>
+          <button class="quick-cat-item" data-open-cat="Protecție Solară">
+            <div class="quick-cat-icon tone-amber">${ICONS.sun}</div>
+            <span class="quick-cat-label">${t("quickSPF")}</span>
+          </button>
+          <button class="quick-cat-item" data-open-cat="Curățare">
+            <div class="quick-cat-icon tone-purple">${ICONS.bubbles}</div>
+            <span class="quick-cat-label">${t("quickCleanser")}</span>
+          </button>
+          <button class="quick-cat-item" data-open-cat="Machiaj">
+            <div class="quick-cat-icon tone-pink">${ICONS.lipstick}</div>
+            <span class="quick-cat-label">${t("quickMakeup")}</span>
+          </button>
+          <button class="quick-cat-item" data-open-cat="Măști & Tampoane">
+            <div class="quick-cat-icon tone-cyan">${ICONS.mask}</div>
+            <span class="quick-cat-label">${t("quickMask")}</span>
+          </button>
+          <button class="quick-cat-item" data-subtab="sets">
+            <div class="quick-cat-icon tone-coral featured">${ICONS.gift}</div>
+            <span class="quick-cat-label accent">${t("quickSets")}</span>
+          </button>
+        </div>
+      </section>
+
+      <div class="section-divider"></div>
+
+      <!-- 3. 피부고민별 맞춤 추천 (별도 퀴즈 탭 대신 직관적인 쇼핑 카테고리 필터로 제공) -->
+      <section class="ably-section">
+        <div class="ably-section-head">
+          <div class="section-title-wrap">
+            <h3>${t("concernSectionTitle")}</h3>
+            <p>${t("concernSectionSub")}</p>
           </div>
+          <button class="section-more-link" id="btn-more-concern">${t("seeAll")}</button>
+        </div>
 
-          <!-- 좌우 화살표 컨트롤 -->
-          <button class="hero-arrow-btn prev" id="btn-hero-prev" title="Slide Anterior">${ICONS.chevronLeft}</button>
-          <button class="hero-arrow-btn next" id="btn-hero-next" title="Slide Următor">${ICONS.chevronRight}</button>
-
-          <!-- 클릭 시 다음 슬라이드로 넘어가는 1 / 4 카운터 -->
-          <div class="hero-counter-badge" id="hero-counter-num" title="Click pentru următorul banner">
-            ${state.currentSlide + 1} / ${state.totalSlides} >
-          </div>
-        </section>
-
-        <!-- 2. 가로 스크롤 슬라이더 퀵 카테고리 (좌우 넘기기, 화살표 버튼, 마우스 드래그 & 휠) -->
-        <section class="quick-slider-wrapper">
-          <button class="quick-nav-arrow prev hidden" id="btn-quick-prev" aria-label="이전 카테고리">${ICONS.chevronLeft}</button>
-          <div class="ably-quick-icons-slider" id="quick-icons-slider">
-            <button class="quick-icon-btn" data-tab="diagnostic">
-              <div class="quick-icon-circle featured">${ICONS.sparkle}</div>
-              <span class="quick-icon-label">${t("quickDiagnostic")}</span>
-            </button>
-            <button class="quick-icon-btn" data-category="Toner & Tampoane">
-              <div class="quick-icon-circle">${ICONS.droplet}</div>
-              <span class="quick-icon-label">${t("quickToners")}</span>
-            </button>
-            <button class="quick-icon-btn" data-category="Serum & Fiole">
-              <div class="quick-icon-circle">${ICONS.flask}</div>
-              <span class="quick-icon-label">${t("quickSerums")}</span>
-            </button>
-            <button class="quick-icon-btn" data-category="Protecție Solară">
-              <div class="quick-icon-circle">${ICONS.sun}</div>
-              <span class="quick-icon-label">${t("quickSPF")}</span>
-            </button>
-            <button class="quick-icon-btn" data-category="Creme & Hidratare">
-              <div class="quick-icon-circle">${ICONS.shield}</div>
-              <span class="quick-icon-label">${t("quickCreams")}</span>
-            </button>
-            <button class="quick-icon-btn" data-category="Curățare">
-              <div class="quick-icon-circle">${ICONS.droplet}</div>
-              <span class="quick-icon-label">${t("quickCleanser")}</span>
-            </button>
-            <button class="quick-icon-btn" data-category="Machiaj">
-              <div class="quick-icon-circle">${ICONS.sparkle}</div>
-              <span class="quick-icon-label">${t("quickMakeup")}</span>
-            </button>
-            <button class="quick-icon-btn" data-category="Măști & Tampoane">
-              <div class="quick-icon-circle">${ICONS.droplet}</div>
-              <span class="quick-icon-label">${t("quickMask")}</span>
-            </button>
-            <button class="quick-icon-btn" data-tab="shop" data-subtab="best">
-              <div class="quick-icon-circle">${ICONS.sparkle}</div>
-              <span class="quick-icon-label">${t("quickBest")}</span>
-            </button>
-          </div>
-          <button class="quick-nav-arrow next" id="btn-quick-next" aria-label="다음 카테고리">${ICONS.chevronRight}</button>
-          <div class="slider-scroll-hint">
-            <div class="scroll-track-mini" id="quick-scroll-track" title="좌우로 넘겨서 더 많은 카테고리 보기">
-              <div class="scroll-thumb-mini" id="quick-scroll-thumb"></div>
-            </div>
-          </div>
-        </section>
-
-        <div class="section-divider"></div>
-
-        <!-- 3. 나와 닮은 크리에이터 루틴 -->
-        <section class="ably-section">
-          <div class="ably-section-head">
-            <div class="section-title-wrap">
-              <h3>${t("spotlightTitle")}</h3>
-              <p>${t("spotlightSub")}</p>
-            </div>
-            <button class="section-more-link" data-tab="creators">${t("seeAll")}</button>
-          </div>
-
-          <div class="creator-match-box">
-            <div class="cm-header">
-              <img src="${topCreator.avatar}" class="cm-avatar" alt="${topCreator.name}" onerror="this.onerror=null; this.src=window.SEOULMATE_FALLBACK.getAvatar('${topCreator.name.replace(/'/g, "\\'")}','${topCreator.handle}')" />
-              <div class="cm-info">
-                <div class="cm-name-row">
-                  <span class="cm-name">${topCreator.name}</span>
-                  <span class="cm-badge">${topCreator.matchScore}% ${t("matchScoreSuffix")}</span>
-                </div>
-                <p class="cm-meta">${topCreator.handle} · ${topCreator.city}</p>
-                <div class="cm-chips">
-                  <span class="cm-chip">Ten ${topCreator.skinProfile.type}</span>
-                  <span class="cm-chip">${topCreator.skinProfile.concerns.join(", ")}</span>
-                  <span class="cm-chip">Subton ${topCreator.skinProfile.undertone}</span>
-                </div>
-              </div>
-            </div>
-
-            <!-- 루틴 3개 상품 번들 박스 -->
-            <div class="routine-bundle-card">
-              <div class="rb-title-row">
-                <span class="rb-title">${routineTitle}</span>
-                <div class="rb-pricing">
-                  <span class="rb-discount">-${topRoutine.discountPercent}%</span>
-                  <span class="rb-price">${topRoutine.bundlePrice} lei</span>
-                  <span class="rb-original">${topRoutine.originalPrice} lei</span>
-                </div>
-              </div>
-
-              <div class="rb-items-grid">
-                ${topRoutine.productIds.map(pid => {
-                  const p = data.products.find(item => item.id === pid);
-                  const pName = state.lang === 'ko' ? (p.koreanName || p.name) : (state.lang === 'en' ? (p.englishName || p.name) : p.name);
-                  return p ? `
-                    <div class="rb-item-thumb" data-product-id="${p.id}">
-                      <img src="${p.image}" alt="${p.name}" onerror="this.onerror=null; this.src=window.SEOULMATE_FALLBACK.getProduct('${p.category}','${p.brand}','${p.name.replace(/'/g, "\\'")}')" />
-                      <span class="rb-item-brand">${p.brand}</span>
-                      <span class="rb-item-name">${pName}</span>
-                    </div>
-                  ` : '';
-                }).join('')}
-              </div>
-
-              <button class="btn-bundle-order" data-creator-id="${topCreator.id}">
-                ${t("buyBundleInstant")} (${topRoutine.bundlePrice} lei)
+        <div class="filter-chips-scroll" style="margin-bottom:14px;">
+          ${["all", "soothing", "pores", "hydration", "glow"]
+            .map(
+              (ck) => `
+              <button class="filter-chip ${state.homeConcern === ck ? "active" : ""}" data-home-concern="${ck}">
+                ${getConcernLabel(ck)}
               </button>
+            `
+            )
+            .join("")}
+        </div>
+
+        <div class="ably-product-grid">
+          ${concernFiltered.slice(0, 6).map((prod, idx) => renderProductCard(prod, idx + 1, false)).join("")}
+        </div>
+      </section>
+
+      <div class="section-divider"></div>
+
+      <!-- 4. 실시간 인기 베스트 랭킹 -->
+      <section class="ably-section">
+        <div class="ably-section-head">
+          <div class="section-title-wrap">
+            <h3>${t("trendingTitle")}</h3>
+            <p>${t("trendingSub")}</p>
+          </div>
+          <button class="section-more-link" data-subtab="best">${t("seeAll")}</button>
+        </div>
+
+        <div class="ably-product-grid">
+          ${bestTop6.map((prod, idx) => renderProductCard(prod, idx + 1, true)).join("")}
+        </div>
+      </section>
+
+      <div class="section-divider"></div>
+
+      <!-- 5. 크리에이터 3단계 루틴 세트 특가 -->
+      <section class="ably-section">
+        <div class="ably-section-head">
+          <div class="section-title-wrap">
+            <h3>${t("spotlightTitle")}</h3>
+            <p>${t("spotlightSub")}</p>
+          </div>
+          <button class="section-more-link" data-subtab="sets">${t("seeAll")}</button>
+        </div>
+
+        ${renderRoutineBundleCard(featuredCreator, routineTitle)}
+      </section>
+
+      <div class="section-divider"></div>
+
+      <!-- 6. EU CPNP 공식 정품 보증 배너 -->
+      <section class="ably-section">
+        <div class="ably-trust-card">
+          <div class="trust-head">
+            ${ICONS.shield}
+            <strong>${t("antiFakeTitle")}</strong>
+          </div>
+          <p class="trust-desc">${t("antiFakeDesc")}</p>
+          <button class="btn-open-cert" id="btn-cert-modal">${t("verifyCertBtn")}</button>
+        </div>
+      </section>
+    `;
+  }
+
+  // 2) 베스트 (실시간 판매/리뷰 랭킹 + 품목·피부타입별 랭킹 필터)
+  function renderHomeBestSubTab() {
+    const categories = getCategoriesMeta();
+    let list = [...data.products];
+    if (state.bestCategory !== "all") {
+      list = list.filter((p) => p.category === state.bestCategory);
+    }
+    if (state.bestSkinType !== "all") {
+      list = list.filter((p) => (p.skinTypes || []).includes(state.bestSkinType));
+    }
+    list.sort((a, b) => b.reviewsCount - a.reviewsCount || b.rating - a.rating);
+
+    return `
+      <div class="subtab-sticky-filters">
+        <div class="filter-chips-scroll">
+          ${categories
+            .map(
+              (c) => `
+              <button class="filter-chip ${state.bestCategory === c.key ? "active" : ""}" data-best-cat="${c.key}">
+                ${c.key === "all" ? t("concernAll") : c.shortLabel}
+              </button>
+            `
+            )
+            .join("")}
+        </div>
+        <div class="filter-chips-scroll sub-row">
+          ${["all", "Mixt", "Gras", "Sensibil", "Uscat"]
+            .map(
+              (st) => `
+              <button class="sub-filter-pill ${state.bestSkinType === st ? "active" : ""}" data-best-skin="${st}">
+                ${getSkinTypeLabel(st)}
+              </button>
+            `
+            )
+            .join("")}
+        </div>
+      </div>
+
+      <section class="ably-section" style="padding-top:14px;">
+        <div class="sort-toolbar">
+          <span class="sort-count">${list.length} ${t("totalCountSuffix")}</span>
+          <span class="ranking-meta-badge">${tr("Actualizat după recenzii & vânzări", "Ranked by verified reviews & sales", "실시간 판매·리뷰 랭킹 기준")}</span>
+        </div>
+        <div class="ably-product-grid">
+          ${list.map((prod, idx) => renderProductCard(prod, idx + 1, true)).join("")}
+        </div>
+      </section>
+    `;
+  }
+
+  // 3) 스킨케어 버티컬 (스킨케어 세부 품목 + 피부고민 + 피부타입 + 정렬)
+  function renderHomeSkincareSubTab() {
+    const skincareCats = getCategoriesMeta().filter((c) => c.key !== "Machiaj");
+    let list = data.products.filter((p) => p.category !== "Machiaj");
+
+    if (state.skincareCategory !== "all") {
+      list = list.filter((p) => p.category === state.skincareCategory);
+    }
+    if (state.skincareConcern !== "all") {
+      list = list.filter((p) => (p.concerns || []).includes(state.skincareConcern));
+    }
+    if (state.skincareSkinType !== "all") {
+      list = list.filter((p) => (p.skinTypes || []).includes(state.skincareSkinType));
+    }
+    list = sortProducts(list, state.sortBy);
+
+    return `
+      <div class="subtab-sticky-filters">
+        <div class="filter-chips-scroll">
+          ${skincareCats
+            .map(
+              (c) => `
+              <button class="filter-chip ${state.skincareCategory === c.key ? "active" : ""}" data-skincare-cat="${c.key}">
+                ${c.key === "all" ? t("concernAll") : c.shortLabel}
+              </button>
+            `
+            )
+            .join("")}
+        </div>
+        <div class="filter-chips-scroll sub-row">
+          ${["all", "soothing", "pores", "hydration", "glow"]
+            .map(
+              (ck) => `
+              <button class="sub-filter-pill ${state.skincareConcern === ck ? "active" : ""}" data-skincare-concern="${ck}">
+                ${ck === "all" ? tr("Toate nevoile", "All Concerns", "고민 전체") : getConcernLabel(ck)}
+              </button>
+            `
+            )
+            .join("")}
+        </div>
+        <div class="filter-chips-scroll sub-row">
+          ${["all", "Mixt", "Gras", "Sensibil", "Uscat"]
+            .map(
+              (st) => `
+              <button class="sub-filter-pill ${state.skincareSkinType === st ? "active" : ""}" data-skincare-skin="${st}">
+                ${getSkinTypeLabel(st)}
+              </button>
+            `
+            )
+            .join("")}
+        </div>
+      </div>
+
+      <section class="ably-section" style="padding-top:12px;">
+        ${renderSortToolbar(list.length)}
+        ${
+          list.length > 0
+            ? `<div class="ably-product-grid">
+                ${list.map((prod, idx) => renderProductCard(prod, idx + 1, false)).join("")}
+              </div>`
+            : renderFilterEmptyState("reset-skincare-filters")
+        }
+      </section>
+    `;
+  }
+
+  // 4) 메이크업 버티컬 (쿠션·베이스 / 립·틴트 + 퍼스널컬러 쿨톤·웜톤·뉴트럴 필터)
+  function renderHomeMakeupSubTab() {
+    let list = data.products.filter((p) => p.category === "Machiaj");
+    if (state.makeupSub !== "all") {
+      list = list.filter((p) => p.subMakeup === state.makeupSub);
+    }
+    if (state.makeupTone !== "all") {
+      list = list.filter((p) => p.undertone === state.makeupTone);
+    }
+    list = sortProducts(list, state.sortBy);
+
+    const makeupTabs = [
+      { key: "all", label: t("makeupAll") },
+      { key: "base", label: t("makeupBase") },
+      { key: "lip", label: t("makeupLip") }
+    ];
+
+    return `
+      <div class="subtab-sticky-filters">
+        <div class="filter-chips-scroll">
+          ${makeupTabs
+            .map(
+              (mt) => `
+              <button class="filter-chip ${state.makeupSub === mt.key ? "active" : ""}" data-makeup-sub="${mt.key}">
+                ${mt.label}
+              </button>
+            `
+            )
+            .join("")}
+        </div>
+        <div class="filter-chips-scroll sub-row">
+          ${["all", "Rece", "Cald", "Neutru"]
+            .map(
+              (tn) => `
+              <button class="sub-filter-pill ${state.makeupTone === tn ? "active" : ""}" data-makeup-tone="${tn}">
+                ${getUndertoneLabel(tn)}
+              </button>
+            `
+            )
+            .join("")}
+        </div>
+      </div>
+
+      <section class="ably-section" style="padding-top:12px;">
+        ${renderSortToolbar(list.length)}
+        ${
+          list.length > 0
+            ? `<div class="ably-product-grid">
+                ${list.map((prod, idx) => renderProductCard(prod, idx + 1, false)).join("")}
+              </div>`
+            : renderFilterEmptyState("reset-makeup-filters")
+        }
+      </section>
+    `;
+  }
+
+  // 5) 브랜드관 (공식 입점 9대 K-뷰티 브랜드 디렉토리 및 브랜드별 상품관)
+  function renderHomeBrandsSubTab() {
+    const activeBrandObj = data.brands.find((b) => b.id === state.selectedBrand);
+    let list =
+      state.selectedBrand === "all"
+        ? [...data.products]
+        : data.products.filter((p) => p.brand === state.selectedBrand);
+    list = sortProducts(list, state.sortBy);
+
+    return `
+      <div class="subtab-sticky-filters">
+        <div class="filter-chips-scroll">
+          <button class="filter-chip ${state.selectedBrand === "all" ? "active" : ""}" data-select-brand="all">
+            ${t("concernAll")} (${data.brands.length})
+          </button>
+          ${data.brands
+            .map(
+              (b) => `
+              <button class="filter-chip ${state.selectedBrand === b.id ? "active" : ""}" data-select-brand="${b.id}">
+                ${b.name}
+              </button>
+            `
+            )
+            .join("")}
+        </div>
+      </div>
+
+      <section class="ably-section" style="padding-top:14px;">
+        ${
+          activeBrandObj
+            ? `
+          <div class="brand-hero-card">
+            <div class="brand-hero-top">
+              <div>
+                <span class="brand-official-pill">✓ CPNP OFFICIAL PARTNER</span>
+                <h3 class="brand-hero-name">${activeBrandObj.name}</h3>
+                <p class="brand-hero-tag">${tr(activeBrandObj.tagRo, activeBrandObj.tagEn, activeBrandObj.tagKo)}</p>
+              </div>
+              <button class="filter-reset-inline" data-select-brand="all">${tr("Toate brandurile", "All Brands", "전체 브랜드")}</button>
             </div>
           </div>
-        </section>
+        `
+            : `
+          <div class="brand-pavilion-grid" style="margin-bottom:18px;">
+            ${data.brands
+              .map((b) => {
+                const count = data.products.filter((p) => p.brand === b.id).length;
+                return `
+                  <button class="brand-pavilion-card" data-select-brand="${b.id}">
+                    <span class="bp-name">${b.name}</span>
+                    <span class="bp-desc">${tr(b.tagRo, b.tagEn, b.tagKo)}</span>
+                    <span class="bp-count">${count} ${t("totalCountSuffix")} ›</span>
+                  </button>
+                `;
+              })
+              .join("")}
+          </div>
+        `
+        }
 
-        <div class="section-divider"></div>
+        ${renderSortToolbar(list.length)}
+        <div class="ably-product-grid">
+          ${list.map((prod, idx) => renderProductCard(prod, idx + 1, false)).join("")}
+        </div>
+      </section>
+    `;
+  }
 
-        <!-- 4. 정품 보증 신뢰 배너 -->
+  // 6) 루틴특가 (피부타입별 3단계 검증 세트 할인)
+  function renderHomeSetsSubTab() {
+    const creatorsList =
+      state.setsSkinType === "all"
+        ? data.creators
+        : data.creators.filter((c) => c.skinProfile.type === state.setsSkinType);
+
+    return `
+      <div class="subtab-sticky-filters">
+        <div class="filter-chips-scroll">
+          ${["all", "Mixt", "Sensibil", "Gras", "Uscat"]
+            .map(
+              (st) => `
+              <button class="filter-chip ${state.setsSkinType === st ? "active" : ""}" data-sets-skin="${st}">
+                ${getSkinTypeLabel(st)}
+              </button>
+            `
+            )
+            .join("")}
+        </div>
+      </div>
+
+      <section class="ably-section" style="padding-top:14px;">
+        <div class="ably-section-head" style="margin-bottom:14px;">
+          <div class="section-title-wrap">
+            <h3>${t("spotlightTitle")}</h3>
+            <p>${t("spotlightSub")}</p>
+          </div>
+        </div>
+
+        <div style="display:flex; flex-direction:column; gap:14px;">
+          ${creatorsList
+            .map((creator) => {
+              const rTitle = tr(creator.routine.title, creator.routine.titleEn, creator.routine.titleKo || creator.routine.titleEn);
+              return renderRoutineBundleCard(creator, rTitle);
+            })
+            .join("")}
+        </div>
+      </section>
+    `;
+  }
+
+  function renderRoutineBundleCard(creator, routineTitle) {
+    const routine = creator.routine;
+    const routineDesc = tr(routine.description, routine.descriptionEn, routine.descriptionKo || routine.descriptionEn);
+    return `
+      <div class="creator-match-box">
+        <div class="cm-header">
+          <img src="${creator.avatar}" class="cm-avatar" alt="${creator.name}" onerror="this.onerror=null; this.src=window.SEOULMATE_FALLBACK.getAvatar('${creator.name.replace(/'/g, "\\'")}','${creator.handle}')" />
+          <div class="cm-info">
+            <div class="cm-name-row">
+              <span class="cm-name">${creator.name}</span>
+              <span class="cm-badge">-${routine.discountPercent}% SET</span>
+            </div>
+            <p class="cm-meta">${creator.handle} · ${creator.city}</p>
+            <div class="cm-chips">
+              <span class="cm-chip highlight">${getSkinTypeLabel(creator.skinProfile.type)}</span>
+              <span class="cm-chip">${getUndertoneLabel(creator.skinProfile.undertone)}</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="routine-bundle-card">
+          <div class="rb-title-row">
+            <span class="rb-title">${routineTitle}</span>
+            <div class="rb-pricing">
+              <span class="rb-discount">-${routine.discountPercent}%</span>
+              <span class="rb-price">${routine.bundlePrice} lei</span>
+              <span class="rb-original">${routine.originalPrice} lei</span>
+            </div>
+          </div>
+          <p class="rb-desc">${routineDesc}</p>
+
+          <div class="rb-items-grid">
+            ${routine.productIds
+              .map((pid) => {
+                const p = data.products.find((item) => item.id === pid);
+                if (!p) return "";
+                const pName = getProductDisplayName(p);
+                return `
+                  <div class="rb-item-thumb" data-product-id="${p.id}">
+                    <img src="${p.image}" alt="${pName}" onerror="this.onerror=null; this.src=window.SEOULMATE_FALLBACK.getProduct('${p.category}','${p.brand}','${p.name.replace(/'/g, "\\'")}')" />
+                    <span class="rb-item-brand">${p.brand}</span>
+                    <span class="rb-item-name">${pName}</span>
+                  </div>
+                `;
+              })
+              .join("")}
+          </div>
+
+          <button class="btn-bundle-order" data-creator-id="${creator.id}">
+            ${t("buyBundleInstant")} · ${routine.bundlePrice} lei
+          </button>
+        </div>
+      </div>
+    `;
+  }
+
+  // ==========================================================================
+  // [하단 탭 2: 카테고리 디렉토리 (품목별 · 피부고민별 · 피부타입별 · 공식 브랜드관)]
+  // ==========================================================================
+  function renderCategoryTab() {
+    const categories = getCategoriesMeta();
+    const concerns = [
+      {
+        key: "soothing",
+        label: t("concernSoothing"),
+        desc: tr("Centella · Heartleaf · Anti-roșeață", "Centella · Heartleaf · Redness Care", "어성초 · 시카 · 붉은기 진정"),
+        toneClass: "tone-green",
+        count: data.products.filter((p) => (p.concerns || []).includes("soothing")).length
+      },
+      {
+        key: "pores",
+        label: t("concernPores"),
+        desc: tr("AHA/BHA · Curățare pori & sebum", "AHA/BHA · Pore Tightening & Sebum", "모공 수렴 · 피지 · 블랙헤드"),
+        toneClass: "tone-blue",
+        count: data.products.filter((p) => (p.concerns || []).includes("pores")).length
+      },
+      {
+        key: "hydration",
+        label: t("concernHydration"),
+        desc: tr("Acid Hialuronic 5D · Colagen · Ceramide", "5D Hyaluronic · Collagen · Barrier", "저분자 히알루론산 · 세라마이드"),
+        toneClass: "tone-cyan",
+        count: data.products.filter((p) => (p.concerns || []).includes("hydration")).length
+      },
+      {
+        key: "glow",
+        label: t("concernGlow"),
+        desc: tr("Orez · PDRN · Vitamina & Glass Skin", "Rice · Salmon PDRN · Glass Skin", "쌀 추출물 · 연어 PDRN · 윤광"),
+        toneClass: "tone-rose",
+        count: data.products.filter((p) => (p.concerns || []).includes("glow")).length
+      }
+    ];
+
+    const skinTypes = [
+      { key: "Mixt", label: t("skinMixt") },
+      { key: "Gras", label: t("skinGras") },
+      { key: "Sensibil", label: t("skinSensibil") },
+      { key: "Uscat", label: t("skinUscat") }
+    ];
+
+    return `
+      <div class="category-directory-page">
+        <!-- 1. 품목별 카테고리 -->
         <section class="ably-section">
-          <div class="ably-trust-card">
-            <div class="trust-head">
-              ${ICONS.shield}
-              <strong>${t("antiFakeTitle")}</strong>
-            </div>
-            <p class="trust-desc">${t("antiFakeDesc")}</p>
-            <button class="btn-open-cert" id="btn-cert-modal">${t("verifyCertBtn")}</button>
+          <h3 class="cat-dir-heading">${t("catSecProduct")}</h3>
+          <div class="cat-product-grid">
+            ${categories
+              .map(
+                (c) => `
+                <button class="cat-product-row" data-dir-cat="${c.key}">
+                  <div class="cat-row-left">
+                    <span class="cat-row-icon">${c.iconSvg}</span>
+                    <span class="cat-row-name">${c.label}</span>
+                  </div>
+                  <span class="cat-row-right">${c.count} ›</span>
+                </button>
+              `
+              )
+              .join("")}
           </div>
         </section>
 
         <div class="section-divider"></div>
 
-        <!-- 5. 에이블리 2열 상품 그리드 (검색어 반영) -->
-        <section class="ably-section" id="trending-section">
-          <div class="ably-section-head">
-            <div class="section-title-wrap">
-              <h3>${t("trendingTitle")}</h3>
-              <p>${t("trendingSub")}</p>
-            </div>
-            <button class="section-more-link" data-tab="shop">${state.lang === 'en' ? `All (${data.products.length})` : `Toate (${data.products.length})`} ›</button>
+        <!-- 2. 피부고민별 찾기 (화장품 선택 시 피부고민 카테고리 분류) -->
+        <section class="ably-section">
+          <h3 class="cat-dir-heading">${t("catSecConcern")}</h3>
+          <div class="cat-concern-grid">
+            ${concerns
+              .map(
+                (item) => `
+                <button class="cat-concern-card ${item.toneClass}" data-dir-concern="${item.key}">
+                  <div class="cc-top">
+                    <strong>${item.label}</strong>
+                    <span class="cc-count">${item.count}</span>
+                  </div>
+                  <p class="cc-desc">${item.desc}</p>
+                </button>
+              `
+              )
+              .join("")}
           </div>
+        </section>
 
-          <div class="ably-product-grid">
-            ${filteredProducts.slice(0, 8).map((prod, index) => renderProductCard(prod, index + 1)).join('')}
+        <div class="section-divider"></div>
+
+        <!-- 3. 피부타입별 찾기 -->
+        <section class="ably-section">
+          <h3 class="cat-dir-heading">${t("catSecSkinType")}</h3>
+          <div class="cat-skintype-row">
+            ${skinTypes
+              .map((st) => {
+                const cnt = data.products.filter((p) => (p.skinTypes || []).includes(st.key)).length;
+                return `
+                  <button class="cat-skintype-btn" data-dir-skin="${st.key}">
+                    <strong>${st.label}</strong>
+                    <span>${cnt} ${t("totalCountSuffix")}</span>
+                  </button>
+                `;
+              })
+              .join("")}
+          </div>
+        </section>
+
+        <div class="section-divider"></div>
+
+        <!-- 4. 공식 입점 브랜드관 -->
+        <section class="ably-section">
+          <h3 class="cat-dir-heading">${t("catSecBrand")}</h3>
+          <div class="brand-pavilion-grid">
+            ${data.brands
+              .map((b) => {
+                const count = data.products.filter((p) => p.brand === b.id).length;
+                return `
+                  <button class="brand-pavilion-card" data-dir-brand="${b.id}">
+                    <span class="bp-name">${b.name}</span>
+                    <span class="bp-desc">${tr(b.tagRo, b.tagEn, b.tagKo)}</span>
+                    <span class="bp-count">${count} ${t("totalCountSuffix")} ›</span>
+                  </button>
+                `;
+              })
+              .join("")}
           </div>
         </section>
       </div>
     `;
   }
 
-  // [탭 2: Creatori]
+  // ==========================================================================
+  // [상품 목록 뷰 (shop): 품목 · 피부고민 · 피부타입 · 브랜드 다중 필터 + 정렬]
+  // ==========================================================================
+  function renderShopTab() {
+    const categories = getCategoriesMeta();
+    let list = [...data.products];
+
+    if (state.selectedCategory !== "all") {
+      list = list.filter((p) => p.category === state.selectedCategory);
+    }
+    if (state.shopConcern !== "all") {
+      list = list.filter((p) => (p.concerns || []).includes(state.shopConcern));
+    }
+    if (state.shopSkinType !== "all") {
+      list = list.filter((p) => (p.skinTypes || []).includes(state.shopSkinType));
+    }
+    if (state.shopBrand !== "all") {
+      list = list.filter((p) => p.brand === state.shopBrand);
+    }
+
+    list = sortProducts(list, state.sortBy);
+
+    const hasSubFilter =
+      state.selectedCategory !== "all" ||
+      state.shopConcern !== "all" ||
+      state.shopSkinType !== "all" ||
+      state.shopBrand !== "all";
+
+    return `
+      <div class="shop-tab-container">
+        <div class="subtab-sticky-filters">
+          <div class="filter-chips-scroll">
+            ${categories
+              .map(
+                (c) => `
+                <button class="filter-chip ${state.selectedCategory === c.key ? "active" : ""}" data-shop-cat="${c.key}">
+                  ${c.key === "all" ? t("concernAll") : c.shortLabel}
+                </button>
+              `
+              )
+              .join("")}
+          </div>
+          <div class="filter-chips-scroll sub-row">
+            ${["all", "soothing", "pores", "hydration", "glow"]
+              .map(
+                (ck) => `
+                <button class="sub-filter-pill ${state.shopConcern === ck ? "active" : ""}" data-shop-concern="${ck}">
+                  ${ck === "all" ? tr("Toate nevoile", "All Concerns", "고민 전체") : getConcernLabel(ck)}
+                </button>
+              `
+              )
+              .join("")}
+          </div>
+          <div class="filter-chips-scroll sub-row">
+            ${["all", "Mixt", "Gras", "Sensibil", "Uscat"]
+              .map(
+                (st) => `
+                <button class="sub-filter-pill ${state.shopSkinType === st ? "active" : ""}" data-shop-skin="${st}">
+                  ${getSkinTypeLabel(st)}
+                </button>
+              `
+              )
+              .join("")}
+          </div>
+          ${
+            state.shopBrand !== "all"
+              ? `
+            <div class="active-brand-bar">
+              <span>${tr("Brand selectat:", "Selected Brand:", "선택 브랜드:")} <strong>${state.shopBrand}</strong></span>
+              <button class="filter-reset-inline" id="btn-clear-shop-brand">✕</button>
+            </div>
+          `
+              : ""
+          }
+        </div>
+
+        <div class="ably-section" style="padding-top:12px;">
+          ${renderSortToolbar(list.length, hasSubFilter ? "btn-reset-shop-all" : null)}
+          ${
+            list.length > 0
+              ? `<div class="ably-product-grid">
+                  ${list.map((prod, idx) => renderProductCard(prod, idx + 1, false)).join("")}
+                </div>`
+              : renderFilterEmptyState("btn-reset-shop-all")
+          }
+        </div>
+      </div>
+    `;
+  }
+
+  function renderSortToolbar(count, resetBtnId = null) {
+    const sorts = [
+      { key: "popular", label: t("sortPopular") },
+      { key: "reviews", label: t("sortReviews") },
+      { key: "priceLow", label: t("sortPriceLow") },
+      { key: "discount", label: t("sortDiscount") }
+    ];
+    return `
+      <div class="sort-toolbar">
+        <div class="sort-left">
+          <span class="sort-count"><strong>${count}</strong> ${t("totalCountSuffix")}</span>
+          ${
+            resetBtnId
+              ? `<button class="filter-reset-inline" id="${resetBtnId}">${tr("Resetează", "Reset", "초기화")}</button>`
+              : ""
+          }
+        </div>
+        <div class="sort-options">
+          ${sorts
+            .map(
+              (s) => `
+              <button class="sort-opt-btn ${state.sortBy === s.key ? "active" : ""}" data-sort-by="${s.key}">
+                ${s.label}
+              </button>
+            `
+            )
+            .join("")}
+        </div>
+      </div>
+    `;
+  }
+
+  function renderFilterEmptyState(resetId) {
+    return `
+      <div class="empty-state-box">
+        <p class="empty-state-text">${tr("Nu există produse pentru combinația de filtre aleasă.", "No items match the selected filter combination.", "선택하신 필터 조건에 맞는 상품이 없습니다.")}</p>
+        <button class="btn-secondary-pill" id="${resetId}">${tr("Resetează Filtrele", "Reset Filters", "필터 전체 초기화")}</button>
+      </div>
+    `;
+  }
+
+  // ==========================================================================
+  // [하단 탭 3: 크리에이터 룩북 & 루틴 피드 (피부타입별 필터 지원)]
+  // ==========================================================================
   function renderCreatorsTab() {
+    const filteredCreators =
+      state.creatorSkinFilter === "all"
+        ? data.creators
+        : data.creators.filter((c) => c.skinProfile.type === state.creatorSkinFilter);
+
     return `
       <div class="feed-container">
+        <!-- 상단 피부타입별 크리에이터 필터 -->
+        <div class="subtab-sticky-filters">
+          <div style="padding:10px 16px 4px;">
+            <h3 style="font-size:15px; font-weight:800;">${t("creatorsTitle")}</h3>
+            <p style="font-size:11px; color:#777; margin-top:2px;">${t("creatorsSub")}</p>
+          </div>
+          <div class="filter-chips-scroll" style="padding-top:6px;">
+            ${["all", "Mixt", "Sensibil", "Gras", "Uscat"]
+              .map(
+                (st) => `
+                <button class="filter-chip ${state.creatorSkinFilter === st ? "active" : ""}" data-creator-skin="${st}">
+                  ${getSkinTypeLabel(st)}
+                </button>
+              `
+              )
+              .join("")}
+          </div>
+        </div>
+
+        ${filteredCreators
+          .map((creator) => {
+            const routine = creator.routine;
+            const post = creator.feedPost;
+            const caption = tr(post.caption, post.captionEn, post.captionKo || post.captionEn);
+            const routineTitle = tr(routine.title, routine.titleEn, routine.titleKo || routine.titleEn);
+            const isFollowed = state.followedCreators.has(creator.id);
+            const followLabel = isFollowed
+              ? tr("✓ Urmărit", "✓ Following", "✓ 팔로잉")
+              : t("filterFollow");
+
+            return `
+              <article class="feed-card">
+                <div class="feed-head">
+                  <div class="feed-author">
+                    <img src="${creator.avatar}" class="feed-avatar" alt="${creator.name}" onerror="this.onerror=null; this.src=window.SEOULMATE_FALLBACK.getAvatar('${creator.name.replace(/'/g, "\\'")}','${creator.handle}')" />
+                    <div>
+                      <div style="display:flex; align-items:center; gap:6px;">
+                        <h4 class="feed-author-name">${creator.name}</h4>
+                        <span class="cm-chip highlight">${getSkinTypeLabel(creator.skinProfile.type)}</span>
+                      </div>
+                      <span class="feed-author-city">${creator.handle} · ${creator.city} (${creator.followers})</span>
+                    </div>
+                  </div>
+                  <button class="btn-follow-pill ${isFollowed ? "following" : ""}" data-follow-id="${creator.id}">
+                    ${followLabel}
+                  </button>
+                </div>
+
+                <div class="feed-media">
+                  <img src="${post.image}" alt="${creator.name} Look" onerror="this.onerror=null; this.src=window.SEOULMATE_FALLBACK.getFeed('${creator.name.replace(/'/g, "\\'")}','${creator.skinProfile.type}')" />
+                </div>
+
+                <div class="feed-body">
+                  <p class="feed-caption">${caption}</p>
+                  <div class="feed-tags">
+                    ${post.tags.map((tg) => `<span class="feed-tag-item">#${tg}</span>`).join(" ")}
+                  </div>
+
+                  <div class="routine-bundle-card">
+                    <div class="rb-title-row">
+                      <span class="rb-title">${routineTitle}</span>
+                      <div class="rb-pricing">
+                        <span class="rb-discount">-${routine.discountPercent}%</span>
+                        <span class="rb-price">${routine.bundlePrice} lei</span>
+                      </div>
+                    </div>
+
+                    <div class="rb-items-grid">
+                      ${routine.productIds
+                        .map((pid) => {
+                          const p = data.products.find((item) => item.id === pid);
+                          if (!p) return "";
+                          return `
+                            <div class="rb-item-thumb" data-product-id="${p.id}">
+                              <img src="${p.image}" alt="${p.name}" onerror="this.onerror=null; this.src=window.SEOULMATE_FALLBACK.getProduct('${p.category}','${p.brand}','${p.name.replace(/'/g, "\\'")}')" />
+                              <span class="rb-item-brand">${p.brand}</span>
+                              <span class="rb-item-name">${getProductDisplayName(p)}</span>
+                            </div>
+                          `;
+                        })
+                        .join("")}
+                    </div>
+
+                    <button class="btn-bundle-order" data-creator-id="${creator.id}">
+                      ${t("buyRoutinePrice")} · ${routine.bundlePrice} lei
+                    </button>
+                  </div>
+                </div>
+              </article>
+            `;
+          })
+          .join("")}
+
         <div class="feed-partner-cta" id="banner-join-creator">
           <div class="fp-left">
             <strong>${t("becomeCreatorBannerTitle")}</strong>
@@ -554,294 +1417,166 @@ document.addEventListener("DOMContentLoaded", () => {
           </div>
           <button class="fp-btn">${t("becomeCreatorBannerBtn")}</button>
         </div>
-
-        ${state.matchedCreators.map(creator => {
-          const routine = creator.routine;
-          const post = creator.feedPost;
-          const caption = state.lang === 'ko' ? (post.captionEn || post.caption) : (state.lang === 'en' ? post.captionEn : post.caption);
-          const routineTitle = state.lang === 'ko' ? (routine.titleKo || routine.titleEn) : (state.lang === 'en' ? routine.titleEn : routine.title);
-          const isFollowed = state.followedCreators.has(creator.id);
-          const followLabel = isFollowed 
-            ? (state.lang === 'ko' ? '✓ 팔로잉' : (state.lang === 'en' ? '✓ Following' : '✓ Urmărit')) 
-            : t("filterFollow");
-
-          return `
-            <article class="feed-card">
-              <div class="feed-head">
-                <div class="feed-author">
-                  <img src="${creator.avatar}" class="feed-avatar" alt="${creator.name}" onerror="this.onerror=null; this.src=window.SEOULMATE_FALLBACK.getAvatar('${creator.name.replace(/'/g, "\\'")}','${creator.handle}')" />
-                  <div>
-                    <h4 class="feed-author-name">${creator.name}</h4>
-                    <span class="feed-author-city">${creator.handle} · ${creator.city} (${creator.followers})</span>
-                  </div>
-                </div>
-                <button class="btn-open-cert" data-follow-id="${creator.id}">
-                  ${followLabel}
-                </button>
-              </div>
-
-              <div class="feed-media">
-                <img src="${post.image}" alt="${creator.name} Look" onerror="this.onerror=null; this.src=window.SEOULMATE_FALLBACK.getFeed('${creator.name.replace(/'/g, "\\'")}','${creator.skinProfile.type}')" />
-              </div>
-
-              <div class="feed-body">
-                <p class="feed-caption">${caption}</p>
-                <div class="feed-tags">
-                  ${post.tags.map(t => `<span class="feed-tag-item">#${t}</span>`).join(' ')}
-                </div>
-
-                <div class="routine-bundle-card">
-                  <div class="rb-title-row">
-                    <span class="rb-title">${routineTitle}</span>
-                    <div class="rb-pricing">
-                      <span class="rb-discount">-${routine.discountPercent}%</span>
-                      <span class="rb-price">${routine.bundlePrice} lei</span>
-                    </div>
-                  </div>
-                  <button class="btn-bundle-order" data-creator-id="${creator.id}">
-                    ${t("buyRoutinePrice")} (${routine.bundlePrice} lei)
-                  </button>
-                </div>
-              </div>
-            </article>
-          `;
-        }).join('')}
       </div>
     `;
   }
 
-  // [탭 3: Diagnostic]
-  function renderDiagnosticTab() {
-    if (state.quizStatus === "analyzing") {
-      return `
-        <div class="quiz-container">
-          <div class="quiz-analyzing-wrap">
-            <div class="analyzing-ring"></div>
-            <h3 style="font-size:16px; font-weight:800; margin-bottom:6px;">${t("analyzingTitle")}</h3>
-            <p style="font-size:12px; color:#777;">${t("analyzingSub")}</p>
-          </div>
-        </div>
-      `;
-    }
-
-    if (state.quizStatus === "completed") {
-      const top3 = state.matchedCreators.slice(0, 3);
-      return `
-        <div class="quiz-container">
-          <div style="background:#FAFAFB; border:1px solid #EEEEEE; border-radius:12px; padding:16px; margin-bottom:16px;">
-            <span style="font-size:10px; font-weight:800; color:#FA3E4C;">${t("resultBadge")}</span>
-            <h3 style="font-size:17px; font-weight:800; margin:4px 0 8px;">${t("resultTitle")}</h3>
-            <div style="display:flex; flex-wrap:wrap; gap:4px;">
-              <span class="cm-chip">Ten ${state.quizAnswers.type}</span>
-              <span class="cm-chip">${state.quizAnswers.concern}</span>
-              <span class="cm-chip">Subton ${state.quizAnswers.undertone}</span>
-              <span class="cm-chip">${state.quizAnswers.style}</span>
-            </div>
-            <p style="font-size:11px; color:#666; margin-top:8px;">${t("resultDesc")}</p>
-          </div>
-
-          <h4 style="font-size:15px; font-weight:800; margin-bottom:12px;">${t("topCreatorsMatchTitle")}</h4>
-          <div style="display:flex; flex-direction:column; gap:10px; margin-bottom:16px;">
-            ${top3.map((creator, i) => {
-              const rTitle = state.lang === 'ko' ? (creator.routine.titleKo || creator.routine.titleEn) : (state.lang === 'en' ? creator.routine.titleEn : creator.routine.title);
-              return `
-                <div class="creator-match-box">
-                  <div class="cm-header">
-                    <img src="${creator.avatar}" class="cm-avatar" alt="${creator.name}" onerror="this.onerror=null; this.src=window.SEOULMATE_FALLBACK.getAvatar('${creator.name.replace(/'/g, "\\'")}','${creator.handle}')" />
-                    <div class="cm-info">
-                      <div class="cm-name-row">
-                        <span class="cm-name">#${i + 1} ${creator.name}</span>
-                        <span class="cm-badge">${creator.matchScore}% ${t("matchScoreSuffix")}</span>
-                      </div>
-                      <p class="cm-meta">${creator.handle} · Set: ${rTitle}</p>
-                      <button class="btn-bundle-order" data-creator-id="${creator.id}" style="margin-top:6px; padding:8px;">
-                        ${t("btnBuyRoutine")} (${creator.routine.bundlePrice} lei)
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              `;
-            }).join('')}
-          </div>
-
-          <button class="btn-quiz-back" id="btn-restart-quiz" style="width:100%;">${t("btnRestartQuiz")}</button>
-        </div>
-      `;
-    }
-
-    const currentQ = data.quizQuestions[state.quizStep - 1];
-    const qTitle = state.lang === 'ko' ? (currentQ.titleKo || currentQ.titleEn) : (state.lang === 'en' ? currentQ.titleEn : currentQ.titleRo);
-    const qSub = state.lang === 'ko' ? (currentQ.subtitleEn || currentQ.subtitleRo) : (state.lang === 'en' ? currentQ.subtitleEn : currentQ.subtitleRo);
+  // ==========================================================================
+  // [하단 탭 4: 찜한 상품 (Wishlist)]
+  // ==========================================================================
+  function renderWishlistTab() {
+    const wishedProducts = data.products.filter((p) => state.wishlist.has(p.id));
 
     return `
-      <div class="quiz-container">
-        <div class="quiz-meter">
-          <div class="quiz-meter-fill" style="width: ${(state.quizStep / 6) * 100}%"></div>
+      <section class="ably-section">
+        <div class="sort-toolbar" style="margin-bottom:14px;">
+          <span class="sort-count"><strong>${wishedProducts.length}</strong> ${t("totalCountSuffix")}</span>
         </div>
 
-        <span class="quiz-step-title">${t("questionPrefix")} ${state.quizStep} ${t("questionOf")} 6</span>
-        <h2 class="quiz-question-text">${qTitle}</h2>
-        ${state.lang !== 'ko' ? `<span class="quiz-sub-ko">${currentQ.titleKo}</span>` : ''}
-
-        <div class="quiz-options-list">
-          ${currentQ.options.map(opt => {
-            const isSelected = state.quizAnswers[currentQ.key] === opt.value;
-            const optLabel = state.lang === 'ko' ? (opt.labelKo || opt.labelEn) : (state.lang === 'en' ? opt.labelEn : opt.labelRo);
-            const optDesc = state.lang === 'ko' ? (opt.descEn || opt.descRo) : (state.lang === 'en' ? opt.descEn : opt.descRo);
-            return `
-              <div class="quiz-choice-card ${isSelected ? 'selected' : ''}" data-value="${opt.value}" data-key="${currentQ.key}">
-                <div class="choice-top">
-                  <strong>${optLabel}</strong>
-                  <span class="choice-ko">${opt.labelKo}</span>
+        ${
+          wishedProducts.length === 0
+            ? `
+          <div class="empty-state-box" style="padding:48px 16px;">
+            <div style="font-size:32px; margin-bottom:8px;">🤍</div>
+            <p class="empty-state-text">${t("wishlistEmpty")}</p>
+            <button class="btn-secondary-pill" id="btn-wish-go-best">${t("wishlistGoBest")}</button>
+          </div>
+        `
+            : `
+          <div class="ably-product-grid">
+            ${wishedProducts
+              .map(
+                (prod, idx) => `
+                <div class="wishlist-card-wrap">
+                  ${renderProductCard(prod, idx + 1, false)}
+                  <button class="wishlist-quick-cart-btn" data-quick-cart-id="${prod.id}">
+                    ${t("btnQuickCart")}
+                  </button>
                 </div>
-                <p class="choice-desc">${optDesc}</p>
-              </div>
-            `;
-          }).join('')}
+              `
+              )
+              .join("")}
+          </div>
+        `
+        }
+      </section>
+    `;
+  }
+
+  // ==========================================================================
+  // [하단 탭 5: 마이페이지 (My)]
+  // ==========================================================================
+  function renderMyTab() {
+    const cartQty = state.cart.reduce((acc, item) => acc + item.qty, 0);
+    return `
+      <div class="ably-section">
+        <div class="my-profile-card">
+          <div class="my-profile-left">
+            <div class="my-avatar-circle">${ICONS.user}</div>
+            <div>
+              <h4 style="font-size:15px; font-weight:800;">${state.currentUser.name}</h4>
+              <p style="font-size:12px; color:#777;">${state.currentUser.city} · ${state.currentUser.email}</p>
+            </div>
+          </div>
+          <button class="btn-open-cert" data-tab="auth">${t("tabAuth")} ›</button>
         </div>
 
-        <div class="quiz-buttons-row">
-          ${state.quizStep > 1 ? `<button class="btn-quiz-back" id="btn-quiz-prev">${t("quizPrev")}</button>` : ''}
-          <button class="btn-quiz-proceed" id="btn-quiz-next">
-            ${state.quizStep === 6 ? t("quizSubmit") : t("quizNext")}
+        <!-- 쇼핑 요약 대시보드 (쿠폰 · 찜 · 장바구니) -->
+        <div class="my-summary-grid">
+          <button class="my-summary-cell" data-tab="auth">
+            <strong class="my-summary-num accent">10%</strong>
+            <span class="my-summary-label">${t("myCouponTitle")}</span>
+          </button>
+          <button class="my-summary-cell" data-bottom-tab="wishlist">
+            <strong class="my-summary-num">${state.wishlist.size}</strong>
+            <span class="my-summary-label">${t("tabWishlist")}</span>
+          </button>
+          <button class="my-summary-cell" id="btn-my-open-cart">
+            <strong class="my-summary-num">${cartQty}</strong>
+            <span class="my-summary-label">${tr("Coș", "Cart", "장바구니")}</span>
+          </button>
+        </div>
+
+        <h4 style="font-size:14px; font-weight:800; margin:18px 0 10px;">${t("myOrdersTitle")}</h4>
+        ${
+          state.lastOrder
+            ? `
+          <div class="my-order-box">
+            <div style="display:flex; justify-content:space-between; margin-bottom:6px;">
+              <strong style="font-size:12px;">#${state.lastOrder.id}</strong>
+              <span style="font-size:11px; color:#1976D2; font-weight:700;">📦 ${t("profileActiveDelivery")}</span>
+            </div>
+            <p style="font-size:11px; color:#555;">${state.lastOrder.locker.name}</p>
+            <div class="my-pin-highlight">
+              ${t("profilePinLabel")} ${state.lastOrder.pinCode}
+            </div>
+          </div>
+        `
+            : `
+          <div class="empty-state-box" style="margin-bottom:18px;">
+            <p class="empty-state-text">${t("profileEmptyOrder")}</p>
+            <button class="btn-secondary-pill" id="btn-my-go-best">${t("profileStartShop")}</button>
+          </div>
+        `
+        }
+
+        <!-- 고객 서비스 메뉴 -->
+        <div class="my-menu-list">
+          <button class="my-menu-item" id="prof-menu-cert">
+            <span>🛡️ ${t("menuCert")}</span>
+            <span class="my-menu-arrow">›</span>
+          </button>
+          <button class="my-menu-item" id="prof-menu-lockers">
+            <span>📦 ${t("menuLockers")}</span>
+            <span class="my-menu-arrow">›</span>
+          </button>
+          <button class="my-menu-item" data-tab="auth">
+            <span>👤 ${t("menuAuthManage")}</span>
+            <span class="my-menu-arrow">›</span>
           </button>
         </div>
       </div>
     `;
   }
 
-  // [탭 4: Magazin]
-  function renderShopTab() {
-    const categories = [
-      { 
-        key: "all", 
-        label: state.lang === 'ko' ? "전체" : (state.lang === 'en' ? "All" : "Toate"),
-        shortLabel: state.lang === 'ko' ? "전체" : (state.lang === 'en' ? "All" : "Toate"),
-        icon: "✨",
-        count: data.products.length 
-      },
-      { 
-        key: "Toner & Tampoane", 
-        label: state.lang === 'ko' ? "토너·패드" : (state.lang === 'en' ? "Toners" : "Tonere"),
-        shortLabel: state.lang === 'ko' ? "토너" : (state.lang === 'en' ? "Toners" : "Tonere"),
-        icon: "💧",
-        count: data.products.filter(p => p.category === "Toner & Tampoane").length 
-      },
-      { 
-        key: "Serum & Fiole", 
-        label: state.lang === 'ko' ? "세럼·앰플" : (state.lang === 'en' ? "Serums" : "Seruri"),
-        shortLabel: state.lang === 'ko' ? "세럼" : (state.lang === 'en' ? "Serums" : "Seruri"),
-        icon: "🧪",
-        count: data.products.filter(p => p.category === "Serum & Fiole").length 
-      },
-      { 
-        key: "Creme & Hidratare", 
-        label: state.lang === 'ko' ? "크림·보습" : (state.lang === 'en' ? "Creams" : "Creme"),
-        shortLabel: state.lang === 'ko' ? "크림" : (state.lang === 'en' ? "Creams" : "Creme"),
-        icon: "🛡️",
-        count: data.products.filter(p => p.category === "Creme & Hidratare").length 
-      },
-      { 
-        key: "Protecție Solară", 
-        label: state.lang === 'ko' ? "선케어·SPF" : (state.lang === 'en' ? "Sunscreen" : "SPF Coreean"),
-        shortLabel: state.lang === 'ko' ? "선크림" : (state.lang === 'en' ? "SPF" : "SPF"),
-        icon: "☀️",
-        count: data.products.filter(p => p.category === "Protecție Solară").length 
-      },
-      { 
-        key: "Curățare", 
-        label: state.lang === 'ko' ? "클렌징" : (state.lang === 'en' ? "Cleansers" : "Curățare"),
-        shortLabel: state.lang === 'ko' ? "클렌징" : (state.lang === 'en' ? "Cleanser" : "Curățare"),
-        icon: "🫧",
-        count: data.products.filter(p => p.category === "Curățare").length 
-      },
-      { 
-        key: "Machiaj", 
-        label: state.lang === 'ko' ? "메이크업" : (state.lang === 'en' ? "Makeup" : "Machiaj"),
-        shortLabel: state.lang === 'ko' ? "메이크업" : (state.lang === 'en' ? "Makeup" : "Machiaj"),
-        icon: "💄",
-        count: data.products.filter(p => p.category === "Machiaj").length 
-      }
-    ];
-
-    const currentCatObj = categories.find(c => c.key === state.selectedCategory) || categories[0];
-
-    const filtered = state.selectedCategory === "all"
-      ? data.products
-      : data.products.filter(p => p.category === state.selectedCategory);
-
-    return `
-      <div class="shop-tab-container">
-        <!-- 1. 상단 가로 스크롤 카테고리 칩 바 (상시 스티키, 좌우 넘기기 화살표 & 드래그) -->
-        <div class="shop-category-header">
-          <button class="shop-nav-arrow prev hidden" id="btn-shop-cat-prev" aria-label="이전 카테고리">${ICONS.chevronLeft}</button>
-          <div class="shop-category-scroll" id="shop-cat-scroll">
-            ${categories.map(c => `
-              <button class="shop-cat-pill ${state.selectedCategory === c.key ? 'active' : ''}" data-category="${c.key}">
-                <span class="cat-pill-icon">${c.icon}</span>
-                <span class="cat-pill-label">${c.label}</span>
-                <span class="cat-pill-count">${c.count}</span>
-              </button>
-            `).join('')}
-          </div>
-          <button class="shop-nav-arrow next" id="btn-shop-cat-next" aria-label="다음 카테고리">${ICONS.chevronRight}</button>
-        </div>
-
-        <div class="ably-section" style="padding-top:12px;">
-          <!-- 2. 활성 카테고리 안내 및 다른 카테고리로의 빠른 점프 바 (좌우 넘기기/드래그 가능) -->
-          <div class="active-category-banner">
-            <div class="acb-title-row">
-              <div class="acb-left">
-                <span class="acb-badge">${currentCatObj.icon} ${currentCatObj.label}</span>
-                <span class="acb-count">${filtered.length} ${state.lang === 'ko' ? '개 상품' : (state.lang === 'en' ? 'products' : 'produse')}</span>
-              </div>
-              ${state.selectedCategory !== 'all' ? `
-                <button class="acb-reset-btn" data-category="all">
-                  ${state.lang === 'ko' ? '전체보기 ✕' : (state.lang === 'en' ? 'View All ✕' : 'Toate ✕')}
-                </button>
-              ` : ''}
-            </div>
-
-            <div class="acb-quick-pills" id="shop-jump-scroll">
-              <span class="acb-jump-label">${state.lang === 'ko' ? '빠른 이동:' : (state.lang === 'en' ? 'Jump to:' : 'Alte categorii:')}</span>
-              ${categories.filter(c => c.key !== state.selectedCategory).map(c => `
-                <button class="acb-jump-chip" data-category="${c.key}">
-                  ${c.icon} ${c.shortLabel}
-                </button>
-              `).join('')}
-            </div>
-          </div>
-
-          <!-- 3. 상품 2열 그리드 -->
-          <div class="ably-product-grid">
-            ${filtered.map((prod, i) => renderProductCard(prod, i + 1)).join('')}
-          </div>
-        </div>
-      </div>
-    `;
-  }
-
-  // [탭 5: Auth]
+  // ==========================================================================
+  // [회원가입 및 크리에이터 파트너 입점 신청 (Auth)]
+  // ==========================================================================
   function renderAuthTab() {
     if (state.authSubmitted) {
       const isConsumer = state.authRole === "consumer";
       return `
         <div class="auth-container">
           <div class="creator-match-box" style="text-align:center; padding:30px 16px;">
-            <div style="font-size:36px; margin-bottom:10px;">${isConsumer ? '🎉' : '🚀'}</div>
+            <div style="font-size:36px; margin-bottom:10px;">${isConsumer ? "🎉" : "🚀"}</div>
             <h3 style="font-size:17px; font-weight:800; margin-bottom:6px;">
-              ${isConsumer 
-                ? (state.lang === 'en' ? 'Account Created Successfully!' : 'Cont Creat cu Succes!') 
-                : (state.lang === 'en' ? 'Partner Application Submitted!' : 'Cerere Partener Înregistrată!')}
+              ${
+                isConsumer
+                  ? tr("Cont Creat cu Succes!", "Account Created Successfully!", "회원가입이 완료되었습니다!")
+                  : tr("Cerere Partener Înregistrată!", "Partner Application Submitted!", "크리에이터 파트너 신청 완료!")
+              }
             </h3>
             <p style="font-size:12px; color:#666; margin-bottom:16px;">
-              ${isConsumer 
-                ? (state.lang === 'en' ? 'Your 10% discount voucher (SEOULMATE10) has been activated.' : 'Cuponul tău de 10% reducere (SEOULMATE10) a fost activat.')
-                : (state.lang === 'en' ? 'Our team will review your channel and dispatch your PR sample kit (30 SKU) within 24 hours.' : 'Echipa Seoulmate va analiza contul tău și va expedia kitul de mostre (30 SKU) în 24 de ore.')
+              ${
+                isConsumer
+                  ? tr(
+                      "Cuponul tău de 10% reducere (SEOULMATE10) a fost activat.",
+                      "Your 10% discount voucher (SEOULMATE10) has been activated.",
+                      "첫 구매 10% 할인 쿠폰(SEOULMATE10)이 계정에 즉시 발급되었습니다."
+                    )
+                  : tr(
+                      "Echipa Seoulmate va analiza contul tău și va expedia kitul de mostre în 24 de ore.",
+                      "Our team will review your channel and dispatch your K-Beauty PR kit within 24 hours.",
+                      "담당팀에서 채널 확인 후 24시간 이내 시딩 키트 발송 안내를 드립니다."
+                    )
               }
             </p>
             <button class="btn-primary-auth" id="btn-auth-finish">
-              ${isConsumer ? (state.lang === 'en' ? 'Start Shopping' : 'Începe Cumpărăturile') : (state.lang === 'en' ? 'Go to Feed' : 'Mergi la Feed')}
+              ${
+                isConsumer
+                  ? tr("Începe Cumpărăturile", "Start Shopping", "쇼핑 시작하기")
+                  : tr("Mergi la Creatori", "Back to Creators", "크리에이터 탭으로 이동")
+              }
             </button>
           </div>
         </div>
@@ -850,43 +1585,36 @@ document.addEventListener("DOMContentLoaded", () => {
 
     return `
       <div class="auth-container">
-        <div style="display:flex; justify-content:space-between; align-items:center; background:#FAFAFB; border:1px solid #EEEEEE; border-radius:8px; padding:10px 12px; margin-bottom:14px;">
-          <div style="font-size:11px; color:#444;">
-            <strong>${state.currentUser.name}</strong> · ${state.currentUser.city}
-          </div>
-          <button class="btn-open-cert" data-tab="profile" style="padding:4px 8px;">
-            ${t("tabProfile")} & easybox ›
-          </button>
-        </div>
-
         <div class="auth-subnav">
-          <button class="auth-subnav-btn ${state.authRole === 'consumer' ? 'active' : ''}" data-role-tab="consumer">
+          <button class="auth-subnav-btn ${state.authRole === "consumer" ? "active" : ""}" data-role-tab="consumer">
             ${t("tabConsumerAuth")}
           </button>
-          <button class="auth-subnav-btn ${state.authRole === 'creator' ? 'active' : ''}" data-role-tab="creator">
+          <button class="auth-subnav-btn ${state.authRole === "creator" ? "active" : ""}" data-role-tab="creator">
             ${t("tabCreatorAuth")}
           </button>
         </div>
 
         <div class="auth-form-card">
-          ${state.authRole === 'consumer' ? `
+          ${
+            state.authRole === "consumer"
+              ? `
             <div class="auth-title-row">
               <h3>${t("consumerWelcomeTitle")}</h3>
               <p>${t("consumerWelcomeSub")}</p>
             </div>
 
             <div class="auth-coupon-banner">
-              🎁 ${state.lang === 'en' ? '10% Discount on First Order' : '10% Reducere la prima comandă K-Beauty'}
+              🎁 ${t("myCouponTitle")}
             </div>
 
             <form class="auth-form-body" id="consumer-register-form">
               <div>
                 <label class="field-label">${t("inputName")}</label>
-                <input type="text" id="reg-name" class="input-box" value="Elena Popescu" required />
+                <input type="text" id="reg-name" class="input-box" value="${state.currentUser.name}" required />
               </div>
               <div>
                 <label class="field-label">${t("inputEmail")}</label>
-                <input type="email" id="reg-email" class="input-box" value="elena@example.ro" required />
+                <input type="email" id="reg-email" class="input-box" value="${state.currentUser.email}" required />
               </div>
               <div>
                 <label class="field-label">${t("inputPhone")}</label>
@@ -903,13 +1631,14 @@ document.addEventListener("DOMContentLoaded", () => {
               </div>
               <button type="submit" class="btn-primary-auth">${t("btnConsumerSubmit")}</button>
             </form>
-          ` : `
+          `
+              : `
             <div class="auth-title-row">
               <h3>${t("creatorPartnerTitle")}</h3>
               <p>${t("creatorPartnerSub")}</p>
             </div>
 
-            <div style="background:#FAFAFB; border:1px solid #EEEEEE; border-radius:8px; padding:12px; margin-bottom:14px; font-size:11px; color:#444; line-height:1.5;">
+            <div style="background:#FAFAFB; border:1px solid #EEEEEE; border-radius:8px; padding:12px; margin-bottom:14px; font-size:11px; color:#444; line-height:1.6;">
               ✓ ${t("creatorPerk1")}<br/>
               ✓ ${t("creatorPerk2")}<br/>
               ✓ ${t("creatorPerk3")}
@@ -923,9 +1652,9 @@ document.addEventListener("DOMContentLoaded", () => {
               <div>
                 <label class="field-label">${t("inputFollowers")}</label>
                 <select class="select-box">
-                  <option value="5k-20k">5.000 ~ 20.000 (Nano)</option>
-                  <option value="20k-50k" selected>20.000 ~ 50.000 (Micro)</option>
-                  <option value="50k+">Peste 50.000 (Top)</option>
+                  <option value="5k-20k">5,000 ~ 20,000 (Nano)</option>
+                  <option value="20k-50k" selected>20,000 ~ 50,000 (Micro)</option>
+                  <option value="50k+">50,000+ (Macro)</option>
                 </select>
               </div>
               <div>
@@ -934,90 +1663,28 @@ document.addEventListener("DOMContentLoaded", () => {
               </div>
               <button type="submit" class="btn-primary-auth">${t("btnCreatorSubmit")}</button>
             </form>
-          `}
+          `
+          }
         </div>
       </div>
     `;
   }
 
-  // [탭 6: Profil]
-  function renderProfileTab() {
-    return `
-      <div class="ably-section">
-        <div style="display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:16px;">
-          <div style="display:flex; align-items:center; gap:12px;">
-            <div style="width:48px; height:48px; border-radius:50%; background:#F2F2F4; display:flex; align-items:center; justify-content:center;">
-              ${ICONS.user}
-            </div>
-            <div>
-              <h4 style="font-size:15px; font-weight:800;">${state.currentUser.name}</h4>
-              <p style="font-size:12px; color:#888;">${state.currentUser.city} · ${state.currentUser.email}</p>
-            </div>
-          </div>
-          <button class="btn-open-cert" data-tab="auth">${t("tabAuth")} ›</button>
-        </div>
-
-        <div class="creator-match-box" style="margin-bottom:16px;">
-          <div style="display:flex; justify-content:space-between; align-items:center;">
-            <span style="font-size:10px; font-weight:800; color:#FA3E4C;">${t("profilePassportTag")}</span>
-            <button class="section-more-link" data-tab="diagnostic">${t("profileEdit")} ›</button>
-          </div>
-          <div style="display:grid; grid-template-columns:repeat(4, 1fr); gap:6px; margin-top:8px; text-align:center;">
-            <div><span style="font-size:9px; color:#888;">Ten</span><strong style="font-size:11px; display:block;">${state.quizAnswers.type}</strong></div>
-            <div><span style="font-size:9px; color:#888;">Nevoie</span><strong style="font-size:11px; display:block;">${state.quizAnswers.concern}</strong></div>
-            <div><span style="font-size:9px; color:#888;">Subton</span><strong style="font-size:11px; display:block;">${state.quizAnswers.undertone}</strong></div>
-            <div><span style="font-size:9px; color:#888;">Stil</span><strong style="font-size:11px; display:block;">${state.quizAnswers.style}</strong></div>
-          </div>
-        </div>
-
-        <h4 style="font-size:14px; font-weight:800; margin-bottom:10px;">${t("profileOrdersTitle")}</h4>
-        ${state.lastOrder ? `
-          <div style="background:#FAFAFB; border:1px solid #EEEEEE; border-radius:8px; padding:12px; margin-bottom:18px;">
-            <div style="display:flex; justify-content:space-between; margin-bottom:6px;">
-              <strong style="font-size:12px;">#${state.lastOrder.id}</strong>
-              <span style="font-size:10px; color:#1976D2; font-weight:700;">📦 ${t("profileActiveDelivery")}</span>
-            </div>
-            <p style="font-size:11px; color:#555;">${state.lastOrder.locker.name}</p>
-            <div style="background:white; border:1px dashed #FA3E4C; padding:6px; margin-top:8px; text-align:center; font-weight:900; font-size:15px; color:#FA3E4C;">
-              ${t("profilePinLabel")} ${state.lastOrder.pinCode}
-            </div>
-          </div>
-        ` : `
-          <div style="background:#FAFAFB; border:1px solid #EEEEEE; border-radius:8px; padding:14px; margin-bottom:18px; text-align:center;">
-            <p style="font-size:12px; color:#888; margin-bottom:10px;">${t("profileEmptyOrder")}</p>
-            <button class="btn-bundle-order" data-tab="shop" style="width:auto; padding:8px 16px;">${t("profileStartShop")}</button>
-          </div>
-        `}
-
-        <div style="border-top:1px solid #EEEEEE; padding-top:8px; display:flex; flex-direction:column;">
-          <button id="prof-menu-cert" style="display:flex; justify-content:space-between; align-items:center; padding:12px 4px; background:none; border:none; border-bottom:1px solid #F4F4F5; font-size:12px; font-weight:600; cursor:pointer; text-align:left;">
-            <span>🛡️ ${t("menuCert")}</span><span>›</span>
-          </button>
-          <button id="prof-menu-lockers" style="display:flex; justify-content:space-between; align-items:center; padding:12px 4px; background:none; border:none; border-bottom:1px solid #F4F4F5; font-size:12px; font-weight:600; cursor:pointer; text-align:left;">
-            <span>📦 ${t("menuLockers")}</span><span>›</span>
-          </button>
-          <button id="prof-menu-guide" style="display:flex; justify-content:space-between; align-items:center; padding:12px 4px; background:none; border:none; border-bottom:1px solid #F4F4F5; font-size:12px; font-weight:600; cursor:pointer; text-align:left;">
-            <span>💡 ${t("menuGuide")}</span><span>›</span>
-          </button>
-          <button data-tab="auth" style="display:flex; justify-content:space-between; align-items:center; padding:12px 4px; background:none; border:none; font-size:12px; font-weight:600; cursor:pointer; text-align:left;">
-            <span>👤 ${t("menuAuthManage")}</span><span>›</span>
-          </button>
-        </div>
-      </div>
-    `;
-  }
-
-  // 상품 카드
-  function renderProductCard(prod, rank) {
+  // ==========================================================================
+  // [공통 상품 카드]
+  // ==========================================================================
+  function renderProductCard(prod, rank, showRank = false) {
     const isWished = state.wishlist.has(prod.id);
-    const prodName = state.lang === 'ko' ? (prod.koreanName || prod.name) : (state.lang === 'en' ? (prod.englishName || prod.name) : prod.name);
+    const prodName = getProductDisplayName(prod);
+    const primaryConcern = prod.concerns && prod.concerns[0] ? getConcernLabel(prod.concerns[0]) : "";
+
     return `
       <div class="ably-prod-card" data-product-id="${prod.id}">
         <div class="ably-prod-imgwrap">
           <img src="${prod.image}" alt="${prodName}" loading="lazy" onerror="this.onerror=null; this.src=window.SEOULMATE_FALLBACK.getProduct('${prod.category}','${prod.brand}','${prod.name.replace(/'/g, "\\'")}')" />
-          ${rank <= 3 ? `<span class="ably-rank-num">${rank}</span>` : ''}
-          ${prod.isAntiFakeHighlight ? `<span class="ably-prod-badge-auth">CPNP</span>` : ''}
-          <button class="ably-wish-btn ${isWished ? 'wished' : ''}" data-wish-id="${prod.id}">
+          ${showRank ? `<span class="ably-rank-num ${rank <= 3 ? "top-rank" : ""}">${rank}</span>` : ""}
+          ${prod.isAntiFakeHighlight ? `<span class="ably-prod-badge-auth">CPNP</span>` : ""}
+          <button class="ably-wish-btn ${isWished ? "wished" : ""}" data-wish-id="${prod.id}" aria-label="Save">
             ${ICONS.heart}
           </button>
         </div>
@@ -1035,23 +1702,26 @@ document.addEventListener("DOMContentLoaded", () => {
             <span>(${prod.reviewsCount})</span>
             <span class="ably-tag-easybox">easybox</span>
           </div>
+          ${primaryConcern ? `<div class="ably-prod-concern-tag">${primaryConcern}</div>` : ""}
         </div>
       </div>
     `;
   }
 
-  // 모달 렌더링
+  // ==========================================================================
+  // [모달 & 바텀시트 렌더링]
+  // ==========================================================================
   function renderActiveModal() {
-    if (!state.activeModal) return '';
+    if (!state.activeModal) return "";
 
-    // [모달 1: 상품 상세 바텀시트]
+    // 1. 상품 상세 바텀시트
     if (state.activeModal === "product" && state.selectedProduct) {
       const p = state.selectedProduct;
-      const title = state.lang === 'ko' ? (p.koreanName || p.name) : (state.lang === 'en' ? (p.englishName || p.name) : p.name);
-      const subName = state.lang === 'ko' ? p.englishName : (state.lang === 'en' ? p.romanianName : p.englishName);
-      const desc = state.lang === 'ko' ? (p.descriptionKo || p.descriptionEn || p.descriptionRo) : (state.lang === 'en' ? p.descriptionEn : p.descriptionRo);
-      const cpnpLabel = state.lang === 'ko' ? 'EU CPNP 공식 정품 인증번호:' : (state.lang === 'en' ? 'Official EU CPNP Verification:' : 'Verificare Oficială EU CPNP:');
-      const lotLabel = state.lang === 'ko' ? '공식 수입 유통 로트 번호:' : (state.lang === 'en' ? 'Traceability Lot Number:' : 'Lot Trasabilitate:');
+      const title = getProductDisplayName(p);
+      const subName = state.lang === "ko" ? p.englishName : p.romanianName;
+      const desc = tr(p.descriptionRo, p.descriptionEn, p.descriptionKo || p.descriptionEn);
+      const cpnpLabel = tr("Verificare Oficială EU CPNP:", "Official EU CPNP Verification:", "EU CPNP 공식 정품 인증번호:");
+      const lotLabel = tr("Lot Trasabilitate:", "Traceability Lot Number:", "공식 수입 유통 로트 번호:");
 
       return `
         <div class="ably-backdrop" id="modal-backdrop">
@@ -1061,7 +1731,12 @@ document.addEventListener("DOMContentLoaded", () => {
               <button class="sheet-close-x" id="sheet-close">✕</button>
             </div>
             <div class="sheet-body-scroll">
-              <img src="${p.image}" alt="${title}" style="width:100%; aspect-ratio:1/1; object-fit:cover; border-radius:8px; margin-bottom:12px;" onerror="this.onerror=null; this.src=window.SEOULMATE_FALLBACK.getProduct('${p.category}','${p.brand}','${p.name.replace(/'/g, "\\'")}')" />
+              <img src="${p.image}" alt="${title}" style="width:100%; aspect-ratio:1/1; object-fit:cover; border-radius:10px; margin-bottom:12px;" onerror="this.onerror=null; this.src=window.SEOULMATE_FALLBACK.getProduct('${p.category}','${p.brand}','${p.name.replace(/'/g, "\\'")}')" />
+              <div style="display:flex; flex-wrap:wrap; gap:4px; margin-bottom:8px;">
+                ${(p.concerns || []).map((c) => `<span class="cm-chip highlight">${getConcernLabel(c)}</span>`).join("")}
+                ${(p.skinTypes || []).map((s) => `<span class="cm-chip">${getSkinTypeLabel(s)}</span>`).join("")}
+                ${p.undertone ? `<span class="cm-chip">${getUndertoneLabel(p.undertone)}</span>` : ""}
+              </div>
               <h3 style="font-size:16px; font-weight:800; margin-bottom:4px;">${title}</h3>
               <p style="font-size:12px; color:#666; margin-bottom:12px;">${subName}</p>
 
@@ -1071,12 +1746,12 @@ document.addEventListener("DOMContentLoaded", () => {
                 <span style="font-size:12px; color:#999; text-decoration:line-through;">${p.originalPrice} lei</span>
               </div>
 
-              <div style="background:#FAFAFB; border:1px solid #EEEEEE; border-radius:8px; padding:10px; margin-bottom:14px; font-size:11px;">
+              <div style="background:#FAFAFB; border:1px solid #EEEEEE; border-radius:8px; padding:10px; margin-bottom:14px; font-size:11px; line-height:1.5;">
                 <strong>${cpnpLabel}</strong> ${p.cpnpNumber}<br/>
                 <strong>${lotLabel}</strong> ${p.lotNumber}
               </div>
 
-              <p style="font-size:12px; color:#444; line-height:1.45;">${desc}</p>
+              <p style="font-size:12px; color:#444; line-height:1.5;">${desc}</p>
             </div>
             <div class="sheet-footer-action">
               <button class="btn-sheet-cart" id="btn-sheet-add-cart" data-prod-id="${p.id}">${t("sheetAddToCart")}</button>
@@ -1087,37 +1762,43 @@ document.addEventListener("DOMContentLoaded", () => {
       `;
     }
 
-    // [모달 2: CPNP 정품 보증서]
+    // 2. EU CPNP 정품 인증서 모달
     if (state.activeModal === "authenticity") {
       return `
         <div class="ably-backdrop" id="modal-backdrop">
           <div class="ably-center-modal">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
-              <h3 style="font-size:16px; font-weight:800;">${state.lang === 'en' ? 'Authenticity Certificate' : 'Certificat de Autenticitate'}</h3>
+              <h3 style="font-size:16px; font-weight:800;">
+                ${tr("Certificat de Autenticitate", "Authenticity Certificate", "EU CPNP 정품 보증 안내")}
+              </h3>
               <button class="sheet-close-x" id="modal-close">✕</button>
             </div>
-            <div style="background:#F0FDF4; border:1px solid #DCFCE7; border-radius:8px; padding:12px; margin-bottom:12px; font-size:11px; color:#166534; line-height:1.4;">
-              <strong>${state.lang === 'en' ? 'Seoulmate Romania Guarantee:' : 'Garanția Seoulmate România:'}</strong><br/>
-              ${state.lang === 'en' 
-                ? 'All cosmetics are imported strictly through EU-responsible persons (RP) officially registered with the EU CPNP portal. Zero counterfeit risk.'
-                : 'Toate produsele sunt importate direct prin reprezentanți autorizați (RP) înregistrați pe portalul CPNP al Comisiei Europene. Zero contrafaceri.'}
+            <div style="background:#F0FDF4; border:1px solid #DCFCE7; border-radius:8px; padding:12px; margin-bottom:12px; font-size:11px; color:#166534; line-height:1.5;">
+              <strong>${tr("Garanția Seoulmate România:", "Seoulmate Romania Guarantee:", "서울메이트 루마니아 공식 보증:")}</strong><br/>
+              ${tr(
+                "Toate produsele sunt importate direct prin reprezentanți autorizați (RP) înregistrați pe portalul CPNP al Comisiei Europene. Zero contrafaceri.",
+                "All cosmetics are imported strictly through EU-responsible persons (RP) officially registered with the EU CPNP portal. Zero counterfeit risk.",
+                "전 상품 유럽연합 집행위원회 CPNP 포털에 정식 등록된 책임판매업자(RP)를 통해 공식 직수입됩니다. 가품 위험 제로."
+              )}
             </div>
-            <div style="font-size:11px; color:#666; line-height:1.5; margin-bottom:14px;">
-              • ${state.lang === 'en' ? 'Official Brand Manufacturer (Seoul, South Korea)' : 'Producător Oficial Seul, Coreea de Sud'}<br/>
-              • ${state.lang === 'en' ? 'CPNP Notification & EU Customs Verification' : 'Notificare CPNP & Verificare Vamală Otopeni'}<br/>
-              • ${state.lang === 'en' ? 'Tamper-Evident Delivery via Sameday easybox' : 'Livrare Sigilată în Rețeaua Sameday easybox'}
+            <div style="font-size:11px; color:#555; line-height:1.6; margin-bottom:14px;">
+              • ${tr("Producător Oficial Seul, Coreea de Sud", "Official Brand Headquarters (Seoul, Korea)", "한국 본사 공식 정품 출고 (로트 추적 지원)")}<br/>
+              • ${tr("Notificare CPNP & Verificare Vamală UE", "EU CPNP Notification & Customs Clearance", "EU CPNP 성분·안전성 등록 및 정식 통관")}<br/>
+              • ${tr("Livrare Sigilată în Rețeaua Sameday easybox", "Tamper-Evident Delivery via Sameday easybox", "루마니아 전역 Sameday easybox 안심 밀봉 배송")}
             </div>
-            <button class="btn-primary-auth" id="modal-close-btn" style="margin:0;">${state.lang === 'en' ? 'Understood' : 'Am Înțeles'}</button>
+            <button class="btn-primary-auth" id="modal-close-btn" style="margin:0;">
+              ${tr("Am Înțeles", "Got It", "확인")}
+            </button>
           </div>
         </div>
       `;
     }
 
-    // [모달 3: 결제 주문서 바텀시트]
+    // 3. 장바구니 & 주문서 바텀시트
     if (state.activeModal === "checkout" || state.activeModal === "cart") {
-      const subtotal = state.cart.reduce((acc, item) => acc + (item.price * item.qty), 0);
+      const subtotal = state.cart.reduce((acc, item) => acc + item.price * item.qty, 0);
       const isFreeShipping = subtotal >= data.platform.freeShippingThreshold;
-      const shippingFee = isFreeShipping ? 0 : 12;
+      const shippingFee = state.cart.length === 0 ? 0 : isFreeShipping ? 0 : 12;
       const total = subtotal + shippingFee;
 
       return `
@@ -1129,44 +1810,50 @@ document.addEventListener("DOMContentLoaded", () => {
             </div>
             <div class="sheet-body-scroll">
               <div style="margin-bottom:16px;">
-                <span style="font-size:12px; font-weight:800;">${state.lang === 'en' ? 'Cart Items' : 'Produse în Coș'} (${state.cart.length})</span>
-                ${state.cart.length === 0 ? `<p style="font-size:12px; color:#888; padding:10px 0;">${t("cartEmpty")}</p>` : ''}
-                ${state.cart.map((item, i) => `
+                <span style="font-size:12px; font-weight:800;">
+                  ${tr("Produse în Coș", "Cart Items", "장바구니 상품")} (${state.cart.length})
+                </span>
+                ${state.cart.length === 0 ? `<p style="font-size:12px; color:#888; padding:12px 0;">${t("cartEmpty")}</p>` : ""}
+                ${state.cart
+                  .map(
+                    (item, i) => `
                   <div style="display:flex; justify-content:space-between; align-items:center; padding:8px 0; border-bottom:1px solid #EEE;">
                     <div style="display:flex; align-items:center; gap:8px;">
-                      <img src="${item.image}" alt="${item.name}" onerror="this.onerror=null;this.src=window.SEOULMATE_FALLBACK ? window.SEOULMATE_FALLBACK.getProduct('', '${(item.brand || '').replace(/'/g, "\\'")}', '${(item.name || '').replace(/'/g, "\\'")}') : '';" style="width:36px; height:36px; border-radius:4px; object-fit:cover;" />
+                      <img src="${item.image}" alt="${item.name}" onerror="this.onerror=null;this.src=window.SEOULMATE_FALLBACK ? window.SEOULMATE_FALLBACK.getProduct('', '${(item.brand || "").replace(/'/g, "\\'")}', '${(item.name || "").replace(/'/g, "\\'")}') : '';" style="width:38px; height:38px; border-radius:6px; object-fit:cover;" />
                       <div>
                         <strong style="font-size:11px; display:block;">${item.name}</strong>
                         <span style="font-size:10px; color:#888;">${item.price} lei × ${item.qty}</span>
                       </div>
                     </div>
-                    <button class="btn-remove-cart" data-cart-index="${i}" style="border:none; background:none; color:#888; cursor:pointer;">✕</button>
+                    <button class="btn-remove-cart" data-cart-index="${i}" style="border:none; background:none; color:#888; cursor:pointer; padding:4px;">✕</button>
                   </div>
-                `).join('')}
+                `
+                  )
+                  .join("")}
               </div>
 
               <!-- easybox 락커 -->
               <div style="background:#F8FAFC; border:1px solid #E2E8F0; border-radius:8px; padding:12px; margin-bottom:14px;">
                 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
                   <strong style="font-size:11px; color:#1976D2;">${t("cartLockerLabel")}</strong>
-                  <button id="btn-change-locker" style="background:none; border:none; color:#1976D2; font-size:10px; font-weight:700; cursor:pointer;">${t("btnChangeLocker")}</button>
+                  <button id="btn-change-locker" style="background:none; border:none; color:#1976D2; font-size:11px; font-weight:700; cursor:pointer;">${t("btnChangeLocker")}</button>
                 </div>
                 <div style="font-size:12px; font-weight:800;">${state.selectedLocker.name}</div>
                 <div style="font-size:11px; color:#666;">${state.selectedLocker.address}</div>
               </div>
 
-              <!-- 결제 수단 (착불 기본) -->
+              <!-- 결제 수단 -->
               <div style="margin-bottom:16px;">
                 <span style="font-size:12px; font-weight:800; display:block; margin-bottom:8px;">${t("paymentTitle")}</span>
-                <label style="display:flex; align-items:center; gap:8px; padding:10px; border:1.5px solid ${state.paymentMethod === 'ramburs' ? '#FA3E4C' : '#DDD'}; border-radius:8px; margin-bottom:6px; cursor:pointer;">
-                  <input type="radio" name="pay" value="ramburs" ${state.paymentMethod === 'ramburs' ? 'checked' : ''} />
+                <label style="display:flex; align-items:center; gap:8px; padding:10px; border:1.5px solid ${state.paymentMethod === "ramburs" ? "#FA3E4C" : "#DDD"}; border-radius:8px; margin-bottom:6px; cursor:pointer;">
+                  <input type="radio" name="pay" value="ramburs" ${state.paymentMethod === "ramburs" ? "checked" : ""} />
                   <div>
                     <strong style="font-size:12px;">${t("payRambursTitle")}</strong>
                     <p style="font-size:10px; color:#777;">${t("payRambursSub")}</p>
                   </div>
                 </label>
-                <label style="display:flex; align-items:center; gap:8px; padding:10px; border:1.5px solid ${state.paymentMethod === 'card' ? '#FA3E4C' : '#DDD'}; border-radius:8px; cursor:pointer;">
-                  <input type="radio" name="pay" value="card" ${state.paymentMethod === 'card' ? 'checked' : ''} />
+                <label style="display:flex; align-items:center; gap:8px; padding:10px; border:1.5px solid ${state.paymentMethod === "card" ? "#FA3E4C" : "#DDD"}; border-radius:8px; cursor:pointer;">
+                  <input type="radio" name="pay" value="card" ${state.paymentMethod === "card" ? "checked" : ""} />
                   <div>
                     <strong style="font-size:12px;">${t("payCardTitle")}</strong>
                     <p style="font-size:10px; color:#777;">${t("payCardSub")}</p>
@@ -1180,7 +1867,7 @@ document.addEventListener("DOMContentLoaded", () => {
                   <span>${t("subtotalProducts")}</span><strong>${subtotal} lei</strong>
                 </div>
                 <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
-                  <span>${t("shippingFee")}</span><strong>${isFreeShipping ? t("shippingFree") : '12 lei'}</strong>
+                  <span>${t("shippingFee")}</span><strong>${shippingFee === 0 ? t("shippingFree") : "12 lei"}</strong>
                 </div>
                 <div style="display:flex; justify-content:space-between; font-size:15px; font-weight:900; border-top:1px solid #EEE; padding-top:8px;">
                   <span>${t("totalPay")}</span><span style="color:#FA3E4C;">${total} lei</span>
@@ -1188,8 +1875,8 @@ document.addEventListener("DOMContentLoaded", () => {
               </div>
             </div>
             <div class="sheet-footer-action">
-              <button class="btn-sheet-order" id="btn-submit-order" style="flex:1;" ${state.cart.length === 0 ? 'disabled' : ''}>
-                ${state.paymentMethod === 'ramburs' ? t("btnSubmitOrderRamburs") : t("btnSubmitOrderCard")} (${total} lei)
+              <button class="btn-sheet-order" id="btn-submit-order" style="flex:1;" ${state.cart.length === 0 ? "disabled" : ""}>
+                ${state.paymentMethod === "ramburs" ? t("btnSubmitOrderRamburs") : t("btnSubmitOrderCard")} (${total} lei)
               </button>
             </div>
           </div>
@@ -1197,30 +1884,38 @@ document.addEventListener("DOMContentLoaded", () => {
       `;
     }
 
-    // [모달 4: easybox 락커 선택]
+    // 4. easybox 락커 선택 모달
     if (state.activeModal === "easybox") {
       return `
         <div class="ably-backdrop" id="modal-backdrop">
           <div class="ably-center-modal" style="max-height:80vh; display:flex; flex-direction:column;">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-              <h3 style="font-size:15px; font-weight:800;">${state.lang === 'en' ? 'Select Sameday easybox Locker' : 'Alege Locker Sameday easybox'}</h3>
+              <h3 style="font-size:15px; font-weight:800;">
+                ${tr("Alege Locker Sameday easybox", "Select Sameday easybox Locker", "Sameday easybox 보관함 선택")}
+              </h3>
               <button class="sheet-close-x" id="modal-close">✕</button>
             </div>
             <div style="flex:1; overflow-y:auto; display:flex; flex-direction:column; gap:6px;">
-              ${data.easyboxLockers.map(l => `
-                <div class="quiz-choice-card ${l.id === state.selectedLocker.id ? 'selected' : ''}" data-locker-id="${l.id}">
+              ${data.easyboxLockers
+                .map(
+                  (l) => `
+                <div class="locker-choice-card ${l.id === state.selectedLocker.id ? "selected" : ""}" data-locker-id="${l.id}">
                   <strong style="font-size:12px; display:block;">${l.name}</strong>
-                  <span style="font-size:11px; color:#666;">${l.address}</span>
+                  <span style="font-size:11px; color:#666;">${l.address} (${l.distance})</span>
                 </div>
-              `).join('')}
+              `
+                )
+                .join("")}
             </div>
-            <button class="btn-primary-auth" id="btn-confirm-locker" style="margin-top:10px;">${state.lang === 'en' ? 'Confirm Locker' : 'Confirmă Locker'}</button>
+            <button class="btn-primary-auth" id="btn-confirm-locker" style="margin-top:10px;">
+              ${tr("Confirmă Locker", "Confirm Locker", "보관함 선택 완료")}
+            </button>
           </div>
         </div>
       `;
     }
 
-    // [모달 5: 주문 완료 및 PIN 발급]
+    // 5. 주문 완료 모달
     if (state.activeModal === "orderSuccess" && state.lastOrder) {
       const order = state.lastOrder;
       return `
@@ -1230,11 +1925,11 @@ document.addEventListener("DOMContentLoaded", () => {
             <h3 style="font-size:17px; font-weight:800; margin-bottom:4px;">${t("orderSuccessTitle")}</h3>
             <p style="font-size:11px; color:#666; margin-bottom:12px;">${t("orderSuccessSub")}</p>
 
-            <div style="background:#FAFAFB; border:1px solid #EEE; border-radius:8px; padding:12px; text-align:left; font-size:11px; margin-bottom:14px;">
-              <div>Comandă: <strong>#${order.id}</strong></div>
+            <div style="background:#FAFAFB; border:1px solid #EEE; border-radius:8px; padding:12px; text-align:left; font-size:11px; margin-bottom:14px; line-height:1.6;">
+              <div>${tr("Comandă:", "Order ID:", "주문번호:")} <strong>#${order.id}</strong></div>
               <div>Locker: <strong>${order.locker.name}</strong></div>
-              <div>Total: <strong>${order.total} lei (${order.paymentMethod === 'ramburs' ? 'Plată la locker' : 'Card'})</strong></div>
-              <div style="background:#FFF0F2; border:1.5px dashed #FA3E4C; color:#FA3E4C; padding:8px; text-align:center; font-size:16px; font-weight:900; margin-top:8px;">
+              <div>Total: <strong>${order.total} lei (${order.paymentMethod === "ramburs" ? "Ramburs" : "Card"})</strong></div>
+              <div class="my-pin-highlight">
                 ${t("profilePinLabel")} ${order.pinCode}
               </div>
             </div>
@@ -1245,57 +1940,29 @@ document.addEventListener("DOMContentLoaded", () => {
       `;
     }
 
-    // [모달 6: 심사위원 가이드]
-    if (state.activeModal === "guide") {
-      return `
-        <div class="ably-backdrop" id="modal-backdrop">
-          <div class="ably-center-modal" style="max-height:80vh; display:flex; flex-direction:column;">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-              <h3 style="font-size:15px; font-weight:800;">💡 Seoulmate 캡스톤 기획 안내</h3>
-              <button class="sheet-close-x" id="modal-close">✕</button>
-            </div>
-            <div style="flex:1; overflow-y:auto; font-size:12px; color:#333; line-height:1.5;">
-              <p><strong>1. 모바일 최적화 크리에이터 커머스 UI:</strong><br/>
-              화이트/소프트 그레이 베이스와 코랄 레드 액센트를 적용해 직관적이고 신뢰도 높은 K-뷰티 커머스 경험을 완성했습니다.</p>
-              <br/>
-              <p><strong>2. 편의 기능 완비:</strong><br/>
-              • 상단 전역 뒤로가기(Back) 버튼 제공<br/>
-              • 인터랙티브 4개 히어로 슬라이더 (좌우 화살표 및 카운터 클릭)<br/>
-              • 가로 스크롤 잘림 없는 부드러운 퀵 카테고리 슬라이더<br/>
-              • 상세 페이지/모달까지 100% 반영되는 다국어 (RO / EN / 한국어) 토글</p>
-              <br/>
-              <p><strong>3. 루마니아 현지화 핵심:</strong><br/>
-              전국 1만 개 Sameday easybox 락커 선택 및 착불(Ramburs) 기본 결제 옵션을 제공합니다.</p>
-            </div>
-            <button class="btn-primary-auth" id="modal-close-btn" style="margin-top:10px;">닫기</button>
-          </div>
-        </div>
-      `;
-    }
-
-    return '';
+    return "";
   }
 
-  // 이벤트 바인딩
+  // ==========================================================================
+  // [이벤트 바인딩]
+  // ==========================================================================
   function attachEventListeners() {
-    // 1. 뒤로가기 버튼
+    // 뒤로가기 및 홈 로고
     const backBtn = document.getElementById("btn-global-back");
-    if (backBtn) {
-      backBtn.addEventListener("click", () => goBack());
-    }
+    if (backBtn) backBtn.addEventListener("click", () => goBack());
 
-    // 2. 언어 전환 (토글 및 3개국어 알약 버튼)
-    const langBtn = document.getElementById("btn-toggle-lang");
-    if (langBtn) {
-      langBtn.addEventListener("click", () => {
-        if (state.lang === "ro") state.lang = "en";
-        else if (state.lang === "en") state.lang = "ko";
-        else state.lang = "ro";
+    const logoBtn = document.getElementById("btn-logo-home");
+    if (logoBtn) {
+      logoBtn.addEventListener("click", () => {
+        state.homeSubTab = "today";
+        state.searchQuery = "";
         render();
+        resetScroll();
       });
     }
 
-    document.querySelectorAll("[data-set-lang]").forEach(btn => {
+    // 언어 전환 (RO / EN / 한국어)
+    document.querySelectorAll("[data-set-lang]").forEach((btn) => {
       btn.addEventListener("click", (e) => {
         e.stopPropagation();
         const l = btn.getAttribute("data-set-lang");
@@ -1306,16 +1973,267 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     });
 
-    // 3. 뷰포트 전환
-    const viewBtn = document.getElementById("btn-toggle-view");
-    if (viewBtn) {
-      viewBtn.addEventListener("click", () => {
-        state.viewMode = state.viewMode === "mobile-frame" ? "desktop" : "mobile-frame";
+    // 검색 아이콘 버튼 & 실시간 검색어 입력 (IME 포커스 유지)
+    const navSearchBtn = document.getElementById("btn-nav-search");
+    if (navSearchBtn) {
+      navSearchBtn.addEventListener("click", () => {
+        if (state.activeTab !== "home") {
+          navigateTo("home");
+        }
+        setTimeout(() => {
+          const inp = document.getElementById("main-search-input");
+          if (inp) inp.focus();
+        }, 30);
+      });
+    }
+
+    const searchInput = document.getElementById("main-search-input");
+    const clearSearchBtn = document.getElementById("btn-clear-search");
+    if (searchInput) {
+      searchInput.addEventListener("input", (e) => {
+        state.searchQuery = e.target.value;
+        if (clearSearchBtn) {
+          clearSearchBtn.classList.toggle("hidden", !state.searchQuery);
+        }
+        const homeBody = document.getElementById("home-dynamic-body");
+        if (homeBody) {
+          homeBody.innerHTML = renderHomeBody();
+          attachDynamicBodyListeners();
+        }
+      });
+    }
+
+    if (clearSearchBtn) {
+      clearSearchBtn.addEventListener("click", () => {
+        state.searchQuery = "";
+        render();
+        const inp = document.getElementById("main-search-input");
+        if (inp) inp.focus();
+      });
+    }
+
+    // 하단 5대 탭바 이동
+    document.querySelectorAll("[data-bottom-tab]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const target = btn.getAttribute("data-bottom-tab");
+        navigateTo(target);
+      });
+    });
+
+    // 일반 data-tab 이동
+    document.querySelectorAll("[data-tab]").forEach((el) => {
+      el.addEventListener("click", () => {
+        navigateTo(el.getAttribute("data-tab"));
+      });
+    });
+
+    // 장바구니 열기
+    document.querySelectorAll("#btn-header-cart, #btn-my-open-cart").forEach((b) => {
+      b.addEventListener("click", () => {
+        state.activeModal = "checkout";
+        render();
+      });
+    });
+
+    // 정품 인증 모달 열기
+    document.querySelectorAll("#btn-show-trust, #prof-menu-cert").forEach((b) => {
+      b.addEventListener("click", () => {
+        state.activeModal = "authenticity";
+        render();
+      });
+    });
+
+    // 마이페이지 보관함 설정
+    const profLockers = document.getElementById("prof-menu-lockers");
+    if (profLockers) {
+      profLockers.addEventListener("click", () => {
+        state.activeModal = "easybox";
         render();
       });
     }
 
-    // 4. 슬라이더 넘기기 버튼 (Next, Prev, Counter Click)
+    // 빈 상태에서 베스트 보러가기
+    document.querySelectorAll("#btn-wish-go-best, #btn-my-go-best").forEach((b) => {
+      b.addEventListener("click", () => {
+        state.homeSubTab = "best";
+        navigateTo("home");
+      });
+    });
+
+    // 모달 닫기
+    const backdrop = document.getElementById("modal-backdrop");
+    if (backdrop) {
+      backdrop.addEventListener("click", (e) => {
+        if (e.target === backdrop) {
+          state.activeModal = null;
+          render();
+        }
+      });
+    }
+
+    document.querySelectorAll("#modal-close, #modal-close-btn, #sheet-close").forEach((b) => {
+      b.addEventListener("click", () => {
+        state.activeModal = null;
+        render();
+      });
+    });
+
+    // 상세 시트 장바구니 담기 / 바로구매
+    const sheetAdd = document.getElementById("btn-sheet-add-cart");
+    if (sheetAdd) {
+      sheetAdd.addEventListener("click", () => {
+        const p = data.products.find((item) => item.id === sheetAdd.getAttribute("data-prod-id"));
+        if (p) {
+          const ex = state.cart.find((c) => c.id === p.id);
+          if (ex) ex.qty++;
+          else state.cart.push({ ...p, name: getProductDisplayName(p), qty: 1 });
+          state.activeModal = null;
+          showToast(t("toastCartAdded"));
+          render();
+        }
+      });
+    }
+
+    const sheetBuy = document.getElementById("btn-sheet-instant-buy");
+    if (sheetBuy) {
+      sheetBuy.addEventListener("click", () => {
+        const p = data.products.find((item) => item.id === sheetBuy.getAttribute("data-prod-id"));
+        if (p) {
+          state.cart = [{ ...p, name: getProductDisplayName(p), qty: 1 }];
+          state.activeModal = "checkout";
+          render();
+        }
+      });
+    }
+
+    // 장바구니 삭제
+    document.querySelectorAll(".btn-remove-cart").forEach((b) => {
+      b.addEventListener("click", () => {
+        state.cart.splice(parseInt(b.getAttribute("data-cart-index"), 10), 1);
+        render();
+      });
+    });
+
+    // easybox 락커 변경
+    const changeLocker = document.getElementById("btn-change-locker");
+    if (changeLocker) {
+      changeLocker.addEventListener("click", () => {
+        state.activeModal = "easybox";
+        render();
+      });
+    }
+
+    document.querySelectorAll(".locker-choice-card[data-locker-id]").forEach((card) => {
+      card.addEventListener("click", () => {
+        const l = data.easyboxLockers.find((loc) => loc.id === card.getAttribute("data-locker-id"));
+        if (l) {
+          state.selectedLocker = l;
+          render();
+        }
+      });
+    });
+
+    const confirmLocker = document.getElementById("btn-confirm-locker");
+    if (confirmLocker) {
+      confirmLocker.addEventListener("click", () => {
+        state.activeModal = state.cart.length > 0 ? "checkout" : null;
+        render();
+      });
+    }
+
+    // 결제 방식 선택
+    document.querySelectorAll("input[name='pay']").forEach((r) => {
+      r.addEventListener("change", (e) => {
+        state.paymentMethod = e.target.value;
+        render();
+      });
+    });
+
+    // 주문 완료 제출
+    const submitOrder = document.getElementById("btn-submit-order");
+    if (submitOrder) {
+      submitOrder.addEventListener("click", () => {
+        const subtotal = state.cart.reduce((a, b) => a + b.price * b.qty, 0);
+        const fee = subtotal >= data.platform.freeShippingThreshold ? 0 : 12;
+        state.lastOrder = {
+          id: `SM-${Math.floor(1000 + Math.random() * 9000)}`,
+          locker: state.selectedLocker,
+          paymentMethod: state.paymentMethod,
+          total: subtotal + fee,
+          pinCode: `${Math.floor(100 + Math.random() * 900)}-${Math.floor(100 + Math.random() * 900)}`
+        };
+        state.cart = [];
+        state.activeModal = "orderSuccess";
+        render();
+      });
+    }
+
+    const finishOrder = document.getElementById("btn-finish-order");
+    if (finishOrder) {
+      finishOrder.addEventListener("click", () => {
+        state.activeModal = null;
+        navigateTo("my");
+      });
+    }
+
+    // 회원가입 / 입점 신청
+    document.querySelectorAll("[data-role-tab]").forEach((b) => {
+      b.addEventListener("click", () => {
+        state.authRole = b.getAttribute("data-role-tab");
+        render();
+      });
+    });
+
+    const cForm = document.getElementById("consumer-register-form");
+    if (cForm) {
+      cForm.addEventListener("submit", (e) => {
+        e.preventDefault();
+        state.currentUser.name = document.getElementById("reg-name").value;
+        state.currentUser.email = document.getElementById("reg-email").value;
+        state.currentUser.city = document.getElementById("reg-city").value;
+        state.authSubmitted = true;
+        render();
+      });
+    }
+
+    const crForm = document.getElementById("creator-register-form");
+    if (crForm) {
+      crForm.addEventListener("submit", (e) => {
+        e.preventDefault();
+        state.authSubmitted = true;
+        render();
+      });
+    }
+
+    const authFinish = document.getElementById("btn-auth-finish");
+    if (authFinish) {
+      authFinish.addEventListener("click", () => {
+        const target = state.authRole === "creator" ? "creators" : "home";
+        state.authSubmitted = false;
+        navigateTo(target);
+      });
+    }
+
+    attachDynamicBodyListeners();
+  }
+
+  function attachDynamicBodyListeners() {
+    // 상단 GNB 서브탭 전환 (투데이 · 베스트 · 스킨케어 · 메이크업 · 브랜드 · 루틴특가)
+    document.querySelectorAll("[data-subtab]").forEach((el) => {
+      el.addEventListener("click", () => {
+        const sub = el.getAttribute("data-subtab");
+        state.homeSubTab = sub;
+        state.searchQuery = "";
+        if (state.activeTab !== "home") {
+          navigateTo("home");
+        } else {
+          render();
+          resetScroll();
+        }
+      });
+    });
+
+    // 히어로 슬라이더 컨트롤
     const prevBtn = document.getElementById("btn-hero-prev");
     if (prevBtn) {
       prevBtn.addEventListener("click", (e) => {
@@ -1340,492 +2258,223 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     }
 
-    // 4-1. 퀵 카테고리 가로 슬라이더 (좌우 화살표 넘기기, 마우스 드래그 앤 스와이프, 마우스 휠, 인디케이터 연동)
-    const quickSlider = document.getElementById("quick-icons-slider");
-    const quickPrevBtn = document.getElementById("btn-quick-prev");
-    const quickNextBtn = document.getElementById("btn-quick-next");
-    const quickThumb = document.getElementById("quick-scroll-thumb");
-    const quickTrack = document.getElementById("quick-scroll-track");
-
-    if (quickSlider) {
-      const updateSliderNav = () => {
-        const maxScroll = quickSlider.scrollWidth - quickSlider.clientWidth;
-        if (maxScroll <= 0) {
-          if (quickPrevBtn) quickPrevBtn.classList.add("hidden");
-          if (quickNextBtn) quickNextBtn.classList.add("hidden");
-          if (quickThumb) quickThumb.style.transform = "translateX(0px)";
-          return;
-        }
-
-        const scrollLeft = quickSlider.scrollLeft;
-        if (quickPrevBtn) {
-          if (scrollLeft <= 4) quickPrevBtn.classList.add("hidden");
-          else quickPrevBtn.classList.remove("hidden");
-        }
-
-        if (quickNextBtn) {
-          if (scrollLeft >= maxScroll - 4) quickNextBtn.classList.add("hidden");
-          else quickNextBtn.classList.remove("hidden");
-        }
-
-        if (quickThumb && quickTrack) {
-          const trackWidth = quickTrack.clientWidth || 48;
-          const thumbWidth = quickThumb.clientWidth || 19;
-          const maxThumbTravel = Math.max(0, trackWidth - thumbWidth);
-          const ratio = Math.min(1, Math.max(0, scrollLeft / maxScroll));
-          quickThumb.style.transform = `translateX(${ratio * maxThumbTravel}px)`;
-        }
-      };
-
-      // 좌우 화살표 클릭 넘기기
-      if (quickPrevBtn) {
-        quickPrevBtn.addEventListener("click", (e) => {
-          e.stopPropagation();
-          quickSlider.scrollBy({ left: -160, behavior: "smooth" });
-        });
-      }
-      if (quickNextBtn) {
-        quickNextBtn.addEventListener("click", (e) => {
-          e.stopPropagation();
-          quickSlider.scrollBy({ left: 160, behavior: "smooth" });
-        });
-      }
-
-      // 인디케이터 트랙 클릭 시 해당 위치로 점프
-      if (quickTrack) {
-        quickTrack.addEventListener("click", (e) => {
-          const rect = quickTrack.getBoundingClientRect();
-          const clickX = e.clientX - rect.left;
-          const ratio = Math.max(0, Math.min(1, clickX / rect.width));
-          const maxScroll = quickSlider.scrollWidth - quickSlider.clientWidth;
-          quickSlider.scrollTo({ left: ratio * maxScroll, behavior: "smooth" });
-        });
-      }
-
-      // 마우스 휠 지원 (상하 휠을 가로 스크롤로 매끄럽게 변환)
-      quickSlider.addEventListener("wheel", (e) => {
-        if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
-          e.preventDefault();
-          quickSlider.scrollLeft += e.deltaY;
-          updateSliderNav();
-        }
-      }, { passive: false });
-
-      // 마우스 드래그 앤 스와이프
-      let isDown = false;
-      let startX = 0;
-      let scrollStart = 0;
-      let hasDragged = false;
-
-      quickSlider.addEventListener("mousedown", (e) => {
-        if (e.button !== 0) return;
-        isDown = true;
-        hasDragged = false;
-        startX = e.pageX - quickSlider.offsetLeft;
-        scrollStart = quickSlider.scrollLeft;
-        quickSlider.classList.add("is-dragging");
-      });
-
-      window.addEventListener("mousemove", (e) => {
-        if (!isDown) return;
-        const x = e.pageX - quickSlider.offsetLeft;
-        const walk = (x - startX) * 1.3;
-        if (Math.abs(walk) > 4) {
-          hasDragged = true;
-        }
-        quickSlider.scrollLeft = scrollStart - walk;
-        updateSliderNav();
-      });
-
-      const handleDragEnd = () => {
-        if (!isDown) return;
-        isDown = false;
-        quickSlider.classList.remove("is-dragging");
-      };
-
-      window.addEventListener("mouseup", handleDragEnd);
-
-      // 드래그 후 클릭 트리거 방지
-      quickSlider.addEventListener("click", (e) => {
-        if (hasDragged) {
-          e.preventDefault();
-          e.stopPropagation();
-          hasDragged = false;
-        }
-      }, true);
-
-      // 스크롤 이벤트 연동 (터치 스와이프 등)
-      quickSlider.addEventListener("scroll", updateSliderNav);
-
-      // 초기 위치 업데이트
-      setTimeout(updateSliderNav, 50);
-    }
-
-    // 4-2. 스토어 탭 상단 카테고리 스크롤 (좌우 화살표 넘기기, 드래그 & 휠 지원)
-    const shopCatScroll = document.getElementById("shop-cat-scroll");
-    const shopCatPrevBtn = document.getElementById("btn-shop-cat-prev");
-    const shopCatNextBtn = document.getElementById("btn-shop-cat-next");
-
-    if (shopCatScroll) {
-      const updateShopCatNav = () => {
-        const maxScroll = shopCatScroll.scrollWidth - shopCatScroll.clientWidth;
-        if (maxScroll <= 0) {
-          if (shopCatPrevBtn) shopCatPrevBtn.classList.add("hidden");
-          if (shopCatNextBtn) shopCatNextBtn.classList.add("hidden");
-          return;
-        }
-
-        const scrollLeft = shopCatScroll.scrollLeft;
-        if (shopCatPrevBtn) {
-          if (scrollLeft <= 4) shopCatPrevBtn.classList.add("hidden");
-          else shopCatPrevBtn.classList.remove("hidden");
-        }
-
-        if (shopCatNextBtn) {
-          if (scrollLeft >= maxScroll - 4) shopCatNextBtn.classList.add("hidden");
-          else shopCatNextBtn.classList.remove("hidden");
-        }
-      };
-
-      if (shopCatPrevBtn) {
-        shopCatPrevBtn.addEventListener("click", (e) => {
-          e.stopPropagation();
-          shopCatScroll.scrollBy({ left: -140, behavior: "smooth" });
-        });
-      }
-
-      if (shopCatNextBtn) {
-        shopCatNextBtn.addEventListener("click", (e) => {
-          e.stopPropagation();
-          shopCatScroll.scrollBy({ left: 140, behavior: "smooth" });
-        });
-      }
-
-      shopCatScroll.addEventListener("scroll", updateShopCatNav);
-      setTimeout(updateShopCatNav, 50);
-
-      // 마우스 휠
-      shopCatScroll.addEventListener("wheel", (e) => {
-        if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
-          e.preventDefault();
-          shopCatScroll.scrollLeft += e.deltaY;
-          updateShopCatNav();
-        }
-      }, { passive: false });
-
-      // 마우스 드래그 앤 스와이프
-      let isShopDown = false;
-      let shopStartX = 0;
-      let shopScrollStart = 0;
-      let shopDragged = false;
-
-      shopCatScroll.addEventListener("mousedown", (e) => {
-        if (e.button !== 0) return;
-        isShopDown = true;
-        shopDragged = false;
-        shopStartX = e.pageX - shopCatScroll.offsetLeft;
-        shopScrollStart = shopCatScroll.scrollLeft;
-        shopCatScroll.classList.add("is-dragging");
-      });
-
-      window.addEventListener("mousemove", (e) => {
-        if (!isShopDown) return;
-        const x = e.pageX - shopCatScroll.offsetLeft;
-        const walk = (x - shopStartX) * 1.3;
-        if (Math.abs(walk) > 4) shopDragged = true;
-        shopCatScroll.scrollLeft = shopScrollStart - walk;
-        updateShopCatNav();
-      });
-
-      window.addEventListener("mouseup", () => {
-        if (!isShopDown) return;
-        isShopDown = false;
-        shopCatScroll.classList.remove("is-dragging");
-      });
-
-      shopCatScroll.addEventListener("click", (e) => {
-        if (shopDragged) {
-          e.preventDefault();
-          e.stopPropagation();
-          shopDragged = false;
-        }
-      }, true);
-    }
-
-    // 4-3. 스토어 탭 "빠른 이동" 칩 영역 드래그 & 마우스 휠 지원
-    const shopJumpScroll = document.getElementById("shop-jump-scroll");
-    if (shopJumpScroll) {
-      shopJumpScroll.addEventListener("wheel", (e) => {
-        if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
-          e.preventDefault();
-          shopJumpScroll.scrollLeft += e.deltaY;
-        }
-      }, { passive: false });
-
-      let isJumpDown = false;
-      let jumpStartX = 0;
-      let jumpScrollStart = 0;
-      let jumpDragged = false;
-
-      shopJumpScroll.addEventListener("mousedown", (e) => {
-        if (e.button !== 0) return;
-        isJumpDown = true;
-        jumpDragged = false;
-        jumpStartX = e.pageX - shopJumpScroll.offsetLeft;
-        jumpScrollStart = shopJumpScroll.scrollLeft;
-        shopJumpScroll.classList.add("is-dragging");
-      });
-
-      window.addEventListener("mousemove", (e) => {
-        if (!isJumpDown) return;
-        const x = e.pageX - shopJumpScroll.offsetLeft;
-        const walk = (x - jumpStartX) * 1.3;
-        if (Math.abs(walk) > 4) jumpDragged = true;
-        shopJumpScroll.scrollLeft = jumpScrollStart - walk;
-      });
-
-      window.addEventListener("mouseup", () => {
-        if (!isJumpDown) return;
-        isJumpDown = false;
-        shopJumpScroll.classList.remove("is-dragging");
-      });
-
-      shopJumpScroll.addEventListener("click", (e) => {
-        if (jumpDragged) {
-          e.preventDefault();
-          e.stopPropagation();
-          jumpDragged = false;
-        }
-      }, true);
-    }
-
-    // 5. 검색창 실시간 필터링
-    const searchInput = document.getElementById("main-search-input");
-    if (searchInput) {
-      searchInput.addEventListener("input", (e) => {
-        state.searchQuery = e.target.value;
-        const filtered = data.products.filter(p => 
-          p.name.toLowerCase().includes(state.searchQuery.toLowerCase()) ||
-          p.brand.toLowerCase().includes(state.searchQuery.toLowerCase())
-        );
-        const grid = document.querySelector(".ably-product-grid");
-        if (grid) {
-          grid.innerHTML = filtered.map((prod, i) => renderProductCard(prod, i + 1)).join('');
-          attachProductCardListeners();
-        }
+    // 홈 CPNP 인증서 버튼
+    const certBtn = document.getElementById("btn-cert-modal");
+    if (certBtn) {
+      certBtn.addEventListener("click", () => {
+        state.activeModal = "authenticity";
+        render();
       });
     }
 
-    const navSearchBtn = document.getElementById("btn-nav-search");
-    if (navSearchBtn) {
-      navSearchBtn.addEventListener("click", () => {
-        if (state.activeTab !== "home") {
-          navigateTo("home");
-        }
-        setTimeout(() => {
-          const inp = document.getElementById("main-search-input");
-          if (inp) inp.focus();
-        }, 30);
-      });
-    }
-
-    const clearSearchBtn = document.getElementById("btn-clear-search");
-    if (clearSearchBtn) {
-      clearSearchBtn.addEventListener("click", () => {
+    // 검색 초기화 및 추천 검색어 클릭
+    const resetSearchInline = document.getElementById("btn-reset-search-inline");
+    if (resetSearchInline) {
+      resetSearchInline.addEventListener("click", () => {
         state.searchQuery = "";
         render();
       });
     }
 
-    // 6. 전역 data-tab 이동 (하단 탭, 로고, 서브탭, 더보기 버튼 등 모두 지원)
-    document.querySelectorAll("[data-tab]").forEach(el => {
-      el.addEventListener("click", () => {
-        navigateTo(el.getAttribute("data-tab"));
-      });
-    });
-
-    // 서브탭
-    document.querySelectorAll("[data-subtab]").forEach(el => {
-      el.addEventListener("click", () => {
-        const sub = el.getAttribute("data-subtab");
-        state.homeSubTab = sub;
+    document.querySelectorAll("[data-search-kw]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        state.searchQuery = btn.getAttribute("data-search-kw");
         render();
-        if (sub === "best") {
-          setTimeout(() => {
-            const sec = document.getElementById("trending-section");
-            if (sec) sec.scrollIntoView({ behavior: "smooth", block: "start" });
-          }, 30);
-        } else {
-          resetScroll();
-        }
       });
     });
 
-    // 장바구니 열기
-    const cartBtn = document.getElementById("btn-header-cart");
-    if (cartBtn) {
-      cartBtn.addEventListener("click", () => {
-        state.activeModal = "checkout";
+    // 홈 퀵 카테고리 그리드 -> 상품 목록(shop) 오픈
+    document.querySelectorAll("[data-open-cat]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        openShopWithFilters({ category: btn.getAttribute("data-open-cat") });
+      });
+    });
+
+    // 홈 피부고민 필터 칩 & 전체보기
+    document.querySelectorAll("[data-home-concern]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        state.homeConcern = btn.getAttribute("data-home-concern");
+        render();
+      });
+    });
+
+    const moreConcernBtn = document.getElementById("btn-more-concern");
+    if (moreConcernBtn) {
+      moreConcernBtn.addEventListener("click", () => {
+        openShopWithFilters({ concern: state.homeConcern });
+      });
+    }
+
+    // 베스트 서브탭 필터
+    document.querySelectorAll("[data-best-cat]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        state.bestCategory = btn.getAttribute("data-best-cat");
+        render();
+      });
+    });
+    document.querySelectorAll("[data-best-skin]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        state.bestSkinType = btn.getAttribute("data-best-skin");
+        render();
+      });
+    });
+
+    // 스킨케어 서브탭 필터
+    document.querySelectorAll("[data-skincare-cat]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        state.skincareCategory = btn.getAttribute("data-skincare-cat");
+        render();
+      });
+    });
+    document.querySelectorAll("[data-skincare-concern]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        state.skincareConcern = btn.getAttribute("data-skincare-concern");
+        render();
+      });
+    });
+    document.querySelectorAll("[data-skincare-skin]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        state.skincareSkinType = btn.getAttribute("data-skincare-skin");
+        render();
+      });
+    });
+    const resetSkincareBtn = document.getElementById("reset-skincare-filters");
+    if (resetSkincareBtn) {
+      resetSkincareBtn.addEventListener("click", () => {
+        state.skincareCategory = "all";
+        state.skincareConcern = "all";
+        state.skincareSkinType = "all";
         render();
       });
     }
 
-    // 정품 인증 팝업
-    document.querySelectorAll("#btn-show-trust, #btn-cert-modal, #btn-subnav-cert, #prof-menu-cert").forEach(b => {
-      b.addEventListener("click", () => {
-        state.activeModal = "authenticity";
+    // 메이크업 서브탭 필터
+    document.querySelectorAll("[data-makeup-sub]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        state.makeupSub = btn.getAttribute("data-makeup-sub");
         render();
       });
     });
-
-    // 프로필 락커 네트워크 팝업
-    const profLockers = document.getElementById("prof-menu-lockers");
-    if (profLockers) {
-      profLockers.addEventListener("click", () => {
-        state.activeModal = "easybox";
+    document.querySelectorAll("[data-makeup-tone]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        state.makeupTone = btn.getAttribute("data-makeup-tone");
+        render();
+      });
+    });
+    const resetMakeupBtn = document.getElementById("reset-makeup-filters");
+    if (resetMakeupBtn) {
+      resetMakeupBtn.addEventListener("click", () => {
+        state.makeupSub = "all";
+        state.makeupTone = "all";
         render();
       });
     }
 
-    // 가이드 모달
-    document.querySelectorAll("#btn-open-guide, #prof-menu-guide").forEach(guideBtn => {
-      guideBtn.addEventListener("click", () => {
-        state.activeModal = "guide";
+    // 브랜드관 서브탭 선택
+    document.querySelectorAll("[data-select-brand]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        state.selectedBrand = btn.getAttribute("data-select-brand");
+        render();
+        resetScroll();
+      });
+    });
+
+    // 루틴특가 서브탭 필터
+    document.querySelectorAll("[data-sets-skin]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        state.setsSkinType = btn.getAttribute("data-sets-skin");
         render();
       });
     });
 
-    // 모달 닫기
-    const backdrop = document.getElementById("modal-backdrop");
-    if (backdrop) {
-      backdrop.addEventListener("click", (e) => {
-        if (e.target === backdrop) {
-          state.activeModal = null;
-          render();
-        }
+    // 카테고리 디렉토리 탭 -> 상품 목록(shop) 오픈
+    document.querySelectorAll("[data-dir-cat]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        openShopWithFilters({ category: btn.getAttribute("data-dir-cat") });
+      });
+    });
+    document.querySelectorAll("[data-dir-concern]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        openShopWithFilters({ concern: btn.getAttribute("data-dir-concern") });
+      });
+    });
+    document.querySelectorAll("[data-dir-skin]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        openShopWithFilters({ skinType: btn.getAttribute("data-dir-skin") });
+      });
+    });
+    document.querySelectorAll("[data-dir-brand]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        openShopWithFilters({ brand: btn.getAttribute("data-dir-brand") });
+      });
+    });
+
+    // 상품 목록(shop) 내 필터 전환
+    document.querySelectorAll("[data-shop-cat]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        state.selectedCategory = btn.getAttribute("data-shop-cat");
+        render();
+      });
+    });
+    document.querySelectorAll("[data-shop-concern]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        state.shopConcern = btn.getAttribute("data-shop-concern");
+        render();
+      });
+    });
+    document.querySelectorAll("[data-shop-skin]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        state.shopSkinType = btn.getAttribute("data-shop-skin");
+        render();
+      });
+    });
+    const clearShopBrand = document.getElementById("btn-clear-shop-brand");
+    if (clearShopBrand) {
+      clearShopBrand.addEventListener("click", () => {
+        state.shopBrand = "all";
+        render();
+      });
+    }
+    const resetShopAll = document.getElementById("btn-reset-shop-all");
+    if (resetShopAll) {
+      resetShopAll.addEventListener("click", () => {
+        state.selectedCategory = "all";
+        state.shopConcern = "all";
+        state.shopSkinType = "all";
+        state.shopBrand = "all";
+        render();
       });
     }
 
-    document.querySelectorAll("#modal-close, #modal-close-btn, #sheet-close").forEach(b => {
-      b.addEventListener("click", () => {
-        state.activeModal = null;
+    // 정렬 옵션
+    document.querySelectorAll("[data-sort-by]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        state.sortBy = btn.getAttribute("data-sort-by");
         render();
       });
     });
 
-    // 크리에이터 팔로우 버튼
-    document.querySelectorAll("[data-follow-id]").forEach(btn => {
+    // 크리에이터 탭 피부타입 필터 & 팔로우 & 입점 배너
+    document.querySelectorAll("[data-creator-skin]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        state.creatorSkinFilter = btn.getAttribute("data-creator-skin");
+        render();
+      });
+    });
+
+    document.querySelectorAll("[data-follow-id]").forEach((btn) => {
       btn.addEventListener("click", () => {
         const cid = btn.getAttribute("data-follow-id");
         if (state.followedCreators.has(cid)) {
           state.followedCreators.delete(cid);
         } else {
           state.followedCreators.add(cid);
-          showToast(state.lang === "en" ? "Following creator!" : "Urmărești acest creator!");
+          showToast(tr("Urmărești acest creator!", "Following creator!", "크리에이터를 팔로우했습니다."));
         }
         render();
       });
     });
 
-    // 상품 카드 및 찜하기 리스너 바인딩
-    attachProductCardListeners();
-
-    // 카테고리 퀵 버튼 & 스토어 서브탭 필터 (토너 클릭 시 및 다른 카테고리 즉시 전환)
-    document.querySelectorAll("[data-category]").forEach(b => {
-      b.addEventListener("click", () => {
-        const cat = b.getAttribute("data-category");
-        state.selectedCategory = cat;
-        if (state.activeTab === "shop") {
-          render();
-        } else {
-          navigateTo("shop");
-        }
-        // 활성화된 카테고리 탭으로 부드럽게 가로 스크롤 이동
-        setTimeout(() => {
-          const activePill = document.querySelector(`.shop-cat-pill[data-category="${cat}"]`);
-          if (activePill) {
-            activePill.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
-          }
-        }, 60);
-      });
-    });
-
-    // 번들 세트 구매
-    document.querySelectorAll(".btn-bundle-order[data-creator-id]").forEach(btn => {
-      btn.addEventListener("click", (e) => {
-        e.stopPropagation();
-        const cid = btn.getAttribute("data-creator-id");
-        const creator = data.creators.find(c => c.id === cid);
-        if (creator) {
-          state.cart = [{
-            id: `bundle-${creator.id}`,
-            name: `${creator.routine.title}`,
-            brand: creator.name,
-            price: creator.routine.bundlePrice,
-            qty: 1,
-            image: creator.avatar
-          }];
-          state.activeModal = "checkout";
-          render();
-        }
-      });
-    });
-
-    // 퀴즈 옵션 선택
-    document.querySelectorAll(".quiz-choice-card[data-key]").forEach(card => {
-      card.addEventListener("click", () => {
-        state.quizAnswers[card.getAttribute("data-key")] = card.getAttribute("data-value");
-        render();
-      });
-    });
-
-    // 퀴즈 다음/이전
-    const qNext = document.getElementById("btn-quiz-next");
-    if (qNext) {
-      qNext.addEventListener("click", () => {
-        if (state.quizStep < 6) {
-          state.quizStep++;
-          render();
-        } else {
-          state.quizStatus = "analyzing";
-          render();
-          setTimeout(() => {
-            calculateMatching();
-            state.quizStatus = "completed";
-            render();
-          }, 1200);
-        }
-      });
-    }
-
-    const qPrev = document.getElementById("btn-quiz-prev");
-    if (qPrev) {
-      qPrev.addEventListener("click", () => {
-        if (state.quizStep > 1) {
-          state.quizStep--;
-          render();
-        }
-      });
-    }
-
-    const qRestart = document.getElementById("btn-restart-quiz");
-    if (qRestart) {
-      qRestart.addEventListener("click", () => {
-        state.quizStep = 1;
-        state.quizStatus = "idle";
-        render();
-      });
-    }
-
-    // 회원가입 역할 전환
-    document.querySelectorAll("[data-role-tab]").forEach(b => {
-      b.addEventListener("click", () => {
-        state.authRole = b.getAttribute("data-role-tab");
-        render();
-      });
-    });
-
-    // 크리에이터 입점 배너
     const joinBanner = document.getElementById("banner-join-creator");
     if (joinBanner) {
       joinBanner.addEventListener("click", () => {
@@ -1834,137 +2483,48 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     }
 
-    // 소비자 가입 제출
-    const cForm = document.getElementById("consumer-register-form");
-    if (cForm) {
-      cForm.addEventListener("submit", (e) => {
-        e.preventDefault();
-        state.currentUser.name = document.getElementById("reg-name").value;
-        state.currentUser.email = document.getElementById("reg-email").value;
-        state.authSubmitted = true;
-        render();
-      });
-    }
-
-    // 판매자 가입 제출
-    const crForm = document.getElementById("creator-register-form");
-    if (crForm) {
-      crForm.addEventListener("submit", (e) => {
-        e.preventDefault();
-        state.authSubmitted = true;
-        render();
-      });
-    }
-
-    const authFinish = document.getElementById("btn-auth-finish");
-    if (authFinish) {
-      authFinish.addEventListener("click", () => {
-        state.authSubmitted = false;
-        navigateTo("home");
-      });
-    }
-
-    // 상세 시트 담기/구매
-    const sheetAdd = document.getElementById("btn-sheet-add-cart");
-    if (sheetAdd) {
-      sheetAdd.addEventListener("click", () => {
-        const p = data.products.find(item => item.id === sheetAdd.getAttribute("data-prod-id"));
-        if (p) {
-          const ex = state.cart.find(c => c.id === p.id);
-          if (ex) ex.qty++;
-          else state.cart.push({ ...p, qty: 1 });
-          state.activeModal = null;
-          showToast(t("toastCartAdded"));
-          render();
-        }
-      });
-    }
-
-    const sheetBuy = document.getElementById("btn-sheet-instant-buy");
-    if (sheetBuy) {
-      sheetBuy.addEventListener("click", () => {
-        const p = data.products.find(item => item.id === sheetBuy.getAttribute("data-prod-id"));
-        if (p) {
-          state.cart = [{ ...p, qty: 1 }];
+    // 루틴 세트 바로구매
+    document.querySelectorAll(".btn-bundle-order[data-creator-id]").forEach((btn) => {
+      btn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        const cid = btn.getAttribute("data-creator-id");
+        const creator = data.creators.find((c) => c.id === cid);
+        if (creator) {
+          const rTitle = tr(creator.routine.title, creator.routine.titleEn, creator.routine.titleKo || creator.routine.titleEn);
+          state.cart = [
+            {
+              id: `bundle-${creator.id}`,
+              name: rTitle,
+              brand: creator.name,
+              price: creator.routine.bundlePrice,
+              qty: 1,
+              image: creator.avatar
+            }
+          ];
           state.activeModal = "checkout";
           render();
         }
       });
-    }
-
-    // 장바구니 삭제
-    document.querySelectorAll(".btn-remove-cart").forEach(b => {
-      b.addEventListener("click", () => {
-        state.cart.splice(parseInt(b.getAttribute("data-cart-index"), 10), 1);
-        render();
-      });
     });
 
-    // 락커 모달
-    const changeLocker = document.getElementById("btn-change-locker");
-    if (changeLocker) {
-      changeLocker.addEventListener("click", () => {
-        state.activeModal = "easybox";
-        render();
-      });
-    }
-
-    document.querySelectorAll(".quiz-choice-card[data-locker-id]").forEach(card => {
-      card.addEventListener("click", () => {
-        const l = data.easyboxLockers.find(loc => loc.id === card.getAttribute("data-locker-id"));
-        if (l) {
-          state.selectedLocker = l;
+    // 찜 탭 빠른 장바구니 담기
+    document.querySelectorAll("[data-quick-cart-id]").forEach((btn) => {
+      btn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        const pid = btn.getAttribute("data-quick-cart-id");
+        const prod = data.products.find((p) => p.id === pid);
+        if (prod) {
+          const ex = state.cart.find((c) => c.id === prod.id);
+          if (ex) ex.qty++;
+          else state.cart.push({ ...prod, name: getProductDisplayName(prod), qty: 1 });
+          showToast(t("toastCartAdded"));
           render();
         }
       });
     });
 
-    const confirmLocker = document.getElementById("btn-confirm-locker");
-    if (confirmLocker) {
-      confirmLocker.addEventListener("click", () => {
-        state.activeModal = "checkout";
-        render();
-      });
-    }
-
-    // 결제 라디오
-    document.querySelectorAll("input[name='pay']").forEach(r => {
-      r.addEventListener("change", (e) => {
-        state.paymentMethod = e.target.value;
-        render();
-      });
-    });
-
-    // 주문 제출
-    const submitOrder = document.getElementById("btn-submit-order");
-    if (submitOrder) {
-      submitOrder.addEventListener("click", () => {
-        const subtotal = state.cart.reduce((a, b) => a + (b.price * b.qty), 0);
-        const fee = subtotal >= data.platform.freeShippingThreshold ? 0 : 12;
-        state.lastOrder = {
-          id: `SM-${Math.floor(1000 + Math.random() * 9000)}`,
-          locker: state.selectedLocker,
-          paymentMethod: state.paymentMethod,
-          total: subtotal + fee,
-          pinCode: `${Math.floor(100 + Math.random() * 900)}-${Math.floor(100 + Math.random() * 900)}`
-        };
-        state.cart = [];
-        state.activeModal = "orderSuccess";
-        render();
-      });
-    }
-
-    const finishOrder = document.getElementById("btn-finish-order");
-    if (finishOrder) {
-      finishOrder.addEventListener("click", () => {
-        state.activeModal = null;
-        navigateTo("profile");
-      });
-    }
-  }
-
-  function attachProductCardListeners() {
-    document.querySelectorAll("[data-wish-id]").forEach(btn => {
+    // 상품 카드 클릭 & 찜 토글
+    document.querySelectorAll("[data-wish-id]").forEach((btn) => {
       btn.addEventListener("click", (e) => {
         e.stopPropagation();
         const id = btn.getAttribute("data-wish-id");
@@ -1979,11 +2539,11 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     });
 
-    document.querySelectorAll(".ably-prod-card[data-product-id], .rb-item-thumb[data-product-id]").forEach(card => {
+    document.querySelectorAll(".ably-prod-card[data-product-id], .rb-item-thumb[data-product-id]").forEach((card) => {
       card.addEventListener("click", (e) => {
         if (e.target.closest(".ably-wish-btn")) return;
         const id = card.getAttribute("data-product-id");
-        const prod = data.products.find(p => p.id === id);
+        const prod = data.products.find((p) => p.id === id);
         if (prod) {
           state.selectedProduct = prod;
           state.activeModal = "product";
@@ -1995,7 +2555,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   render();
 
-  // 호스팅 외부 주입 배지(Powered by Netlify 등) 자동 제거
+  // 외부 호스팅 자동 주입 배지(Powered by Netlify 등) 자동 제거
   function removeInjectedHostBadges() {
     const candidates = [
       ...Array.from(document.body ? document.body.children : []),
@@ -2009,8 +2569,10 @@ document.addEventListener("DOMContentLoaded", () => {
       const cls = typeof el.className === "string" ? el.className : "";
       if (/goog|skiptranslate/i.test((el.id || "") + " " + cls)) return;
 
-      const attrText = Array.from(el.attributes || []).map((a) => `${a.name}=${a.value}`).join(" ");
-      const shadowText = el.shadowRoot ? (el.shadowRoot.innerHTML || "") : "";
+      const attrText = Array.from(el.attributes || [])
+        .map((a) => `${a.name}=${a.value}`)
+        .join(" ");
+      const shadowText = el.shadowRoot ? el.shadowRoot.innerHTML || "" : "";
       const htmlSample = (el.outerHTML || "").slice(0, 2000);
       const textSample = (el.textContent || "").slice(0, 500);
       const cs = window.getComputedStyle ? window.getComputedStyle(el) : null;
