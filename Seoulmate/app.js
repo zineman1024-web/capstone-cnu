@@ -219,17 +219,16 @@ document.addEventListener("DOMContentLoaded", () => {
         <!-- 상단 툴바 -->
         <header class="capstone-bar">
           <div class="capstone-bar-left">
-            <span class="brand-badge">A-BLY STYLE</span>
-            <span class="brand-sub">Seoulmate · K-Beauty România</span>
+            <span class="brand-sub">Seoulmate</span>
           </div>
           <div class="capstone-bar-right">
             <div class="lang-selector" title="언어 선택 / Language / Limbă">
-              <button class="lang-pill ${state.lang === 'ro' ? 'active' : ''}" data-set-lang="ro">🇷🇴 RO</button>
-              <button class="lang-pill ${state.lang === 'en' ? 'active' : ''}" data-set-lang="en">🇬🇧 EN</button>
-              <button class="lang-pill ${state.lang === 'ko' ? 'active' : ''}" data-set-lang="ko">🇰🇷 한국어</button>
+              <button class="lang-pill ${state.lang === 'ro' ? 'active' : ''}" data-set-lang="ro">RO</button>
+              <button class="lang-pill ${state.lang === 'en' ? 'active' : ''}" data-set-lang="en">EN</button>
+              <button class="lang-pill ${state.lang === 'ko' ? 'active' : ''}" data-set-lang="ko">한국어</button>
             </div>
-            <button id="btn-toggle-view" class="capstone-btn" title="모바일/전체화면">
-              ${state.viewMode === 'mobile-frame' ? '💻 Full Screen' : '📱 Mobile App'}
+            <button id="btn-toggle-view" class="capstone-btn view-toggle-btn" title="모바일/넓은 화면 전환">
+              ${state.viewMode === 'mobile-frame' ? '넓게' : '모바일'}
             </button>
             <button id="btn-open-guide" class="capstone-btn highlight" title="심사위원 가이드">
               ${t("guideBtn")}
@@ -1252,18 +1251,18 @@ document.addEventListener("DOMContentLoaded", () => {
         <div class="ably-backdrop" id="modal-backdrop">
           <div class="ably-center-modal" style="max-height:80vh; display:flex; flex-direction:column;">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-              <h3 style="font-size:15px; font-weight:800;">💡 에이블리 기반 캡스톤 기획 안내</h3>
+              <h3 style="font-size:15px; font-weight:800;">💡 Seoulmate 캡스톤 기획 안내</h3>
               <button class="sheet-close-x" id="modal-close">✕</button>
             </div>
             <div style="flex:1; overflow-y:auto; font-size:12px; color:#333; line-height:1.5;">
-              <p><strong>1. 실제 에이블리(mobile.a-bly.com) UI 100% 이식:</strong><br/>
-              조잡한 네온/다크톤을 전면 제거하고, 에이블리 공식 화이트/소프트 그레이 베이스와 코랄 레드 액센트로 신뢰도 높은 이커머스 룩을 완성했습니다.</p>
+              <p><strong>1. 모바일 최적화 크리에이터 커머스 UI:</strong><br/>
+              화이트/소프트 그레이 베이스와 코랄 레드 액센트를 적용해 직관적이고 신뢰도 높은 K-뷰티 커머스 경험을 완성했습니다.</p>
               <br/>
               <p><strong>2. 편의 기능 완비:</strong><br/>
               • 상단 전역 뒤로가기(Back) 버튼 제공<br/>
               • 인터랙티브 4개 히어로 슬라이더 (좌우 화살표 및 카운터 클릭)<br/>
               • 가로 스크롤 잘림 없는 부드러운 퀵 카테고리 슬라이더<br/>
-              • 상세 페이지/모달까지 100% 반영되는 다국어 (RO / EN) 토글</p>
+              • 상세 페이지/모달까지 100% 반영되는 다국어 (RO / EN / 한국어) 토글</p>
               <br/>
               <p><strong>3. 루마니아 현지화 핵심:</strong><br/>
               전국 1만 개 Sameday easybox 락커 선택 및 착불(Ramburs) 기본 결제 옵션을 제공합니다.</p>
@@ -1995,4 +1994,65 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   render();
+
+  // 호스팅 외부 주입 배지(Powered by Netlify 등) 자동 제거
+  function removeInjectedHostBadges() {
+    const candidates = [
+      ...Array.from(document.body ? document.body.children : []),
+      ...Array.from(document.documentElement ? document.documentElement.children : [])
+    ];
+
+    candidates.forEach((el) => {
+      if (!el || el.id === "app-root") return;
+      const tag = (el.tagName || "").toUpperCase();
+      if (["HEAD", "BODY", "SCRIPT", "STYLE", "LINK", "META", "NOSCRIPT"].includes(tag)) return;
+      const cls = typeof el.className === "string" ? el.className : "";
+      if (/goog|skiptranslate/i.test((el.id || "") + " " + cls)) return;
+
+      const attrText = Array.from(el.attributes || []).map((a) => `${a.name}=${a.value}`).join(" ");
+      const shadowText = el.shadowRoot ? (el.shadowRoot.innerHTML || "") : "";
+      const htmlSample = (el.outerHTML || "").slice(0, 2000);
+      const textSample = (el.textContent || "").slice(0, 500);
+      const cs = window.getComputedStyle ? window.getComputedStyle(el) : null;
+      const bottomVal = cs ? parseFloat(cs.bottom) : NaN;
+      const rightVal = cs ? parseFloat(cs.right) : NaN;
+      const isFixedBottomRight =
+        cs &&
+        cs.position === "fixed" &&
+        !Number.isNaN(bottomVal) &&
+        bottomVal >= 0 &&
+        bottomVal <= 80 &&
+        !Number.isNaN(rightVal) &&
+        rightVal >= 0 &&
+        rightVal <= 80;
+      const isEmptyShadowHost = el.children.length === 0 && textSample.trim() === "";
+
+      if (
+        /netlify/i.test(tag + " " + attrText + " " + htmlSample + " " + textSample + " " + shadowText) ||
+        isFixedBottomRight ||
+        isEmptyShadowHost
+      ) {
+        if (el.shadowRoot) {
+          const hideStyle = document.createElement("style");
+          hideStyle.textContent = "* { display: none !important; visibility: hidden !important; opacity: 0 !important; }";
+          el.shadowRoot.appendChild(hideStyle);
+        }
+        el.style.setProperty("display", "none", "important");
+        el.style.setProperty("visibility", "hidden", "important");
+        el.style.setProperty("opacity", "0", "important");
+        el.style.setProperty("pointer-events", "none", "important");
+        el.remove();
+      }
+    });
+  }
+
+  removeInjectedHostBadges();
+  window.addEventListener("load", removeInjectedHostBadges);
+  [250, 800, 2000].forEach((ms) => setTimeout(removeInjectedHostBadges, ms));
+
+  if (typeof MutationObserver !== "undefined") {
+    const badgeObserver = new MutationObserver(() => removeInjectedHostBadges());
+    if (document.documentElement) badgeObserver.observe(document.documentElement, { childList: true });
+    if (document.body) badgeObserver.observe(document.body, { childList: true });
+  }
 });

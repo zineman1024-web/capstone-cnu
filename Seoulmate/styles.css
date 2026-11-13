@@ -48,63 +48,73 @@ body {
 }
 
 /* ==========================================================================
-   데스크톱 상단 캡스톤 툴바
+   상단 캡스톤 툴바 (앱 프레임 너비 정렬 & 줄바꿈/돌출 방지)
    ========================================================================== */
 .capstone-bar {
   position: fixed;
   top: 0;
-  left: 0;
-  right: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 440px;
   height: 44px;
   background: #FFFFFF;
   border-bottom: 1px solid var(--ably-border);
+  border-left: 1px solid var(--ably-border);
+  border-right: 1px solid var(--ably-border);
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0 16px;
+  gap: 8px;
+  padding: 0 12px;
   z-index: 100;
   box-shadow: var(--shadow-subtle);
+  overflow: hidden;
+}
+
+.seoulmate-wrapper.desktop-mode .capstone-bar {
+  max-width: 600px;
 }
 
 .capstone-bar-left {
   display: flex;
   align-items: center;
-  gap: 8px;
-}
-
-.brand-badge {
-  background: var(--ably-black);
-  color: white;
-  font-size: 10px;
-  font-weight: 800;
-  padding: 2px 6px;
-  border-radius: var(--radius-xs);
-  letter-spacing: 0.5px;
+  gap: 6px;
+  min-width: 0;
+  flex-shrink: 1;
+  overflow: hidden;
 }
 
 .brand-sub {
   font-size: 12px;
-  font-weight: 600;
+  font-weight: 700;
   color: var(--ably-dark);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .capstone-bar-right {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
+  flex-shrink: 0;
 }
 
 .capstone-btn {
   background: #FFFFFF;
   border: 1px solid #D6D6D6;
   color: var(--ably-dark);
-  padding: 4px 10px;
+  padding: 4px 9px;
   border-radius: var(--radius-pill);
   font-size: 11px;
   font-weight: 600;
+  line-height: 1.2;
+  white-space: nowrap;
+  flex-shrink: 0;
   cursor: pointer;
   transition: all 0.15s ease;
-  display: flex;
+  display: inline-flex;
   align-items: center;
   gap: 4px;
 }
@@ -125,6 +135,31 @@ body {
   background: var(--ably-black);
   border-color: var(--ably-black);
   color: #FFFFFF;
+}
+
+.capstone-btn.highlight:hover {
+  background: #333333;
+  border-color: #333333;
+}
+
+@media (max-width: 500px) {
+  .view-toggle-btn {
+    display: none;
+  }
+}
+
+@media (max-width: 360px) {
+  .capstone-bar {
+    padding: 0 8px;
+    gap: 4px;
+  }
+  .capstone-bar-left {
+    display: none;
+  }
+  .capstone-bar-right {
+    width: 100%;
+    justify-content: space-between;
+  }
 }
 
 /* ==========================================================================
@@ -638,6 +673,7 @@ body {
   border-radius: var(--radius-pill);
   padding: 2px;
   gap: 2px;
+  flex-shrink: 0;
 }
 
 .lang-pill {
@@ -645,10 +681,12 @@ body {
   background: none;
   font-size: 11px;
   font-weight: 700;
-  padding: 3px 8px;
+  line-height: 1.2;
+  padding: 3px 7px;
   border-radius: var(--radius-pill);
   cursor: pointer;
   color: #666666;
+  white-space: nowrap;
   transition: all 0.15s ease;
 }
 
@@ -1965,4 +2003,28 @@ body {
   10% { opacity: 1; transform: translate(-50%, 0); }
   85% { opacity: 1; transform: translate(-50%, 0); }
   100% { opacity: 0; transform: translate(-50%, -10px); }
+}
+
+/* ==========================================================================
+   외부 호스팅 자동 주입 배지 (Powered by Netlify 등) 숨김
+   ========================================================================== */
+html > :not(head):not(body),
+body > :not(#app-root):not(script):not(style):not(link):not(noscript):not([class*="goog"]):not([class*="skiptranslate"]),
+a[href*="netlify.com" i],
+iframe[src*="netlify" i],
+[id*="netlify" i],
+[class*="netlify" i],
+[__netlify],
+netlify-badge,
+netlify-drawer,
+netlify-widget {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+  width: 0 !important;
+  height: 0 !important;
+  max-width: 0 !important;
+  max-height: 0 !important;
+  overflow: hidden !important;
 }
