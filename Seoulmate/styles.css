@@ -1,0 +1,1968 @@
+/* ==========================================================================
+   서울메이트 (Seoulmate) - 에이블리 스타일 디자인 시스템 (v3: 인터랙티브 배너, 뒤로가기, 가로 슬라이더)
+   참고: mobile.a-bly.com
+   ========================================================================== */
+
+:root {
+  --ably-red: #FA3E4C;
+  --ably-red-hover: #E02836;
+  --ably-red-light: #FFF0F2;
+  --ably-black: #111111;
+  --ably-dark: #222222;
+  --ably-gray-dark: #555555;
+  --ably-gray-medium: #888888;
+  --ably-gray-light: #A5A5A5;
+  --ably-border: #EEEEEE;
+  --ably-border-light: #F4F4F5;
+  --ably-bg-gray: #F7F7F8;
+  --ably-bg-card: #FFFFFF;
+  --ably-white: #FFFFFF;
+  
+  --radius-xs: 4px;
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-pill: 9999px;
+  
+  --shadow-subtle: 0 1px 4px rgba(0, 0, 0, 0.04);
+  --shadow-sheet: 0 -4px 20px rgba(0, 0, 0, 0.08);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  -webkit-tap-highlight-color: transparent;
+  font-family: -apple-system, BlinkMacSystemFont, "Pretendard", "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  letter-spacing: -0.2px;
+}
+
+body {
+  background-color: #ECECEC;
+  color: var(--ably-black);
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  overflow-x: hidden;
+}
+
+/* ==========================================================================
+   데스크톱 상단 캡스톤 툴바
+   ========================================================================== */
+.capstone-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 44px;
+  background: #FFFFFF;
+  border-bottom: 1px solid var(--ably-border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 16px;
+  z-index: 100;
+  box-shadow: var(--shadow-subtle);
+}
+
+.capstone-bar-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.brand-badge {
+  background: var(--ably-black);
+  color: white;
+  font-size: 10px;
+  font-weight: 800;
+  padding: 2px 6px;
+  border-radius: var(--radius-xs);
+  letter-spacing: 0.5px;
+}
+
+.brand-sub {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--ably-dark);
+}
+
+.capstone-bar-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.capstone-btn {
+  background: #FFFFFF;
+  border: 1px solid #D6D6D6;
+  color: var(--ably-dark);
+  padding: 4px 10px;
+  border-radius: var(--radius-pill);
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.capstone-btn:hover {
+  background: var(--ably-bg-gray);
+  border-color: #BCBCBC;
+}
+
+.capstone-btn.lang-btn {
+  background: var(--ably-red-light);
+  border-color: #FFCCD2;
+  color: var(--ably-red);
+  font-weight: 700;
+}
+
+.capstone-btn.highlight {
+  background: var(--ably-black);
+  border-color: var(--ably-black);
+  color: #FFFFFF;
+}
+
+/* ==========================================================================
+   에이블리 모바일 폰 뷰포트
+   ========================================================================== */
+.seoulmate-wrapper {
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  padding-top: 44px;
+}
+
+.seoulmate-wrapper.mobile-mode .phone-frame {
+  width: 440px;
+  max-width: 100vw;
+  height: calc(100vh - 44px);
+  background: var(--ably-white);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.08);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border-left: 1px solid var(--ably-border);
+  border-right: 1px solid var(--ably-border);
+}
+
+.seoulmate-wrapper.desktop-mode .phone-frame {
+  width: 100%;
+  max-width: 600px;
+  min-height: calc(100vh - 44px);
+  background: var(--ably-white);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  border-left: 1px solid var(--ably-border);
+  border-right: 1px solid var(--ably-border);
+}
+
+/* ==========================================================================
+   에이블리 헤더 (뒤로가기 버튼 지원)
+   ========================================================================== */
+.ably-header {
+  background: #FFFFFF;
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  border-bottom: 1px solid var(--ably-border-light);
+}
+
+.ably-header-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 16px;
+  gap: 12px;
+}
+
+.ably-header-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.ably-back-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--ably-black);
+  padding: 2px 0;
+}
+
+.ably-back-btn svg {
+  width: 22px;
+  height: 22px;
+  stroke: var(--ably-black);
+  stroke-width: 2.2;
+  fill: none;
+}
+
+.ably-page-title {
+  font-size: 16px;
+  font-weight: 800;
+  color: var(--ably-black);
+}
+
+.ably-logo {
+  font-size: 20px;
+  font-weight: 900;
+  letter-spacing: -0.8px;
+  color: var(--ably-black);
+  cursor: pointer;
+  display: flex;
+  align-items: baseline;
+  gap: 2px;
+}
+
+.ably-logo .logo-dot {
+  color: var(--ably-red);
+  font-size: 22px;
+  line-height: 0;
+}
+
+.ably-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.icon-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  position: relative;
+  color: var(--ably-black);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2px;
+}
+
+.icon-btn svg {
+  width: 22px;
+  height: 22px;
+  stroke: var(--ably-black);
+  stroke-width: 2;
+  fill: none;
+}
+
+.icon-badge {
+  position: absolute;
+  top: -3px;
+  right: -5px;
+  background: var(--ably-red);
+  color: white;
+  font-size: 10px;
+  font-weight: 800;
+  min-width: 16px;
+  height: 16px;
+  border-radius: var(--radius-pill);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 4px;
+}
+
+/* 검색창 */
+.ably-search-bar {
+  margin: 0 16px 10px;
+  background: #F2F2F4;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  padding: 8px 12px;
+  gap: 8px;
+}
+
+.ably-search-bar svg {
+  width: 16px;
+  height: 16px;
+  stroke: #777777;
+  stroke-width: 2.2;
+  fill: none;
+}
+
+.ably-search-bar input {
+  border: none;
+  background: transparent;
+  width: 100%;
+  outline: none;
+  font-size: 13px;
+  color: var(--ably-black);
+}
+
+.btn-clear-search {
+  background: none;
+  border: none;
+  color: #888;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+/* ==========================================================================
+   에이블리 가로 스크롤 서브 GNB 탭 (잘림 없는 부드러운 스크롤)
+   ========================================================================== */
+.ably-subnav-container {
+  position: relative;
+  border-top: 1px solid var(--ably-border-light);
+}
+
+.ably-subnav {
+  display: flex;
+  padding: 0 12px;
+  overflow-x: auto;
+  white-space: nowrap;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+
+.ably-subnav::-webkit-scrollbar {
+  display: none;
+}
+
+.subnav-tab {
+  padding: 8px 12px 10px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ably-gray-medium);
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  flex-shrink: 0;
+}
+
+.subnav-tab.active {
+  color: var(--ably-black);
+  font-weight: 800;
+  border-bottom-color: var(--ably-black);
+}
+
+/* 신뢰 안내 띠 배너 */
+.ably-trust-strip {
+  background: #FAFAFB;
+  border-bottom: 1px solid var(--ably-border);
+  padding: 7px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 11px;
+  color: var(--ably-dark);
+  cursor: pointer;
+}
+
+.trust-strip-left {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.trust-badge-mini {
+  background: #E8F5E9;
+  color: #2E7D32;
+  font-size: 9px;
+  font-weight: 800;
+  padding: 1px 5px;
+  border-radius: 3px;
+}
+
+.trust-strip-arrow {
+  color: var(--ably-gray-light);
+  font-weight: bold;
+}
+
+/* ==========================================================================
+   메인 스크롤 콘텐츠 영역
+   ========================================================================== */
+.app-main-content {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  background: #FFFFFF;
+  padding-bottom: 80px;
+}
+
+/* ==========================================================================
+   스토어 탭: 상단 카테고리 퀵 내비게이션 바 & 점프 칩스
+   ========================================================================== */
+.shop-category-header {
+  position: sticky;
+  top: 0;
+  background: #FFFFFF;
+  z-index: 30;
+  padding: 8px 12px 10px;
+  border-bottom: 1px solid var(--ably-border-light);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+}
+
+/* 스토어 상단 카테고리 좌우 넘기기 화살표 */
+.shop-nav-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  border: 1px solid var(--ably-border);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 5;
+  transition: opacity 0.2s ease, transform 0.15s ease, background-color 0.15s ease;
+  color: #222222;
+}
+
+.shop-nav-arrow:hover {
+  background: #FFFFFF;
+  transform: translateY(-50%) scale(1.1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.16);
+}
+
+.shop-nav-arrow.prev {
+  left: 6px;
+}
+
+.shop-nav-arrow.next {
+  right: 6px;
+}
+
+.shop-nav-arrow.hidden {
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(-50%) scale(0.8);
+}
+
+.shop-nav-arrow svg {
+  width: 14px;
+  height: 14px;
+  stroke: #222222;
+  stroke-width: 2.2;
+  fill: none;
+}
+
+.shop-category-scroll {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+  scroll-behavior: smooth;
+  cursor: grab;
+  user-select: none;
+  padding: 2px 6px 4px;
+}
+
+.shop-category-scroll.is-dragging {
+  cursor: grabbing;
+  scroll-behavior: auto;
+}
+
+.shop-category-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+.shop-cat-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 13px;
+  border-radius: var(--radius-pill);
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--ably-dark);
+  background: #F4F4F6;
+  border: 1px solid #EAEAEA;
+  cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.shop-cat-pill:hover {
+  background: #EBEBEF;
+  border-color: #D8D8DF;
+}
+
+.shop-cat-pill.active {
+  background: var(--ably-black);
+  color: #FFFFFF;
+  border-color: var(--ably-black);
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
+}
+
+.shop-cat-pill.active .cat-pill-count {
+  background: rgba(255, 255, 255, 0.25);
+  color: #FFFFFF;
+}
+
+.cat-pill-icon {
+  font-size: 14px;
+}
+
+.cat-pill-count {
+  font-size: 10px;
+  background: #E5E5EB;
+  color: #555555;
+  padding: 1px 6px;
+  border-radius: 10px;
+  font-weight: 800;
+}
+
+.active-category-banner {
+  background: #FAFAFC;
+  border: 1px solid #ECECF0;
+  border-radius: 12px;
+  padding: 12px 14px;
+  margin-bottom: 14px;
+}
+
+.acb-title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.acb-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.acb-badge {
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--ably-black);
+}
+
+.acb-count {
+  font-size: 11px;
+  color: #888888;
+  font-weight: 600;
+}
+
+.acb-reset-btn {
+  background: #EEEEF2;
+  border: none;
+  font-size: 11px;
+  font-weight: 700;
+  color: #444444;
+  padding: 4px 10px;
+  border-radius: var(--radius-pill);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.acb-reset-btn:hover {
+  background: #E0E0E6;
+  color: var(--ably-black);
+}
+
+.acb-quick-pills {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+  scroll-behavior: smooth;
+  cursor: grab;
+  user-select: none;
+  padding: 6px 2px 2px;
+  border-top: 1px dashed #E2E2E8;
+}
+
+.acb-quick-pills.is-dragging {
+  cursor: grabbing;
+  scroll-behavior: auto;
+}
+
+.acb-quick-pills::-webkit-scrollbar {
+  display: none;
+}
+
+.acb-jump-label {
+  font-size: 11px;
+  font-weight: 700;
+  color: #777777;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.acb-jump-chip {
+  background: #FFFFFF;
+  border: 1px solid #DCDCDE;
+  border-radius: 14px;
+  padding: 3px 10px;
+  font-size: 11px;
+  font-weight: 700;
+  color: #333333;
+  cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition: all 0.15s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.acb-jump-chip:hover {
+  background: var(--ably-red-light);
+  border-color: #FFCCD2;
+  color: var(--ably-red);
+}
+
+/* 3개국어 선택 세그먼트 */
+.lang-selector {
+  display: inline-flex;
+  align-items: center;
+  background: #FFFFFF;
+  border: 1px solid #DDDDDD;
+  border-radius: var(--radius-pill);
+  padding: 2px;
+  gap: 2px;
+}
+
+.lang-pill {
+  border: none;
+  background: none;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: var(--radius-pill);
+  cursor: pointer;
+  color: #666666;
+  transition: all 0.15s ease;
+}
+
+.lang-pill:hover {
+  color: var(--ably-black);
+}
+
+.lang-pill.active {
+  background: var(--ably-red);
+  color: #FFFFFF;
+}
+
+.app-main-content::-webkit-scrollbar {
+  width: 4px;
+}
+
+.app-main-content::-webkit-scrollbar-thumb {
+  background: #DDDDDD;
+  border-radius: 4px;
+}
+
+.section-divider {
+  height: 8px;
+  background: var(--ably-bg-gray);
+  border-top: 1px solid var(--ably-border-light);
+  border-bottom: 1px solid var(--ably-border-light);
+}
+
+/* ==========================================================================
+   하단 고정 탭 네비게이션 (스크롤과 무관하게 화면 바닥 상시 고정)
+   ========================================================================== */
+.app-bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 440px;
+  height: 58px;
+  background: rgba(255, 255, 255, 0.98);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-top: 1px solid var(--ably-border);
+  border-left: 1px solid var(--ably-border);
+  border-right: 1px solid var(--ably-border);
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  z-index: 1000;
+  padding-bottom: env(safe-area-inset-bottom, 0);
+  box-shadow: 0 -3px 14px rgba(0, 0, 0, 0.07);
+}
+
+.seoulmate-wrapper.desktop-mode .app-bottom-nav {
+  max-width: 600px;
+}
+
+.nav-item {
+  background: none;
+  border: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  height: 100%;
+  cursor: pointer;
+  color: #8E8E93;
+  gap: 3px;
+  transition: all 0.1s ease;
+}
+
+.nav-item svg {
+  width: 22px;
+  height: 22px;
+  stroke: #8E8E93;
+  stroke-width: 1.9;
+  fill: none;
+}
+
+.nav-item.active {
+  color: var(--ably-black);
+}
+
+.nav-item.active svg {
+  stroke: var(--ably-black);
+  stroke-width: 2.2;
+}
+
+.nav-item.highlight svg {
+  stroke: var(--ably-red);
+}
+
+.nav-item.highlight.active {
+  color: var(--ably-red);
+}
+
+.nav-label {
+  font-size: 10px;
+  font-weight: 600;
+}
+
+/* ==========================================================================
+   인터랙티브 히어로 배너 슬라이더 (좌우 넘기기 & 카운터)
+   ========================================================================== */
+.hero-slider-wrap {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  background: #111;
+}
+
+.hero-slider-track {
+  display: flex;
+  transition: transform 0.35s ease;
+  width: 100%;
+}
+
+.hero-slide {
+  min-width: 100%;
+  position: relative;
+  aspect-ratio: 16 / 9;
+  background: #F0F2F5;
+  user-select: none;
+}
+
+.hero-slide-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.hero-slide-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.1) 0%, rgba(0, 0, 0, 0.65) 100%);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 16px 18px;
+  color: white;
+}
+
+.hero-tag {
+  font-size: 10px;
+  font-weight: 800;
+  color: #FF8A96;
+  text-transform: uppercase;
+  margin-bottom: 3px;
+  letter-spacing: 0.5px;
+}
+
+.hero-headline {
+  font-size: 17px;
+  font-weight: 800;
+  line-height: 1.3;
+  margin-bottom: 3px;
+}
+
+.hero-subline {
+  font-size: 11px;
+  color: #E2E8F0;
+  line-height: 1.35;
+}
+
+/* 슬라이더 컨트롤 (좌우 화살표 & 클릭 가능한 카운터) */
+.hero-arrow-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.35);
+  backdrop-filter: blur(4px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 10;
+  transition: all 0.15s ease;
+}
+
+.hero-arrow-btn:hover {
+  background: rgba(0, 0, 0, 0.6);
+}
+
+.hero-arrow-btn svg {
+  width: 18px;
+  height: 18px;
+  stroke: white;
+  stroke-width: 2.2;
+  fill: none;
+}
+
+.hero-arrow-btn.prev {
+  left: 10px;
+}
+
+.hero-arrow-btn.next {
+  right: 10px;
+}
+
+.hero-counter-badge {
+  position: absolute;
+  bottom: 12px;
+  right: 14px;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
+  color: white;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: var(--radius-pill);
+  cursor: pointer;
+  z-index: 10;
+  user-select: none;
+}
+
+.hero-counter-badge:hover {
+  background: rgba(0, 0, 0, 0.8);
+}
+
+/* ==========================================================================
+   에이블리 퀵 카테고리 가로 슬라이더 (옆에 잘리지 않고 매끄럽게 스크롤 & 좌우 넘기기)
+   ========================================================================== */
+.quick-slider-wrapper {
+  position: relative;
+  background: #FFFFFF;
+  padding: 2px 0 6px;
+}
+
+.ably-quick-icons-slider {
+  display: flex;
+  gap: 16px;
+  padding: 12px 18px 10px;
+  overflow-x: auto;
+  white-space: nowrap;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+  scroll-behavior: smooth;
+  cursor: grab;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.ably-quick-icons-slider.is-dragging {
+  cursor: grabbing;
+  scroll-behavior: auto;
+}
+
+.ably-quick-icons-slider::-webkit-scrollbar {
+  display: none;
+}
+
+/* 좌우 넘기기 화살표 버튼 */
+.quick-nav-arrow {
+  position: absolute;
+  top: 40px;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.96);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  border: 1px solid var(--ably-border);
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.12);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 10;
+  transition: opacity 0.2s ease, transform 0.15s ease, background-color 0.15s ease;
+  color: #222222;
+}
+
+.quick-nav-arrow:hover {
+  background: #FFFFFF;
+  transform: scale(1.1);
+  box-shadow: 0 5px 14px rgba(0, 0, 0, 0.18);
+}
+
+.quick-nav-arrow.prev {
+  left: 6px;
+}
+
+.quick-nav-arrow.next {
+  right: 6px;
+}
+
+.quick-nav-arrow.hidden {
+  opacity: 0;
+  pointer-events: none;
+  transform: scale(0.8);
+}
+
+.quick-nav-arrow svg {
+  width: 16px;
+  height: 16px;
+  stroke: #222222;
+  stroke-width: 2.2;
+  fill: none;
+}
+
+.quick-icon-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  background: none;
+  border: none;
+  flex-shrink: 0;
+  transition: transform 0.1s ease;
+  user-select: none;
+}
+
+.quick-icon-btn:active {
+  transform: scale(0.94);
+}
+
+.quick-icon-circle {
+  width: 54px;
+  height: 54px;
+  border-radius: 50%;
+  background: #F8F8FA;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--ably-border-light);
+  transition: transform 0.15s ease, background-color 0.15s ease, border-color 0.15s ease;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
+}
+
+.quick-icon-circle svg {
+  width: 22px;
+  height: 22px;
+  stroke: var(--ably-dark);
+  stroke-width: 1.8;
+  fill: none;
+}
+
+.quick-icon-circle.featured {
+  background: var(--ably-red-light);
+  border-color: #FFD4D9;
+}
+
+.quick-icon-circle.featured svg {
+  stroke: var(--ably-red);
+}
+
+.quick-icon-btn:hover .quick-icon-circle {
+  background: #F0F2F5;
+  transform: translateY(-2px);
+}
+
+.quick-icon-btn:hover .quick-icon-circle.featured {
+  background: #FFE3E7;
+}
+
+.quick-icon-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--ably-dark);
+  text-align: center;
+  white-space: nowrap;
+}
+
+/* 가로 스크롤 힌트 인디케이터 (인터랙티브 트랙 & 썸) */
+.slider-scroll-hint {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 4px 0 10px;
+}
+
+.scroll-track-mini {
+  width: 48px;
+  height: 4px;
+  background: #EAEAEA;
+  border-radius: 3px;
+  overflow: hidden;
+  position: relative;
+  cursor: pointer;
+  transition: background-color 0.15s;
+}
+
+.scroll-track-mini:hover {
+  background: #DFDFDF;
+}
+
+.scroll-thumb-mini {
+  height: 100%;
+  width: 40%;
+  background: #999999;
+  border-radius: 3px;
+  transition: transform 0.08s ease-out, background-color 0.15s;
+  pointer-events: none;
+}
+
+.scroll-track-mini:hover .scroll-thumb-mini {
+  background: var(--ably-red);
+}
+
+/* ==========================================================================
+   섹션 타이틀 및 크리에이터 매칭 카드
+   ========================================================================== */
+.ably-section {
+  padding: 18px 16px;
+  background: #FFFFFF;
+}
+
+.ably-section-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 12px;
+}
+
+.section-title-wrap h3 {
+  font-size: 17px;
+  font-weight: 800;
+  color: var(--ably-black);
+  letter-spacing: -0.4px;
+}
+
+.section-title-wrap p {
+  font-size: 11px;
+  color: var(--ably-gray-medium);
+  margin-top: 2px;
+}
+
+.section-more-link {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--ably-gray-medium);
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.creator-match-box {
+  background: #FFFFFF;
+  border: 1px solid var(--ably-border);
+  border-radius: var(--radius-md);
+  padding: 14px;
+  box-shadow: var(--shadow-subtle);
+}
+
+.cm-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.cm-avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1.5px solid var(--ably-border);
+}
+
+.cm-info {
+  flex: 1;
+}
+
+.cm-name-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.cm-name {
+  font-size: 14px;
+  font-weight: 800;
+  color: var(--ably-black);
+}
+
+.cm-badge {
+  background: var(--ably-red);
+  color: white;
+  font-size: 10px;
+  font-weight: 800;
+  padding: 2px 7px;
+  border-radius: var(--radius-pill);
+}
+
+.cm-meta {
+  font-size: 11px;
+  color: var(--ably-gray-medium);
+  margin: 1px 0 4px;
+}
+
+.cm-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.cm-chip {
+  background: #F4F4F5;
+  color: var(--ably-gray-dark);
+  font-size: 10px;
+  font-weight: 600;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+/* 루틴 3개 상품 번들 박스 */
+.routine-bundle-card {
+  background: #FAFAFB;
+  border-radius: var(--radius-sm);
+  padding: 12px;
+  border: 1px solid var(--ably-border-light);
+}
+
+.rb-title-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 8px;
+}
+
+.rb-title {
+  font-size: 12px;
+  font-weight: 800;
+  color: var(--ably-dark);
+}
+
+.rb-pricing {
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+}
+
+.rb-discount {
+  color: var(--ably-red);
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.rb-price {
+  font-size: 15px;
+  font-weight: 900;
+  color: var(--ably-black);
+}
+
+.rb-original {
+  font-size: 11px;
+  color: var(--ably-gray-light);
+  text-decoration: line-through;
+}
+
+.rb-items-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+  margin-bottom: 10px;
+}
+
+.rb-item-thumb {
+  background: #FFFFFF;
+  border: 1px solid var(--ably-border);
+  border-radius: 6px;
+  padding: 6px;
+  text-align: center;
+  cursor: pointer;
+}
+
+.rb-item-thumb img {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  border-radius: 4px;
+}
+
+.rb-item-brand {
+  font-size: 9px;
+  color: var(--ably-gray-light);
+  font-weight: 700;
+  margin-top: 4px;
+  display: block;
+  text-transform: uppercase;
+}
+
+.rb-item-name {
+  font-size: 10px;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: block;
+}
+
+.btn-bundle-order {
+  width: 100%;
+  background: var(--ably-black);
+  color: white;
+  border: none;
+  font-size: 12px;
+  font-weight: 800;
+  padding: 10px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.btn-bundle-order:hover {
+  background: #333333;
+}
+
+/* ==========================================================================
+   에이블리 상품 2열 그리드
+   ========================================================================== */
+.ably-product-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px 10px;
+}
+
+.ably-prod-card {
+  display: flex;
+  flex-direction: column;
+  cursor: pointer;
+  background: #FFFFFF;
+}
+
+.ably-prod-imgwrap {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1 / 1.15;
+  background: #F5F5F7;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+}
+
+.ably-prod-imgwrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.ably-rank-num {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  background: rgba(0, 0, 0, 0.7);
+  color: white;
+  font-size: 11px;
+  font-weight: 900;
+  width: 22px;
+  height: 22px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ably-wish-btn {
+  position: absolute;
+  bottom: 8px;
+  right: 8px;
+  background: rgba(255, 255, 255, 0.9);
+  border: none;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+}
+
+.ably-wish-btn svg {
+  width: 17px;
+  height: 17px;
+  stroke: var(--ably-dark);
+  stroke-width: 1.8;
+  fill: none;
+}
+
+.ably-wish-btn.wished svg {
+  stroke: var(--ably-red);
+  fill: var(--ably-red);
+}
+
+.ably-prod-badge-auth {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: #2E7D32;
+  color: white;
+  font-size: 8px;
+  font-weight: 800;
+  padding: 2px 5px;
+  border-radius: 3px;
+}
+
+.ably-prod-info {
+  padding: 8px 2px 2px;
+}
+
+.ably-prod-brand {
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--ably-gray-medium);
+  text-transform: uppercase;
+}
+
+.ably-prod-title {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--ably-dark);
+  line-height: 1.35;
+  margin: 2px 0 5px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  height: 32px;
+}
+
+.ably-prod-price-row {
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+}
+
+.ably-discount-rate {
+  color: var(--ably-red);
+  font-size: 14px;
+  font-weight: 900;
+}
+
+.ably-final-price {
+  font-size: 15px;
+  font-weight: 900;
+  color: var(--ably-black);
+}
+
+.ably-original-price {
+  font-size: 10px;
+  color: var(--ably-gray-light);
+  text-decoration: line-through;
+}
+
+.ably-prod-meta-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 4px;
+  font-size: 10px;
+  color: var(--ably-gray-medium);
+}
+
+.ably-stars {
+  color: #FFA41C;
+  font-size: 9px;
+}
+
+.ably-rating-text {
+  font-weight: 700;
+  color: var(--ably-dark);
+}
+
+.ably-tag-easybox {
+  background: #EBF3FF;
+  color: #1976D2;
+  font-size: 9px;
+  font-weight: 700;
+  padding: 1px 4px;
+  border-radius: 2px;
+}
+
+/* ==========================================================================
+   에이블리 정품 보증 신뢰 배너
+   ========================================================================== */
+.ably-trust-card {
+  background: #FAFAFB;
+  border: 1px solid var(--ably-border);
+  border-radius: var(--radius-sm);
+  padding: 14px;
+}
+
+.trust-head {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 4px;
+}
+
+.trust-head svg {
+  width: 18px;
+  height: 18px;
+  stroke: #2E7D32;
+  stroke-width: 2;
+  fill: none;
+}
+
+.trust-head strong {
+  font-size: 13px;
+  font-weight: 800;
+  color: #1B5E20;
+}
+
+.trust-desc {
+  font-size: 11px;
+  color: var(--ably-gray-dark);
+  line-height: 1.4;
+  margin-bottom: 10px;
+}
+
+.btn-open-cert {
+  background: #FFFFFF;
+  border: 1px solid #C8E6C9;
+  color: #2E7D32;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 6px 10px;
+  border-radius: var(--radius-xs);
+  cursor: pointer;
+}
+
+/* ==========================================================================
+   [Creatori] 크리에이터 피드
+   ========================================================================== */
+.feed-container {
+  background: var(--ably-bg-gray);
+  padding-bottom: 10px;
+}
+
+.feed-partner-cta {
+  background: #FFFFFF;
+  border-bottom: 1px solid var(--ably-border);
+  padding: 14px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+}
+
+.fp-left strong {
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--ably-black);
+  display: block;
+}
+
+.fp-left p {
+  font-size: 11px;
+  color: var(--ably-gray-medium);
+  margin-top: 2px;
+}
+
+.fp-btn {
+  background: var(--ably-black);
+  color: white;
+  border: none;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 6px 12px;
+  border-radius: var(--radius-pill);
+}
+
+.feed-card {
+  background: #FFFFFF;
+  margin-bottom: 8px;
+  border-bottom: 1px solid var(--ably-border);
+}
+
+.feed-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+}
+
+.feed-author {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.feed-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1px solid var(--ably-border);
+}
+
+.feed-author-name {
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.feed-author-city {
+  font-size: 11px;
+  color: var(--ably-gray-medium);
+}
+
+.feed-media {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  background: #F0F0F0;
+  position: relative;
+}
+
+.feed-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.feed-body {
+  padding: 12px 16px;
+}
+
+.feed-caption {
+  font-size: 12px;
+  line-height: 1.45;
+  color: var(--ably-black);
+  margin-bottom: 8px;
+}
+
+.feed-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-bottom: 10px;
+}
+
+.feed-tag-item {
+  color: #1976D2;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+/* ==========================================================================
+   [Diagnostic] 6문항 뷰티 진단
+   ========================================================================== */
+.quiz-container {
+  padding: 16px;
+}
+
+.quiz-meter {
+  height: 3px;
+  background: #EEEEEE;
+  border-radius: 2px;
+  margin-bottom: 16px;
+  overflow: hidden;
+}
+
+.quiz-meter-fill {
+  height: 100%;
+  background: var(--ably-black);
+  transition: width 0.25s ease;
+}
+
+.quiz-step-title {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--ably-red);
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+
+.quiz-question-text {
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--ably-black);
+  line-height: 1.3;
+}
+
+.quiz-sub-ko {
+  font-size: 11px;
+  color: var(--ably-gray-medium);
+  display: block;
+  margin: 3px 0 14px;
+}
+
+.quiz-options-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.quiz-choice-card {
+  border: 1.5px solid var(--ably-border);
+  border-radius: var(--radius-sm);
+  padding: 12px 14px;
+  cursor: pointer;
+  background: #FFFFFF;
+  transition: all 0.1s ease;
+}
+
+.quiz-choice-card:hover {
+  border-color: #CCCCCC;
+}
+
+.quiz-choice-card.selected {
+  border-color: var(--ably-black);
+  background: #FDFDFD;
+}
+
+.choice-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.choice-top strong {
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.choice-ko {
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--ably-gray-medium);
+}
+
+.choice-desc {
+  font-size: 11px;
+  color: var(--ably-gray-dark);
+  margin-top: 2px;
+}
+
+.quiz-buttons-row {
+  display: flex;
+  gap: 8px;
+  margin-top: 20px;
+}
+
+.btn-quiz-back {
+  background: #F4F4F5;
+  border: none;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 12px 18px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+}
+
+.btn-quiz-proceed {
+  flex: 1;
+  background: var(--ably-black);
+  color: white;
+  border: none;
+  font-size: 13px;
+  font-weight: 800;
+  padding: 12px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+}
+
+.quiz-analyzing-wrap {
+  text-align: center;
+  padding: 40px 16px;
+}
+
+.analyzing-ring {
+  width: 44px;
+  height: 44px;
+  border: 3px solid #EEEEEE;
+  border-top-color: var(--ably-black);
+  border-radius: 50%;
+  margin: 0 auto 16px;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ==========================================================================
+   [Cont / Auth] 회원가입
+   ========================================================================== */
+.auth-container {
+  padding: 16px;
+}
+
+.auth-subnav {
+  display: flex;
+  border-bottom: 2px solid var(--ably-border);
+  margin-bottom: 20px;
+}
+
+.auth-subnav-btn {
+  flex: 1;
+  background: none;
+  border: none;
+  padding: 12px;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--ably-gray-medium);
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -2px;
+  text-align: center;
+}
+
+.auth-subnav-btn.active {
+  color: var(--ably-black);
+  border-bottom-color: var(--ably-black);
+}
+
+.auth-form-card {
+  background: #FFFFFF;
+}
+
+.auth-title-row {
+  margin-bottom: 16px;
+}
+
+.auth-title-row h3 {
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--ably-black);
+}
+
+.auth-title-row p {
+  font-size: 12px;
+  color: var(--ably-gray-medium);
+  margin-top: 4px;
+}
+
+.auth-coupon-banner {
+  background: var(--ably-red-light);
+  border: 1px solid #FFCCD2;
+  border-radius: var(--radius-sm);
+  padding: 10px 12px;
+  font-size: 11px;
+  color: var(--ably-red);
+  font-weight: 700;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.auth-form-body {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.field-label {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--ably-dark);
+  margin-bottom: 4px;
+  display: block;
+}
+
+.input-box, .select-box {
+  width: 100%;
+  padding: 11px 12px;
+  border: 1px solid #D6D6D6;
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  color: var(--ably-black);
+  outline: none;
+}
+
+.input-box:focus, .select-box:focus {
+  border-color: var(--ably-black);
+}
+
+.btn-primary-auth {
+  width: 100%;
+  background: var(--ably-black);
+  color: white;
+  border: none;
+  font-size: 14px;
+  font-weight: 800;
+  padding: 13px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  margin-top: 8px;
+}
+
+.btn-primary-auth:hover {
+  background: #333333;
+}
+
+/* ==========================================================================
+   에이블리 바텀시트 & 모달
+   ========================================================================== */
+.ably-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(2px);
+  z-index: 200;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.ably-sheet {
+  background: #FFFFFF;
+  width: 100%;
+  max-width: 440px;
+  max-height: 85vh;
+  border-radius: 16px 16px 0 0;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow: hidden;
+  box-shadow: var(--shadow-sheet);
+  animation: slideUp 0.2s ease-out;
+}
+
+.sheet-header-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--ably-border);
+}
+
+.sheet-header-bar h4 {
+  font-size: 15px;
+  font-weight: 800;
+}
+
+.sheet-close-x {
+  background: none;
+  border: none;
+  font-size: 16px;
+  cursor: pointer;
+  color: var(--ably-gray-dark);
+}
+
+.sheet-body-scroll {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px;
+}
+
+.sheet-footer-action {
+  padding: 12px 16px;
+  border-top: 1px solid var(--ably-border);
+  background: #FFFFFF;
+  display: flex;
+  gap: 8px;
+}
+
+.btn-sheet-cart {
+  flex: 1;
+  background: #F4F4F5;
+  border: none;
+  font-size: 13px;
+  font-weight: 700;
+  padding: 13px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+}
+
+.btn-sheet-order {
+  flex: 2;
+  background: var(--ably-red);
+  color: white;
+  border: none;
+  font-size: 13px;
+  font-weight: 800;
+  padding: 13px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+}
+
+.ably-center-modal {
+  background: #FFFFFF;
+  width: 90%;
+  max-width: 380px;
+  border-radius: var(--radius-md);
+  padding: 20px;
+  margin: auto;
+  position: relative;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+}
+
+/* 토스트 알림 메시지 */
+.ably-toast {
+  position: fixed;
+  top: 60px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(17, 17, 17, 0.92);
+  color: white;
+  padding: 8px 18px;
+  border-radius: var(--radius-pill);
+  font-size: 12px;
+  font-weight: 700;
+  z-index: 300;
+  pointer-events: none;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+  animation: fadeInOut 2.2s forwards;
+}
+
+@keyframes slideUp {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
+
+@keyframes fadeInOut {
+  0% { opacity: 0; transform: translate(-50%, -10px); }
+  10% { opacity: 1; transform: translate(-50%, 0); }
+  85% { opacity: 1; transform: translate(-50%, 0); }
+  100% { opacity: 0; transform: translate(-50%, -10px); }
+}
