@@ -33,9 +33,11 @@ document.addEventListener("DOMContentLoaded", () => {
   };
 
   // 애플리케이션 전역 상태
+  const savedViewMode = localStorage.getItem("seoulmate_view_mode") || (window.innerWidth >= 992 ? "pc" : "mobile");
   const state = {
+    viewMode: savedViewMode, // 'pc' | 'mobile'
     lang: "ro", // 'ro' | 'en' | 'ko'
-    activeTab: "home", // 'home' | 'category' | 'creators' | 'wishlist' | 'my' | 'shop' | 'auth'
+    activeTab: "home", // 'home' | 'category' | 'creators' | 'wishlist' | 'my' | 'shop' | 'auth' | 'seller'
     homeSubTab: "today", // 'today' | 'best' | 'skincare' | 'makeup' | 'brands' | 'sets'
     historyStack: ["home"],
 
@@ -67,14 +69,24 @@ document.addEventListener("DOMContentLoaded", () => {
     shopBrand: "all",
     sortBy: "popular", // 'popular' | 'reviews' | 'priceLow' | 'discount'
 
-    // 회원 및 크리에이터 입점
-    authRole: "consumer",
+    // 회원, 크리에이터 및 판매자(Creator Commerce) 파트너
+    authRole: "consumer", // 'consumer' | 'creator'
     authSubmitted: false,
-    currentUser: {
-      isLoggedIn: true,
-      name: "Elena Popescu",
-      email: "elena.popescu@gmail.com",
-      city: "București"
+    // 기본 상태: 항상 비로그인(게스트) 상태로 시작
+    currentUser: null,
+    // 현재 로그인된 크리에이터 정보 (null이면 일반 모드)
+    currentCreator: null,
+    creatorProducts: [], // 크리에이터가 직접 큐레이션/업로드한 상품 목록
+    sellerProfile: {
+      isSeller: true,
+      companyName: "ANUA Official Partner (Romania)",
+      brandName: "Anua",
+      bizNumber: "RO-29384910",
+      cpnpNumber: "CPNP-EU-3984021",
+      contactName: "Elena Popescu",
+      contactEmail: "partner@seoulmate.ro",
+      contactPhone: "+40 721 123 456",
+      myProducts: []
     },
 
     // 장바구니 / 찜 / 팔로우
@@ -94,6 +106,13 @@ document.addEventListener("DOMContentLoaded", () => {
     toastTimer: null
   };
 
+  // 초기 뷰 모드 클래스 설정
+  if (state.viewMode === "pc") {
+    document.body.classList.add("is-pc-mode");
+  } else {
+    document.body.classList.remove("is-pc-mode");
+  }
+
   function t(key) {
     const dict = i18n[state.lang] || i18n.ro;
     return dict[key] !== undefined ? dict[key] : key;
@@ -103,6 +122,99 @@ document.addEventListener("DOMContentLoaded", () => {
     if (state.lang === "ko") return koText;
     if (state.lang === "en") return enText;
     return roText;
+  }
+
+  // ==========================================================================
+  // [크리에이터 커머스(판매자=크리에이터) 인증 및 세션 관리]
+  // ==========================================================================
+  function isCreatorLoggedIn() {
+    return state.currentUser && state.currentUser.role === "creator" && state.currentCreator !== null;
+  }
+
+  function isConsumerLoggedIn() {
+    return state.currentUser !== null;
+  }
+
+  function loginAsConsumer(name, email, city) {
+    state.currentUser = {
+      isLoggedIn: true,
+      role: "consumer",
+      name: name || "Elena Popescu",
+      email: email || "elena.popescu@gmail.com",
+      city: city || "București"
+    };
+    state.currentCreator = null;
+    showToast(tr("Autentificat ca Utilizator!", "Logged in as Consumer!", "일반 회원으로 로그인되었습니다!"));
+  }
+
+  function loginAsCreator(creatorId) {
+    const creator = data.creators.find((c) => c.id === creatorId) || data.creators[0];
+    state.currentUser = {
+      isLoggedIn: true,
+      role: "creator",
+      name: creator.name,
+      email: `${creator.id}@creator.seoulmate.ro`,
+      city: creator.city || "București"
+    };
+    state.currentCreator = creator;
+    // 기존 크리에이터의 루틴 상품이 있으면 큐레이션 목록으로 초기 동기화
+    if (!state.creatorProducts || state.creatorProducts.length === 0) {
+      const routineProdIds = creator.routine?.productIds || [];
+      state.creatorProducts = data.products.filter((p) => routineProdIds.includes(p.id));
+    }
+    showToast(
+      tr(
+        `Autentificat ca ${creator.name} (${creator.handle})`,
+        `Logged in as ${creator.name} (${creator.handle})`,
+        `${creator.name} (${creator.handle}) 크리에이터 계정으로 로그인되었습니다!`
+      )
+    );
+  }
+
+  function logoutUser() {
+    state.currentUser = null;
+    state.currentCreator = null;
+    showToast(tr("Te-ai deconectat.", "Logged out successfully.", "로그아웃되었습니다."));
+  }
+
+  function logoutCreator() {
+    logoutUser();
+  }
+
+  function registerNewCreator(name, handle, city, skinType) {
+    const cleanHandle = handle.trim().startsWith("@") ? handle.trim() : `@${handle.trim()}`;
+    const id = cleanHandle.replace(/[^a-zA-Z0-9]/g, "").toLowerCase() || `creator_${Date.now()}`;
+    const newCreator = {
+      id: id,
+      handle: cleanHandle,
+      name: name.trim(),
+      city: city || "București",
+      followers: "50K+",
+      avatar: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=400&q=80",
+      skinProfile: {
+        type: skinType || "Mixt",
+        concerns: ["Pori", "Calmare"],
+        undertone: "Neutru",
+        style: "Natural"
+      },
+      routine: {
+        titleKo: `${name}의 K-뷰티 데일리 큐레이션 세트`,
+        titleEn: `${name}'s Daily K-Beauty Curation Set`,
+        title: `Rutina lui ${name}: K-Beauty Glow`,
+        productIds: []
+      }
+    };
+    data.creators.unshift(newCreator);
+    state.currentUser = {
+      isLoggedIn: true,
+      role: "creator",
+      name: newCreator.name,
+      email: `${id}@creator.seoulmate.ro`,
+      city: newCreator.city
+    };
+    state.currentCreator = newCreator;
+    state.creatorProducts = [];
+    showToast(tr("Bun venit în Creator Studio!", "Welcome to Creator Studio!", "크리에이터 스튜디오 입점을 환영합니다!"));
   }
 
   function getProductDisplayName(prod) {
@@ -271,6 +383,17 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
+  function setViewMode(mode) {
+    state.viewMode = mode === "pc" ? "pc" : "mobile";
+    try {
+      localStorage.setItem("seoulmate_view_mode", state.viewMode);
+    } catch (_) {}
+    if (document.body) {
+      document.body.classList.toggle("is-pc-mode", state.viewMode === "pc");
+    }
+    render();
+  }
+
   function openShopWithFilters({ category = "all", concern = "all", skinType = "all", brand = "all" } = {}) {
     state.selectedCategory = category;
     state.shopConcern = concern;
@@ -350,7 +473,8 @@ document.addEventListener("DOMContentLoaded", () => {
       creators: t("tabCreators"),
       wishlist: t("tabWishlist"),
       my: t("tabMy"),
-      auth: t("tabAuth")
+      auth: t("tabAuth"),
+      seller: tr("Creator Studio", "Creator Studio", "크리에이터 스튜디오 (Creator Studio)")
     };
     return map[state.activeTab] || "";
   }
@@ -386,11 +510,28 @@ document.addEventListener("DOMContentLoaded", () => {
               </div>
 
               <div class="ably-header-actions">
+                ${
+                  isCreatorLoggedIn()
+                    ? `
+                  <!-- 크리에이터 로그인 시에만 노출되는 스튜디오 바로가기 -->
+                  <button class="btn-seller-hub" id="btn-header-seller" data-tab="seller" title="크리에이터 스튜디오 (Creator Studio)">
+                    🌸 ${tr("Studio", "Studio", "스튜디오")}
+                  </button>
+                `
+                    : ""
+                }
+
                 <div class="lang-selector" role="group" aria-label="Language">
                   <button class="lang-pill ${state.lang === "ro" ? "active" : ""}" data-set-lang="ro">RO</button>
                   <button class="lang-pill ${state.lang === "en" ? "active" : ""}" data-set-lang="en">EN</button>
                   <button class="lang-pill ${state.lang === "ko" ? "active" : ""}" data-set-lang="ko">한국어</button>
                 </div>
+
+                <!-- 인라인 뷰모드 토글 버튼 -->
+                <button class="view-mode-pill" id="btn-toggle-viewmode" title="PC 전체화면 / 모바일 뷰 전환 (Alt+P)">
+                  ${state.viewMode === "pc" ? "📱 모바일" : "🖥️ PC모드"}
+                </button>
+
                 <button class="icon-btn" id="btn-nav-search" aria-label="Search">${ICONS.search}</button>
                 <button class="icon-btn" id="btn-header-cart" aria-label="Cart">
                   ${ICONS.bag}
@@ -437,7 +578,7 @@ document.addEventListener("DOMContentLoaded", () => {
             ${renderActiveView()}
           </main>
 
-          <!-- 하단 고정 5대 쇼핑 탭바 (홈 · 카테고리 · 크리에이터 · 찜 · 마이) -->
+          <!-- 하단 고정 4대 쇼핑 탭바 (홈 · 카테고리 · 찜 · 마이) -->
           <nav class="app-bottom-nav">
             <button class="nav-item ${state.activeTab === "home" ? "active" : ""}" data-bottom-tab="home">
               ${ICONS.home}
@@ -447,10 +588,6 @@ document.addEventListener("DOMContentLoaded", () => {
               ${ICONS.category}
               <span class="nav-label">${t("tabCategory")}</span>
             </button>
-            <button class="nav-item ${state.activeTab === "creators" ? "active" : ""}" data-bottom-tab="creators">
-              ${ICONS.feed}
-              <span class="nav-label">${t("tabCreators")}</span>
-            </button>
             <button class="nav-item ${state.activeTab === "wishlist" ? "active" : ""}" data-bottom-tab="wishlist">
               <span class="nav-icon-wrap">
                 ${ICONS.heart}
@@ -458,7 +595,7 @@ document.addEventListener("DOMContentLoaded", () => {
               </span>
               <span class="nav-label">${t("tabWishlist")}</span>
             </button>
-            <button class="nav-item ${state.activeTab === "my" || state.activeTab === "auth" ? "active" : ""}" data-bottom-tab="my">
+            <button class="nav-item ${state.activeTab === "my" || state.activeTab === "auth" || state.activeTab === "seller" ? "active" : ""}" data-bottom-tab="my">
               ${ICONS.user}
               <span class="nav-label">${t("tabMy")}</span>
             </button>
@@ -491,6 +628,8 @@ document.addEventListener("DOMContentLoaded", () => {
         return renderMyTab();
       case "auth":
         return renderAuthTab();
+      case "seller":
+        return renderSellerStudioTab();
       default:
         return `<div class="ably-home-page" id="home-dynamic-body">${renderHomeBody()}</div>`;
     }
@@ -1044,6 +1183,8 @@ document.addEventListener("DOMContentLoaded", () => {
     `;
   }
 
+
+
   // ==========================================================================
   // [하단 탭 2: 카테고리 디렉토리 (품목별 · 피부고민별 · 피부타입별 · 공식 브랜드관)]
   // ==========================================================================
@@ -1265,6 +1406,8 @@ document.addEventListener("DOMContentLoaded", () => {
     `;
   }
 
+
+
   function renderSortToolbar(count, resetBtnId = null) {
     const sorts = [
       { key: "popular", label: t("sortPopular") },
@@ -1296,6 +1439,8 @@ document.addEventListener("DOMContentLoaded", () => {
       </div>
     `;
   }
+
+
 
   function renderFilterEmptyState(resetId) {
     return `
@@ -1421,6 +1566,8 @@ document.addEventListener("DOMContentLoaded", () => {
     `;
   }
 
+
+
   // ==========================================================================
   // [하단 탭 4: 찜한 상품 (Wishlist)]
   // ==========================================================================
@@ -1468,18 +1615,77 @@ document.addEventListener("DOMContentLoaded", () => {
   // ==========================================================================
   function renderMyTab() {
     const cartQty = state.cart.reduce((acc, item) => acc + item.qty, 0);
+    const isCr = isCreatorLoggedIn();
+    const cr = state.currentCreator;
+    const user = state.currentUser;
+    const isLoggedIn = Boolean(user);
+
     return `
       <div class="ably-section">
+        <!-- 프로필 카드 (로그인 / 게스트 대응) -->
         <div class="my-profile-card">
           <div class="my-profile-left">
-            <div class="my-avatar-circle">${ICONS.user}</div>
+            ${
+              isCr && cr
+                ? `<img src="${cr.avatar}" style="width:48px; height:48px; border-radius:50%; object-fit:cover; border:2.5px solid #FF3F6C;" alt="${cr.name}" />`
+                : isLoggedIn
+                  ? `<div class="my-avatar-circle">${ICONS.user}</div>`
+                  : `<div class="my-avatar-circle" style="background:#F0F0F4; color:#888;">${ICONS.user}</div>`
+            }
             <div>
-              <h4 style="font-size:15px; font-weight:800;">${state.currentUser.name}</h4>
-              <p style="font-size:12px; color:#777;">${state.currentUser.city} · ${state.currentUser.email}</p>
+              <h4 style="font-size:15px; font-weight:800; display:flex; align-items:center; gap:6px;">
+                ${
+                  isCr && cr
+                    ? `${cr.name} <span style="font-size:11px; background:#FFE0E7; color:#FF3F6C; padding:1px 6px; border-radius:10px; font-weight:800;">🌸 Creator</span>`
+                    : isLoggedIn
+                      ? user.name
+                      : tr("Autentificare Necesară", "Login Required", "로그인이 필요합니다")
+                }
+              </h4>
+              <p style="font-size:12px; color:#777; margin-top:2px;">
+                ${
+                  isCr && cr
+                    ? `${cr.handle} · ${cr.followers} 팔로워 · ${cr.city}`
+                    : isLoggedIn
+                      ? `${user.city || "București"} · ${user.email}`
+                      : tr("Conectează-te pentru cupon 10% reducere", "Log in for 10% first-order discount", "로그인하고 첫 구매 10% 할인 쿠폰을 받으세요")
+                }
+              </p>
             </div>
           </div>
-          <button class="btn-open-cert" data-tab="auth">${t("tabAuth")} ›</button>
+          <button class="btn-open-cert" data-tab="auth">
+            ${isLoggedIn ? (isCr ? "계정정보 ›" : `${t("tabAuth")} ›`) : tr("Autentificare ›", "Login / Sign Up ›", "로그인 / 가입 ›")}
+          </button>
         </div>
+
+        ${
+          !isLoggedIn
+            ? `
+          <!-- 발표 및 시연용 1초 빠른 로그인 안내 카드 -->
+          <div style="background:#FFF8F9; border:1.5px dashed #FFB8CA; border-radius:12px; padding:14px; margin-bottom:14px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+              <span style="font-size:12px; font-weight:800; color:#D31745;">⚡ 발표·시연용 빠른 데모 로그인</span>
+              <span style="font-size:10.5px; background:#FFE0E7; color:#FF3F6C; font-weight:700; padding:2px 6px; border-radius:8px;">데모 계정</span>
+            </div>
+            <p style="font-size:11.5px; color:#555; line-height:1.45; margin-bottom:10px;">
+              ${tr(
+                "Alege un profil demonstrativ pentru a testa imediat experiența de cumpărător sau creator de conținut:",
+                "Select a demo account to instantly test consumer or creator workflow:",
+                "원하시는 시연 모드를 클릭하시면 즉시 해당 권한으로 전환됩니다:"
+              )}
+            </p>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
+              <button id="btn-quick-consumer" style="background:#FFFFFF; border:1.5px solid #222; color:#222; border-radius:8px; padding:8px 6px; font-size:12px; font-weight:800; cursor:pointer;">
+                🛍️ 일반 고객(Elena)
+              </button>
+              <button id="btn-quick-creator" style="background:linear-gradient(135deg, #FF3F6C, #FF1E56); border:none; color:#FFFFFF; border-radius:8px; padding:8px 6px; font-size:12px; font-weight:800; cursor:pointer; box-shadow:0 2px 8px rgba(255,63,108,0.25);">
+                🌸 크리에이터(Maria)
+              </button>
+            </div>
+          </div>
+        `
+            : ""
+        }
 
         <!-- 쇼핑 요약 대시보드 (쿠폰 · 찜 · 장바구니) -->
         <div class="my-summary-grid">
@@ -1496,6 +1702,31 @@ document.addEventListener("DOMContentLoaded", () => {
             <span class="my-summary-label">${tr("Coș", "Cart", "장바구니")}</span>
           </button>
         </div>
+
+        <!-- 크리에이터 로그인 시에만 노출되는 스튜디오 진입 배너 카드 -->
+        ${
+          isCr
+            ? `
+          <div style="background:linear-gradient(135deg, #2A1424 0%, #171724 100%); color:#FFFFFF; border-radius:12px; padding:16px; margin:16px 0; box-shadow:0 6px 20px rgba(0,0,0,0.12);">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+              <span style="font-size:11px; background:#FF3F6C; color:#FFFFFF; font-weight:800; padding:2px 8px; border-radius:10px;">🌸 CREATOR COMMERCE</span>
+              <span style="font-size:11px; color:#FFB8CA; font-weight:700;">Live Hub</span>
+            </div>
+            <h4 style="font-size:16px; font-weight:800; margin-bottom:4px;">${cr?.name || "크리에이터"} 파트너 스튜디오</h4>
+            <p style="font-size:11.5px; color:#D0C0D0; line-height:1.4; margin-bottom:12px;">
+              ${tr(
+                "Gestionează produsele tale K-Beauty curate, setează rutine pentru fani și verifică comisioanele.",
+                "Curate your K-Beauty products, configure fan routines, and check live earnings.",
+                "내 추천 상품 큐레이션 등록, 팬 루틴 세트 설정 및 판매 커미션(15%) 정산 내역을 관리하세요."
+              )}
+            </p>
+            <button class="btn-primary-auth" data-tab="seller" style="margin:0; background:#FF3F6C; padding:10px 14px; font-size:13px;">
+              🚀 ${tr("Deschide Creator Studio", "Open Creator Studio", "크리에이터 스튜디오 입장하기 ›")}
+            </button>
+          </div>
+        `
+            : ""
+        }
 
         <h4 style="font-size:14px; font-weight:800; margin:18px 0 10px;">${t("myOrdersTitle")}</h4>
         ${
@@ -1522,6 +1753,18 @@ document.addEventListener("DOMContentLoaded", () => {
 
         <!-- 고객 서비스 메뉴 -->
         <div class="my-menu-list">
+          ${
+            isCr
+              ? `
+            <button class="my-menu-item" data-tab="seller" style="background:#FFF5F7; border:1px solid #FFD3DC; border-radius:8px; margin-bottom:8px; padding:12px 14px;">
+              <span style="font-weight:700; color:var(--ably-red);">
+                🌸 ${tr("Studio Creatori Parteneri (Gestionează Produse)", "Creator Partner Studio (Manage Products)", "크리에이터 스튜디오 (내 큐레이션 상품 등록·관리)")}
+              </span>
+              <span class="my-menu-arrow" style="color:var(--ably-red); font-weight:800;">›</span>
+            </button>
+          `
+              : ""
+          }
           <button class="my-menu-item" id="prof-menu-cert">
             <span>🛡️ ${t("menuCert")}</span>
             <span class="my-menu-arrow">›</span>
@@ -1534,10 +1777,22 @@ document.addEventListener("DOMContentLoaded", () => {
             <span>👤 ${t("menuAuthManage")}</span>
             <span class="my-menu-arrow">›</span>
           </button>
+          ${
+            isLoggedIn
+              ? `
+            <button class="my-menu-item" id="btn-user-logout" style="color:#D32F2F;">
+              <span>🚪 ${tr("Deconectare", "Logout", "로그아웃")}</span>
+              <span class="my-menu-arrow">›</span>
+            </button>
+          `
+              : ""
+          }
         </div>
       </div>
     `;
   }
+
+
 
   // ==========================================================================
   // [회원가입 및 크리에이터 파트너 입점 신청 (Auth)]
@@ -1545,15 +1800,20 @@ document.addEventListener("DOMContentLoaded", () => {
   function renderAuthTab() {
     if (state.authSubmitted) {
       const isConsumer = state.authRole === "consumer";
+      const isCreator = state.authRole === "creator";
+      const isSeller = state.authRole === "seller";
+
       return `
         <div class="auth-container">
           <div class="creator-match-box" style="text-align:center; padding:30px 16px;">
-            <div style="font-size:36px; margin-bottom:10px;">${isConsumer ? "🎉" : "🚀"}</div>
+            <div style="font-size:36px; margin-bottom:10px;">${isConsumer ? "🎉" : isCreator ? "🚀" : "🏢"}</div>
             <h3 style="font-size:17px; font-weight:800; margin-bottom:6px;">
               ${
                 isConsumer
                   ? tr("Cont Creat cu Succes!", "Account Created Successfully!", "회원가입이 완료되었습니다!")
-                  : tr("Cerere Partener Înregistrată!", "Partner Application Submitted!", "크리에이터 파트너 신청 완료!")
+                  : isCreator
+                    ? tr("Cerere Partener Înregistrată!", "Partner Application Submitted!", "크리에이터 파트너 신청 완료!")
+                    : tr("Înregistrare Vânzător Aprobată!", "Seller Partner Approved!", "공식 판매자 파트너 등록 완료!")
               }
             </h3>
             <p style="font-size:12px; color:#666; margin-bottom:16px;">
@@ -1564,18 +1824,26 @@ document.addEventListener("DOMContentLoaded", () => {
                       "Your 10% discount voucher (SEOULMATE10) has been activated.",
                       "첫 구매 10% 할인 쿠폰(SEOULMATE10)이 계정에 즉시 발급되었습니다."
                     )
-                  : tr(
-                      "Echipa Seoulmate va analiza contul tău și va expedia kitul de mostre în 24 de ore.",
-                      "Our team will review your channel and dispatch your K-Beauty PR kit within 24 hours.",
-                      "담당팀에서 채널 확인 후 24시간 이내 시딩 키트 발송 안내를 드립니다."
-                    )
+                  : isCreator
+                    ? tr(
+                        "Echipa Seoulmate va analiza contul tău și va expedia kitul de mostre în 24 de ore.",
+                        "Our team will review your channel and dispatch your K-Beauty PR kit within 24 hours.",
+                        "담당팀에서 채널 확인 후 24시간 이내 시딩 키트 발송 안내를 드립니다."
+                      )
+                    : tr(
+                        "Contul de vânzător oficial a fost activat. Poți adăuga produse K-Beauty cu verificare CPNP.",
+                        "Your seller partner account is active. Start uploading CPNP verified K-Beauty items.",
+                        "공식 판매자 계정이 승인되었습니다. 지금 바로 CPNP 정품 상품을 등록하고 스토어에 실시간 노출해 보세요."
+                      )
               }
             </p>
             <button class="btn-primary-auth" id="btn-auth-finish">
               ${
                 isConsumer
                   ? tr("Începe Cumpărăturile", "Start Shopping", "쇼핑 시작하기")
-                  : tr("Mergi la Creatori", "Back to Creators", "크리에이터 탭으로 이동")
+                  : isCreator || isSeller
+                    ? tr("Deschide Creator Studio", "Open Creator Studio", "크리에이터 스튜디오로 입장")
+                    : tr("Începe Cumpărăturile", "Start Shopping", "쇼핑 시작하기")
               }
             </button>
           </div>
@@ -1585,12 +1853,28 @@ document.addEventListener("DOMContentLoaded", () => {
 
     return `
       <div class="auth-container">
+        <!-- 상단 시연용 빠른 데모 로그인 박스 -->
+        <div style="background:#FFF8F9; border:1.5px dashed #FFB8CA; border-radius:12px; padding:12px 14px; margin-bottom:14px;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+            <span style="font-size:11.5px; font-weight:800; color:#D31745;">⚡ 발표·시연용 1초 빠른 로그인</span>
+            <span style="font-size:10px; background:#FFE0E7; color:#FF3F6C; font-weight:700; padding:1px 6px; border-radius:6px;">데모</span>
+          </div>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
+            <button id="btn-auth-demo-consumer" style="background:#FFFFFF; border:1.5px solid #222; color:#222; border-radius:8px; padding:7px 6px; font-size:11.5px; font-weight:800; cursor:pointer;">
+              🛍️ 일반 고객(Elena)
+            </button>
+            <button id="btn-auth-demo-creator" style="background:linear-gradient(135deg, #FF3F6C, #FF1E56); border:none; color:#FFFFFF; border-radius:8px; padding:7px 6px; font-size:11.5px; font-weight:800; cursor:pointer;">
+              🌸 크리에이터(Maria)
+            </button>
+          </div>
+        </div>
+
         <div class="auth-subnav">
           <button class="auth-subnav-btn ${state.authRole === "consumer" ? "active" : ""}" data-role-tab="consumer">
-            ${t("tabConsumerAuth")}
+            🛍️ ${t("tabConsumerAuth")}
           </button>
-          <button class="auth-subnav-btn ${state.authRole === "creator" ? "active" : ""}" data-role-tab="creator">
-            ${t("tabCreatorAuth")}
+          <button class="auth-subnav-btn ${state.authRole === "creator" || state.authRole === "seller" ? "active" : ""}" data-role-tab="creator">
+            🌸 ${tr("Creator Partener (Vânzător)", "Creator Partner (Seller)", "크리에이터 파트너 (판매자)")}
           </button>
         </div>
 
@@ -1610,11 +1894,11 @@ document.addEventListener("DOMContentLoaded", () => {
             <form class="auth-form-body" id="consumer-register-form">
               <div>
                 <label class="field-label">${t("inputName")}</label>
-                <input type="text" id="reg-name" class="input-box" value="${state.currentUser.name}" required />
+                <input type="text" id="reg-name" class="input-box" value="${state.currentUser?.name || "Elena Popescu"}" required />
               </div>
               <div>
                 <label class="field-label">${t("inputEmail")}</label>
-                <input type="email" id="reg-email" class="input-box" value="${state.currentUser.email}" required />
+                <input type="email" id="reg-email" class="input-box" value="${state.currentUser?.email || "elena.popescu@gmail.com"}" required />
               </div>
               <div>
                 <label class="field-label">${t("inputPhone")}</label>
@@ -1632,7 +1916,8 @@ document.addEventListener("DOMContentLoaded", () => {
               <button type="submit" class="btn-primary-auth">${t("btnConsumerSubmit")}</button>
             </form>
           `
-              : `
+              : state.authRole === "creator"
+                ? `
             <div class="auth-title-row">
               <h3>${t("creatorPartnerTitle")}</h3>
               <p>${t("creatorPartnerSub")}</p>
@@ -1664,11 +1949,376 @@ document.addEventListener("DOMContentLoaded", () => {
               <button type="submit" class="btn-primary-auth">${t("btnCreatorSubmit")}</button>
             </form>
           `
+                : `
+            <!-- 판매자 (Seller) 전용 입점 폼 -->
+            <div class="auth-title-row">
+              <h3>${tr("Înregistrare Vânzător Oficial K-Beauty", "Official K-Beauty Seller Partner", "공식 판매자/브랜드 입점 신청")}</h3>
+              <p>${tr("Distribuie produse 100% autentice cu CPNP către clienții din România prin easybox.", "Supply 100% authentic CPNP products to Romanian beauty shoppers via easybox.", "루마니아 및 동유럽 시장에 100% 공식 CPNP 인증 정품을 공급하고 판매하세요.")}</p>
+            </div>
+
+            <div style="background:#FFF8F9; border:1px solid #FFD8E0; border-radius:8px; padding:12px; margin-bottom:14px; font-size:11.5px; color:#333; line-height:1.6;">
+              ✓ ${tr("Comision redus 5% la vânzare (Livrare directă easybox inclusă)", "Low 5% platform commission with automated easybox logistics", "최저 판매 수수료 5% (루마니아 전역 10,000+ easybox 무인함 자동 배송)")}<br/>
+              ✓ ${tr("Verificare oficială EU CPNP și trasabilitate anti-contrafacere", "EU CPNP authenticity certification & anti-counterfeit guarantee", "EU CPNP 공식 정품 인증 마크 및 바코드 로트 추적 시스템 제공")}<br/>
+              ✓ ${tr("Expunere garantată în feed-urile creatorilor locali", "Instant exposure across Romanian beauty creator feeds", "루마니아 현지 뷰티 인플루언서 큐레이션 룩북 자동 매칭 및 노출")}
+            </div>
+
+            <form class="auth-form-body" id="seller-register-form">
+              <div>
+                <label class="field-label">${tr("Nume Companie / Brand", "Company / Brand Name", "회사명 / 브랜드 상호명")} *</label>
+                <input type="text" id="seller-reg-company" class="input-box" value="${state.sellerProfile.companyName || "ANUA Global Logistics"}" required />
+              </div>
+              <div>
+                <label class="field-label">${tr("Număr Registrul Comerțului / CUI", "Business Registration / Tax ID", "사업자 등록번호")} *</label>
+                <input type="text" id="seller-reg-biznum" class="input-box" value="${state.sellerProfile.bizNumber || "RO-29384910"}" required />
+              </div>
+              <div style="display:grid; grid-template-columns: 1fr 1fr; gap:8px;">
+                <div>
+                  <label class="field-label">${tr("Nume Contact", "Contact Name", "담당자 성함")} *</label>
+                  <input type="text" id="seller-reg-name" class="input-box" value="${state.sellerProfile.contactName || "Elena Popescu"}" required />
+                </div>
+                <div>
+                  <label class="field-label">${tr("E-mail Oficial", "Official Email", "공식 이메일")} *</label>
+                  <input type="email" id="seller-reg-email" class="input-box" value="${state.sellerProfile.contactEmail || "partner@seoulmate.ro"}" required />
+                </div>
+              </div>
+              <div>
+                <label class="field-label">${tr("Număr Înregistrare EU CPNP", "EU CPNP Portal Registration Number", "EU CPNP 정품 허가 번호")} *</label>
+                <input type="text" id="seller-reg-cpnp" class="input-box" value="${state.sellerProfile.cpnpNumber || "CPNP-EU-3984021"}" required />
+              </div>
+              <button type="submit" class="btn-primary-auth" style="background:var(--ably-red);">${tr("Finalizează Înregistrarea ca Vânzător", "Complete Seller Partner Application", "공식 판매자 입점 신청 완료")}</button>
+            </form>
+          `
           }
         </div>
       </div>
     `;
   }
+
+  // ==========================================================================
+  // [크리에이터 스튜디오 & 파트너 게이트 (판매자=크리에이터)]
+  // ==========================================================================
+  function renderSellerStudioTab() {
+    if (!isCreatorLoggedIn()) {
+      return renderCreatorGate();
+    }
+    return renderCreatorStudioView();
+  }
+
+  function renderCreatorGate() {
+    return `
+      <div class="creator-gate-page">
+        <div class="creator-gate-card">
+          <div class="creator-gate-badge">🌸 SEOULMATE CREATOR COMMERCE PARTNER</div>
+          <h2 class="creator-gate-title">
+            ${tr("Portal Exclusiv Creatori K-Beauty", "K-Beauty Creator Partner Portal", "K-뷰티 공식 크리에이터 스튜디오")}
+          </h2>
+          <p class="creator-gate-sub">
+            ${tr(
+              "Acest studio este dedicat exclusiv creatorilor oficiali de conținut Seoulmate. Autentifică-te pentru a curatoria produse, seta rutine și câștiga comisioane din vânzări directe.",
+              "This studio is exclusively for verified Seoulmate K-Beauty creators. Log in to curate skincare routines, upload products, and earn sales commissions.",
+              "본 스튜디오는 Seoulmate 공식 인증 K-뷰티 크리에이터 파트너 전용 공간입니다. 크리에이터 계정으로 로그인하여 본인의 피부타입에 맞는 제품을 큐레이션하고 루마니아 팬들에게 직접 판매하세요."
+            )}
+          </p>
+
+          <!-- 발표 및 심사위원용 원클릭 데모 로그인 -->
+          <div class="creator-gate-demo-box">
+            <div class="creator-gate-demo-header">
+              <span class="demo-badge">⚡ 심사위원 & 발표 시연용 원클릭 입장</span>
+              <p style="font-size:12px; color:#666; margin-top:4px;">
+                별도 타이핑 없이 실제 활동 중인 대표 K-뷰티 크리에이터 계정으로 즉시 스튜디오에 입장합니다.
+              </p>
+            </div>
+            <div class="creator-demo-grid">
+              <div class="creator-demo-card">
+                <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80" class="demo-avatar" alt="Maria" />
+                <div class="demo-info">
+                  <div class="demo-name">Maria Zvinca <span class="v-badge">✓ Verified</span></div>
+                  <div class="demo-meta">@mariazvinca · 245K 팔로워 · 복합성·모공케어</div>
+                </div>
+                <button type="button" class="btn-demo-login" data-creator-demo-login="mariazvinca">
+                  🌸 마리아 계정으로 스튜디오 즉시 입장
+                </button>
+              </div>
+
+              <div class="creator-demo-card">
+                <img src="https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=400&q=80" class="demo-avatar" alt="Ioana" />
+                <div class="demo-info">
+                  <div class="demo-name">Ioana Dumitru <span class="v-badge">✓ Verified</span></div>
+                  <div class="demo-meta">@ioana.dumitru · 189K 팔로워 · 건성·글래스스킨</div>
+                </div>
+                <button type="button" class="btn-demo-login" data-creator-demo-login="ioana.dumitru">
+                  ✨ 이오아나 계정으로 스튜디오 즉시 입장
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- 신규 크리에이터 파트너 가입 및 로그인 -->
+          <div class="creator-manual-login-card">
+            <h3 style="font-size:14px; font-weight:800; margin-bottom:10px; color:#1A1A24;">
+              ✍️ ${tr("Sau Conectează-te cu Contul tău de Creator", "Or Log In / Apply as Creator Partner", "또는 신규 크리에이터 파트너 계정으로 로그인")}
+            </h3>
+            <form id="creator-manual-login-form">
+              <div class="seller-form-grid-2">
+                <div class="seller-input-group">
+                  <label class="field-label">${tr("Nume Creator", "Creator Name", "크리에이터 성함")} *</label>
+                  <input type="text" id="cr-login-name" class="input-box" placeholder="예: Andreea Popa" value="Andreea Popa" required />
+                </div>
+                <div class="seller-input-group">
+                  <label class="field-label">${tr("Handle Instagram / TikTok", "Social Handle", "SNS 계정 핸들")} *</label>
+                  <input type="text" id="cr-login-handle" class="input-box" placeholder="@andreea.kbeauty" value="@andreea.kbeauty" required />
+                </div>
+              </div>
+              <div class="seller-form-grid-2">
+                <div class="seller-input-group">
+                  <label class="field-label">${tr("Oraș", "City", "활동 지역")}</label>
+                  <input type="text" id="cr-login-city" class="input-box" value="București" />
+                </div>
+                <div class="seller-input-group">
+                  <label class="field-label">${tr("Tip de Ten Principal", "Main Skin Type", "주 피부타입")}</label>
+                  <select id="cr-login-skintype" class="input-box">
+                    <option value="Mixt">복합성 (Mixt)</option>
+                    <option value="Gras">지성·여드름 (Gras)</option>
+                    <option value="Uscat">건성·민감 (Uscat)</option>
+                    <option value="Sensibil">민감성 (Sensibil)</option>
+                  </select>
+                </div>
+              </div>
+              <button type="submit" class="btn-seller-submit" style="margin-top:10px;">
+                🚀 ${tr("Intră în Creator Studio", "Enter Creator Studio", "크리에이터 계정으로 스튜디오 입장")}
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  function renderCreatorStudioView() {
+    const cr = state.currentCreator || data.creators[0];
+    const myProds = state.creatorProducts || [];
+
+    return `
+      <div class="seller-studio-page">
+        <!-- 상단 크리에이터 프로필 헤더 배너 -->
+        <div class="seller-hero-banner" style="background: linear-gradient(135deg, #2A1424 0%, #171724 100%);">
+          <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:14px; position:relative; z-index:2;">
+            <div style="display:flex; align-items:center; gap:14px;">
+              <img src="${cr.avatar}" style="width:68px; height:68px; border-radius:50%; object-fit:cover; border:3px solid #FF3F6C; box-shadow:0 4px 14px rgba(255,63,108,0.35);" alt="${cr.name}" />
+              <div>
+                <div class="seller-hero-tag" style="background:#FF3F6C;">🌸 SEOULMATE VERIFIED CREATOR</div>
+                <h2 class="seller-hero-title" style="margin-top:4px; font-size:22px; color:#FFFFFF;">
+                  ${cr.name} <span style="font-size:14px; font-weight:600; color:#FFB8CA;">(${cr.handle})</span>
+                </h2>
+                <p class="seller-hero-sub" style="font-size:12px; color:#E0D0DC; margin-top:2px;">
+                  📍 ${cr.city} · 👥 <strong>${cr.followers}</strong> Urmăritori · ${tr("Tip de Ten", "Skin Type", "피부타입")}: <strong>${cr.skinProfile?.type || "Mixt"}</strong> (${(cr.skinProfile?.concerns || []).join(", ") || "Calmare"})
+                </p>
+              </div>
+            </div>
+
+            <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
+              <button id="btn-creator-go-store" class="btn-seller-action-view" style="background:#FFFFFF; color:#1A1A24; font-size:12.5px; padding:7px 14px; font-weight:800; border:none; border-radius:8px; cursor:pointer;">
+                🏬 ${tr("Vezi Magazinul Live", "View Live Storefront", "쇼핑몰에서 내 상품 보기")}
+              </button>
+              <button id="btn-seller-help-cert" class="btn-seller-action-view" style="background:rgba(255,255,255,0.15); color:#FFFFFF; border:1px solid rgba(255,255,255,0.3); font-size:12.5px; padding:7px 14px; border-radius:8px; cursor:pointer;">
+                🛡️ ${tr("Certificare CPNP", "CPNP Guide", "정품 인증 안내")}
+              </button>
+              <button id="btn-creator-logout" class="btn-seller-action-view" style="background:rgba(255,255,255,0.1); color:#FFB8CA; border:1px solid rgba(255,255,255,0.2); font-size:12.5px; padding:7px 14px; border-radius:8px; cursor:pointer;">
+                🚪 ${tr("Deconectare", "Logout", "로그아웃")}
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- 크리에이터 판매 & 정산 지표 카드 -->
+        <div class="seller-metrics-grid">
+          <div class="seller-metric-card">
+            <div class="seller-metric-val">${myProds.length} <small style="font-size:12px; font-weight:600;">SKU</small></div>
+            <div class="seller-metric-label">${tr("Produse Curate Active", "Active Curated SKUs", "내 큐레이션 판매 상품")}</div>
+          </div>
+          <div class="seller-metric-card">
+            <div class="seller-metric-val accent">48 <small style="font-size:12px; font-weight:600;">${tr("comenzi", "orders", "건")}</small></div>
+            <div class="seller-metric-label">${tr("Vânzări Rutină Fani", "Fans Routine Orders", "루틴 세트 누적 판매")}</div>
+          </div>
+          <div class="seller-metric-card">
+            <div class="seller-metric-val" style="color:#059669;">1,420 <small style="font-size:12px; font-weight:600;">lei</small></div>
+            <div class="seller-metric-label">${tr("Comision Estimativ (15%)", "Estimated Commission (15%)", "정산 예정 커미션 (15%)")}</div>
+          </div>
+        </div>
+
+        <!-- 신규 큐레이션 상품 등록 카드 -->
+        <div class="seller-form-card">
+          <div class="seller-form-header">
+            <div>
+              <h3 style="font-size:16px; font-weight:800;">✨ ${tr(`Înregistrare Produs Curat de ${cr.name}`, `Curate & Upload New Product (${cr.name})`, `${cr.name}의 K-뷰티 큐레이션 상품 등록`)}</h3>
+              <p style="font-size:11.5px; color:#777; margin-top:2px;">
+                ${tr(
+                  "Produsele adăugate vor apărea live în magazin și pe pagina ta de profil cu insigna oficială de recomandare.",
+                  "Items added will appear live in the store and your creator profile with an official curated badge.",
+                  `등록한 상품은 쇼핑몰 홈 피드 및 크리에이터 룩북에 <strong>${cr.name}'s Pick</strong> 뱃지와 함께 실시간 진열됩니다.`
+                )}
+              </p>
+            </div>
+            <span style="font-size:11.5px; color:var(--ably-red); font-weight:800; white-space:nowrap;">● Live Instant Sync</span>
+          </div>
+
+          <div style="margin-bottom:14px;">
+            <span style="font-size:11.5px; font-weight:700; color:var(--ably-gray-medium); display:block; margin-bottom:6px;">
+              ${tr("Preseturi Rapide de Mostre (Click pentru completare automată):", "Quick Sample Presets (Click to autofill):", "빠른 샘플 채우기 (클릭 시 자동 입력):")}
+            </span>
+            <div class="seller-sample-chips-row">
+              <button type="button" class="seller-sample-chip" data-sample="sunscreen">☀️ ${tr("Joseon Rice Sunscreen", "Joseon Rice SPF", "조선미녀 맑은쌀선크림")}</button>
+              <button type="button" class="seller-sample-chip" data-sample="cream">💧 ${tr("RoundLab Birch Cream", "RoundLab Cream", "라운드랩 자작나무크림")}</button>
+              <button type="button" class="seller-sample-chip" data-sample="serum">🌿 ${tr("Centella Ampoule", "Centella Serum", "스킨1004 센텔라 앰플")}</button>
+              <button type="button" class="seller-sample-chip" data-sample="toner">🍃 ${tr("Anua 77 Toner", "Anua 77 Toner", "아누아 어성초 토너")}</button>
+            </div>
+          </div>
+
+          <form id="seller-upload-form">
+            <div class="seller-form-grid-2">
+              <div class="seller-input-group">
+                <label class="field-label">${tr("Brand Producător", "Brand Name", "브랜드명")} *</label>
+                <input type="text" id="seller-prod-brand" class="input-box" value="Beauty of Joseon" required />
+              </div>
+              <div class="seller-input-group">
+                <label class="field-label">${tr("Categorie Produs", "Product Category", "상품 카테고리")} *</label>
+                <select id="seller-prod-cat" class="input-box" required>
+                  <option value="Protecție Solară" selected>${tr("Protecție Solară (SPF)", "Sun Care & SPF", "선크림·선케어")}</option>
+                  <option value="Serum & Fiole">${tr("Seruri & Fiole", "Serums & Ampoules", "세럼·앰플")}</option>
+                  <option value="Creme & Hidratare">${tr("Creme Hidratante", "Moisturizers & Creams", "수분·영양크림")}</option>
+                  <option value="Toner & Tampoane">${tr("Tonere & Pads", "Toner & Pads", "토너·패드")}</option>
+                  <option value="Curățare">${tr("Curățare & Demachiere", "Cleansers", "클렌징·오일")}</option>
+                  <option value="Măști & Tampoane">${tr("Măști Faciale", "Masks & Treatments", "마스크팩·패치")}</option>
+                  <option value="Machiaj">${tr("Machiaj & Lip", "Makeup & Lips", "메이크업·립")}</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="seller-input-group">
+              <label class="field-label">${tr("Nume Produs (Română / English / 한국어)", "Product Name (Global / Korean)", "상품명 (글로벌 / 한국어)")} *</label>
+              <input type="text" id="seller-prod-name" class="input-box" placeholder="${tr("ex: Beauty of Joseon Relief Sun : Rice + Probiotics 50ml", "ex: Beauty of Joseon Relief Sun 50ml", "예: 조선미녀 맑은쌀선크림 (SPF50+ PA++++)")}" required />
+            </div>
+
+            <div class="seller-form-grid-2">
+              <div class="seller-input-group">
+                <label class="field-label">${tr("Preț Vânzare (lei)", "Selling Price (RON)", "판매 가격 (RON lei)")} *</label>
+                <input type="number" id="seller-prod-price" class="input-box" min="1" max="999" value="65" required />
+              </div>
+              <div class="seller-input-group">
+                <label class="field-label">${tr("Preț Recomandat (lei)", "Original Price (RON)", "정상 가격 (RON lei)")}</label>
+                <input type="number" id="seller-prod-origprice" class="input-box" min="1" max="999" value="80" />
+              </div>
+            </div>
+
+            <div class="seller-form-grid-2">
+              <div class="seller-input-group">
+                <label class="field-label">${tr("Nevoie Principală (Concern)", "Primary Skin Concern", "주요 피부고민")}</label>
+                <select id="seller-prod-concern" class="input-box">
+                  <option value="hydration" selected>${tr("Hidratare & Barieră", "Hydration & Barrier", "수분·속건조")}</option>
+                  <option value="soothing">${tr("Calmare & Iritații", "Soothing & Calming", "진정·트러블")}</option>
+                  <option value="pores">${tr("Pori & Sebum", "Pores & Sebum", "모공·피지")}</option>
+                  <option value="glow">${tr("Luminozitate & Pete", "Brightening & Glow", "미백·잡티케어")}</option>
+                </select>
+              </div>
+              <div class="seller-input-group">
+                <label class="field-label">${tr("Cod EU CPNP Oficial", "EU CPNP Certificate", "EU CPNP 정품 허가번호")} *</label>
+                <input type="text" id="seller-prod-cpnp" class="input-box" value="CPNP-EU-3984021" required />
+              </div>
+            </div>
+
+            <div class="seller-input-group">
+              <label class="field-label">${tr("Recomandarea Creatorului (Tips & Routine)", "Creator's Recommendation & Routine Tip", "크리에이터 한줄 추천평 & 루틴 팁")} *</label>
+              <input type="text" id="seller-prod-creator-tip" class="input-box" value="${tr("Produsul meu preferat de dimineață pentru un glow natural fără senzație grasă!", "My morning favorite for natural glow with zero greasiness!", "백탁 없이 산뜻하게 스며들어 아침마다 사용하는 제 인생 선크림이에요!")}" placeholder="${tr("ex: Rutina mea zilnică pentru ten luminos...", "ex: My daily routine for glass skin...", "예: 지성 피부도 산뜻하게 쓸 수 있는 수분 진정 앰플!")}" required />
+            </div>
+
+            <div class="seller-input-group">
+              <label class="field-label">${tr("Imagine Produs (Fișier Local sau URL Web)", "Product Image (Local File or Web URL)", "상품 대표 이미지 (로컬 사진 파일 또는 웹 URL)")} *</label>
+              <div class="seller-image-upload-zone">
+                <input type="file" id="seller-file-input" accept="image/*" style="display:none;" />
+                <button type="button" id="btn-seller-pick-file" class="btn-seller-action-view" style="margin-bottom:8px; padding:7px 14px; background:#FFFFFF;">
+                  📁 ${tr("Alege Fișier din PC", "Choose Image File from PC", "내 PC에서 사진 파일 선택")}
+                </button>
+                <span style="display:block; font-size:11px; color:var(--ably-gray-medium); margin-bottom:8px;">${tr("sau inserează URL mai jos:", "or paste image URL below:", "또는 이미지 웹 URL을 입력하세요:")}</span>
+                <input type="url" id="seller-img-url" class="input-box" placeholder="https://images.unsplash.com/..." />
+              </div>
+              <div id="seller-preview-wrap" class="seller-preview-container" style="display:none;">
+                <img id="seller-preview-img" class="seller-preview-img" src="" alt="Preview" />
+                <div class="seller-preview-meta">
+                  <span style="font-size:11px; font-weight:700; color:#2E7D32;">✓ ${tr("Imagine selectată", "Image selected", "이미지 준비 완료")}</span>
+                  <span id="seller-preview-text" style="display:block; font-size:11px; color:var(--ably-gray-medium); word-break:break-all;"></span>
+                </div>
+              </div>
+            </div>
+
+            <div class="seller-input-group">
+              <label class="field-label">${tr("Descriere Scurtă Produs", "Product Short Description", "상품 상세 유효성분 및 설명")}</label>
+              <textarea id="seller-prod-desc" class="input-box" rows="2" placeholder="${tr("Descrie ingredientele active și modul de utilizare...", "Describe active ingredients and how to use...", "유효 성분과 사용 방법을 적어주세요...")}"></textarea>
+            </div>
+
+            <button type="submit" class="btn-seller-submit">
+              🚀 ${tr("Publică Produsul Curatat în Magazin", "Publish Curated Product to Live Storefront", "크리에이터 큐레이션 상품 즉시 등록 및 공식 매장 진열")}
+            </button>
+          </form>
+        </div>
+
+        <div class="seller-products-list-header">
+          <h3>📦 ${tr(`Produsele Curatate de ${cr.name}`, `${cr.name}'s Curated Products`, `${cr.name}의 등록 큐레이션 상품 목록`)}</h3>
+          <span style="font-size:12px; font-weight:700; color:var(--ably-gray-medium);">${myProds.length} ${tr("articole", "items", "개")}</span>
+        </div>
+        <div id="seller-products-container">
+          ${renderSellerProductsList()}
+        </div>
+      </div>
+    `;
+  }
+
+  function renderSellerProductsList() {
+    const myProds = state.creatorProducts || [];
+    if (!myProds || myProds.length === 0) {
+      return `
+        <div style="background:#FFFFFF; border:1px dashed #D0D0DE; border-radius:var(--radius-sm); padding:28px 20px; text-align:center;">
+          <span style="font-size:32px; display:block; margin-bottom:8px;">📦</span>
+          <p style="font-weight:700; font-size:13px; color:var(--ably-black); margin-bottom:4px;">
+            ${tr("Nu ai înregistrat încă niciun produs.", "No products registered yet.", "아직 등록된 큐레이션 상품이 없습니다.")}
+          </p>
+          <p style="font-size:11.5px; color:var(--ably-gray-medium);">
+            ${tr("Folosește formularul de mai sus sau alege un preset rapid pentru a publica primul tău articol K-Beauty.", "Use the form above or click a preset chip to publish your first K-Beauty item.", "위의 등록 폼을 작성하거나 빠른 샘플 칩을 눌러 상품을 즉시 등록해보세요.")}
+          </p>
+        </div>
+      `;
+    }
+
+    return `
+      <div>
+        ${myProds
+          .map((p) => {
+            const displayName = getProductDisplayName(p);
+            return `
+              <div class="seller-prod-card" data-seller-prod-id="${p.id}">
+                <img class="seller-prod-thumb" src="${p.image}" alt="${displayName}" onerror="this.onerror=null; this.src=window.SEOULMATE_FALLBACK.getProduct('${p.category}','${p.brand}','${p.name.replace(/'/g, "\\'")}')" />
+                <div class="seller-prod-info">
+                  <span class="seller-prod-badge">🌸 ${p.badge || "Creator Pick"}</span>
+                  <h4 class="seller-prod-title">${displayName}</h4>
+                  <div class="seller-prod-price">
+                    ${p.price} lei 
+                    ${p.originalPrice ? `<small style="color:#999; font-weight:400; text-decoration:line-through; font-size:11px; margin-left:4px;">${p.originalPrice} lei</small>` : ""}
+                    ${p.discount ? `<span style="font-size:11px; color:var(--ably-red); margin-left:4px;">-${p.discount}%</span>` : ""}
+                  </div>
+                  ${p.creatorComment ? `<p style="font-size:11px; color:#666; margin-top:2px; font-style:italic;">"${p.creatorComment}"</p>` : ""}
+                </div>
+                <div class="seller-prod-actions">
+                  <button class="btn-seller-action-view" data-view-product-id="${p.id}">🔍 ${tr("Vezi", "View", "보기")}</button>
+                  <button class="btn-seller-action-del" data-del-product-id="${p.id}">🗑️ ${tr("Șterge", "Delete", "삭제")}</button>
+                </div>
+              </div>
+            `;
+          })
+          .join("")}
+      </div>
+    `;
+  }
+
+
 
   // ==========================================================================
   // [공통 상품 카드]
@@ -1708,6 +2358,8 @@ document.addEventListener("DOMContentLoaded", () => {
     `;
   }
 
+
+
   // ==========================================================================
   // [모달 & 바텀시트 렌더링]
   // ==========================================================================
@@ -1737,6 +2389,19 @@ document.addEventListener("DOMContentLoaded", () => {
                 ${(p.skinTypes || []).map((s) => `<span class="cm-chip">${getSkinTypeLabel(s)}</span>`).join("")}
                 ${p.undertone ? `<span class="cm-chip">${getUndertoneLabel(p.undertone)}</span>` : ""}
               </div>
+              ${
+                p.creatorName
+                  ? `
+                <div style="background:#FFF0F5; border:1px solid #FFD3DC; border-radius:8px; padding:9px 12px; margin-bottom:12px; display:flex; align-items:center; gap:10px;">
+                  <span style="font-size:20px;">🌸</span>
+                  <div style="font-size:11.5px; line-height:1.4;">
+                    <div style="font-weight:800; color:#FF3F6C;">${p.creatorName} (${p.creatorHandle || ""}) 큐레이션 Pick</div>
+                    <div style="color:#555; margin-top:2px;">"${p.creatorComment || "루틴 필수 추천 아이템"}"</div>
+                  </div>
+                </div>
+              `
+                  : ""
+              }
               <h3 style="font-size:16px; font-weight:800; margin-bottom:4px;">${title}</h3>
               <p style="font-size:12px; color:#666; margin-bottom:12px;">${subName}</p>
 
@@ -1947,6 +2612,72 @@ document.addEventListener("DOMContentLoaded", () => {
   // [이벤트 바인딩]
   // ==========================================================================
   function attachEventListeners() {
+    // PC / 모바일 뷰모드 전환 (헤더 토글 버튼)
+    const toggleVm = document.getElementById("btn-toggle-viewmode");
+    if (toggleVm) {
+      toggleVm.addEventListener("click", () => {
+        setViewMode(state.viewMode === "pc" ? "mobile" : "pc");
+      });
+    }
+
+    // 크리에이터 센터 / 스튜디오 이동
+    const headerSeller = document.getElementById("btn-header-seller");
+    if (headerSeller) {
+      headerSeller.addEventListener("click", () => {
+        navigateTo("seller");
+      });
+    }
+
+    document.querySelectorAll("[data-nav-seller]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        navigateTo("seller");
+      });
+    });
+
+    // 크리에이터 게이트: 원클릭 데모 로그인
+    document.querySelectorAll("[data-creator-demo-login]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const cid = btn.getAttribute("data-creator-demo-login");
+        loginAsCreator(cid);
+        showToast(tr("Autentificat în Creator Studio!", "Logged into Creator Studio!", "크리에이터 스튜디오에 입장했습니다!"));
+        render();
+      });
+    });
+
+    // 크리에이터 게이트: 수동 로그인 / 등록 폼
+    const manualCreatorForm = document.getElementById("creator-manual-login-form");
+    if (manualCreatorForm) {
+      manualCreatorForm.addEventListener("submit", (e) => {
+        e.preventDefault();
+        const name = document.getElementById("cr-login-name")?.value.trim() || "K-Beauty Creator";
+        const handle = document.getElementById("cr-login-handle")?.value.trim() || "@k_creator";
+        const city = document.getElementById("cr-login-city")?.value.trim() || "București";
+        const skin = document.getElementById("cr-login-skintype")?.value || "Mixt";
+        registerNewCreator(name, handle, city, skin);
+        showToast(tr("Cont de Creator activat!", "Creator account activated!", "크리에이터 계정으로 로그인되었습니다!"));
+        render();
+      });
+    }
+
+    // 크리에이터 스튜디오: 로그아웃
+    const creatorLogout = document.getElementById("btn-creator-logout");
+    if (creatorLogout) {
+      creatorLogout.addEventListener("click", () => {
+        logoutCreator();
+        showToast(tr("Deconectat din Creator Studio.", "Logged out of Creator Studio.", "크리에이터 스튜디오에서 로그아웃되었습니다."));
+        render();
+      });
+    }
+
+    // 크리에이터 스튜디오: 매장 가기
+    const creatorGoStore = document.getElementById("btn-creator-go-store");
+    if (creatorGoStore) {
+      creatorGoStore.addEventListener("click", () => {
+        state.homeSubTab = "today";
+        navigateTo("home");
+      });
+    }
+
     // 뒤로가기 및 홈 로고
     const backBtn = document.getElementById("btn-global-back");
     if (backBtn) backBtn.addEventListener("click", () => goBack());
@@ -2184,13 +2915,53 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     });
 
+    // 발표·시연용 빠른 원클릭 데모 로그인 (My페이지 & Auth페이지)
+    const quickConsumer = document.getElementById("btn-quick-consumer") || document.getElementById("btn-auth-demo-consumer");
+    if (quickConsumer) {
+      quickConsumer.addEventListener("click", () => {
+        loginAsConsumer("Elena Popescu", "elena.popescu@gmail.com", "București");
+        render();
+      });
+    }
+    const quickCreator = document.getElementById("btn-quick-creator") || document.getElementById("btn-auth-demo-creator");
+    if (quickCreator) {
+      quickCreator.addEventListener("click", () => {
+        loginAsCreator("mariazvinca");
+        render();
+      });
+    }
+    const authDemoConsumer = document.getElementById("btn-auth-demo-consumer");
+    if (authDemoConsumer && authDemoConsumer !== quickConsumer) {
+      authDemoConsumer.addEventListener("click", () => {
+        loginAsConsumer("Elena Popescu", "elena.popescu@gmail.com", "București");
+        render();
+      });
+    }
+    const authDemoCreator = document.getElementById("btn-auth-demo-creator");
+    if (authDemoCreator && authDemoCreator !== quickCreator) {
+      authDemoCreator.addEventListener("click", () => {
+        loginAsCreator("mariazvinca");
+        render();
+      });
+    }
+
+    // 마이페이지 로그아웃
+    const userLogout = document.getElementById("btn-user-logout");
+    if (userLogout) {
+      userLogout.addEventListener("click", () => {
+        logoutUser();
+        render();
+      });
+    }
+
     const cForm = document.getElementById("consumer-register-form");
     if (cForm) {
       cForm.addEventListener("submit", (e) => {
         e.preventDefault();
-        state.currentUser.name = document.getElementById("reg-name").value;
-        state.currentUser.email = document.getElementById("reg-email").value;
-        state.currentUser.city = document.getElementById("reg-city").value;
+        const name = document.getElementById("reg-name")?.value || "Elena Popescu";
+        const email = document.getElementById("reg-email")?.value || "elena.popescu@gmail.com";
+        const city = document.getElementById("reg-city")?.value || "București";
+        loginAsConsumer(name, email, city);
         state.authSubmitted = true;
         render();
       });
@@ -2200,6 +2971,28 @@ document.addEventListener("DOMContentLoaded", () => {
     if (crForm) {
       crForm.addEventListener("submit", (e) => {
         e.preventDefault();
+        const handle = document.getElementById("reg-handle")?.value.trim() || "@k_creator";
+        const name = handle.replace("@", "");
+        registerNewCreator(name, handle, "București", "Mixt");
+        state.authRole = "creator";
+        state.authSubmitted = true;
+        render();
+      });
+    }
+
+    const selForm = document.getElementById("seller-register-form");
+    if (selForm) {
+      selForm.addEventListener("submit", (e) => {
+        e.preventDefault();
+        const brand = document.getElementById("seller-reg-company")?.value || "K-Beauty Brand";
+        const email = document.getElementById("seller-reg-email")?.value || "partner@brand.kr";
+        const cpnp = document.getElementById("seller-reg-cpnp")?.value || "CPNP-EU-3984021";
+        state.sellerProfile.brandName = brand;
+        state.sellerProfile.sellerEmail = email;
+        state.sellerProfile.cpnpNumber = cpnp;
+        state.sellerProfile.isVerified = true;
+        registerNewCreator(brand, "@" + brand.toLowerCase().replace(/\s+/g, ""), "București", "Mixt");
+        state.authRole = "creator";
         state.authSubmitted = true;
         render();
       });
@@ -2208,11 +3001,234 @@ document.addEventListener("DOMContentLoaded", () => {
     const authFinish = document.getElementById("btn-auth-finish");
     if (authFinish) {
       authFinish.addEventListener("click", () => {
-        const target = state.authRole === "creator" ? "creators" : "home";
+        let target = "home";
+        if (state.authRole === "creator" || state.authRole === "seller") target = "seller";
         state.authSubmitted = false;
         navigateTo(target);
       });
     }
+
+    // 판매자 스튜디오 이벤트 리스너
+    const goStore = document.getElementById("btn-seller-go-store");
+    if (goStore) {
+      goStore.addEventListener("click", () => {
+        state.homeSubTab = "today";
+        navigateTo("home");
+      });
+    }
+
+    const helpCert = document.getElementById("btn-seller-help-cert");
+    if (helpCert) {
+      helpCert.addEventListener("click", () => {
+        state.activeModal = "authenticity";
+        render();
+      });
+    }
+
+    // 샘플 칩 빠른 자동완성
+    document.querySelectorAll(".seller-sample-chip[data-sample]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const sampleKey = btn.getAttribute("data-sample");
+        const brandInp = document.getElementById("seller-prod-brand");
+        const catInp = document.getElementById("seller-prod-cat");
+        const nameInp = document.getElementById("seller-prod-name");
+        const priceInp = document.getElementById("seller-prod-price");
+        const origInp = document.getElementById("seller-prod-origprice");
+        const concernInp = document.getElementById("seller-prod-concern");
+        const urlInp = document.getElementById("seller-img-url");
+        const descInp = document.getElementById("seller-prod-desc");
+        const previewWrap = document.getElementById("seller-preview-wrap");
+        const previewImg = document.getElementById("seller-preview-img");
+        const previewText = document.getElementById("seller-preview-text");
+
+        const presets = {
+          sunscreen: {
+            brand: "Beauty of Joseon",
+            cat: "Protecție Solară",
+            name: "Beauty of Joseon Relief Sun : Rice + Probiotics (SPF50+ PA++++)",
+            price: 65,
+            orig: 80,
+            concern: "hydration",
+            url: "https://images.unsplash.com/photo-1598440947619-2c35fc9aa908?auto=format&fit=crop&w=500&q=80",
+            desc: "Cremă de protecție solară organică lejeră cu 30% extract de orez și probiotice fermentate pentru un glow natural."
+          },
+          cream: {
+            brand: "Round Lab",
+            cat: "Creme & Hidratare",
+            name: "Round Lab Birch Juice Moisturizing Cream 80ml",
+            price: 92,
+            orig: 110,
+            concern: "hydration",
+            url: "https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?auto=format&fit=crop&w=500&q=80",
+            desc: "Cremă hidratantă răcoritoare cu sevă de mesteacăn din Inje și capsule de acid hialuronic."
+          },
+          serum: {
+            brand: "SKIN1004",
+            cat: "Serum & Fiole",
+            name: "SKIN1004 Madagascar Centella Asiatica 100 Ampoule 100ml",
+            price: 82,
+            orig: 99,
+            concern: "soothing",
+            url: "https://images.unsplash.com/photo-1620916566398-39f1143ab7be?auto=format&fit=crop&w=500&q=80",
+            desc: "Ampulă hipoalergenică cu 100% extract pur de Centella Asiatica pentru calmarea roșeții și refacerea barierei."
+          },
+          toner: {
+            brand: "Anua",
+            cat: "Toner & Tampoane",
+            name: "Anua Heartleaf 77% Clear Pad (70 buc)",
+            price: 89,
+            orig: 105,
+            concern: "pores",
+            url: "https://images.unsplash.com/photo-1608248597359-28c045b8fb32?auto=format&fit=crop&w=500&q=80",
+            desc: "Tampoane tonice hipoalergenice cu 77% Houttuynia Cordata și PHA pentru curățarea porilor și netezirea tenului."
+          }
+        };
+
+        const p = presets[sampleKey];
+        if (p) {
+          if (brandInp) brandInp.value = p.brand;
+          if (catInp) catInp.value = p.cat;
+          if (nameInp) nameInp.value = p.name;
+          if (priceInp) priceInp.value = p.price;
+          if (origInp) origInp.value = p.orig;
+          if (concernInp) concernInp.value = p.concern;
+          if (urlInp) urlInp.value = p.url;
+          if (descInp) descInp.value = p.desc;
+          if (previewWrap && previewImg && previewText) {
+            previewImg.src = p.url;
+            previewText.textContent = p.name;
+            previewWrap.style.display = "flex";
+          }
+        }
+      });
+    });
+
+    // 파일 업로드 및 URL 미리보기
+    const pickFileBtn = document.getElementById("btn-seller-pick-file");
+    const fileInp = document.getElementById("seller-file-input");
+    const urlInp = document.getElementById("seller-img-url");
+    const previewWrap = document.getElementById("seller-preview-wrap");
+    const previewImg = document.getElementById("seller-preview-img");
+    const previewText = document.getElementById("seller-preview-text");
+
+    if (pickFileBtn && fileInp) {
+      pickFileBtn.addEventListener("click", () => fileInp.click());
+    }
+
+    if (fileInp) {
+      fileInp.addEventListener("change", (e) => {
+        const file = e.target.files && e.target.files[0];
+        if (file) {
+          const reader = new FileReader();
+          reader.onload = function(evt) {
+            const dataUrl = evt.target.result;
+            if (urlInp) urlInp.value = dataUrl;
+            if (previewWrap && previewImg && previewText) {
+              previewImg.src = dataUrl;
+              previewText.textContent = file.name;
+              previewWrap.style.display = "flex";
+            }
+          };
+          reader.readAsDataURL(file);
+        }
+      });
+    }
+
+    if (urlInp) {
+      urlInp.addEventListener("input", (e) => {
+        const val = e.target.value.trim();
+        if (val && previewWrap && previewImg && previewText) {
+          previewImg.src = val;
+          previewText.textContent = val.length > 40 ? val.substring(0, 38) + "..." : val;
+          previewWrap.style.display = "flex";
+        }
+      });
+    }
+
+    // 신규 크리에이터 큐레이션 상품 등록 폼 제출
+    const uploadForm = document.getElementById("seller-upload-form");
+    if (uploadForm) {
+      uploadForm.addEventListener("submit", (e) => {
+        e.preventDefault();
+        const brandVal = document.getElementById("seller-prod-brand")?.value.trim() || "Anua";
+        const catVal = document.getElementById("seller-prod-cat")?.value || "Serum & Fiole";
+        const nameVal = document.getElementById("seller-prod-name")?.value.trim() || "K-Beauty Item";
+        const priceVal = parseFloat(document.getElementById("seller-prod-price")?.value) || 80;
+        const origVal = parseFloat(document.getElementById("seller-prod-origprice")?.value) || Math.round(priceVal * 1.2);
+        const concernVal = document.getElementById("seller-prod-concern")?.value || "hydration";
+        const cpnpVal = document.getElementById("seller-prod-cpnp")?.value.trim() || state.sellerProfile.cpnpNumber || "CPNP-EU-3984021";
+        const tipVal = document.getElementById("seller-prod-creator-tip")?.value.trim() || "Recomandat cu căldură!";
+        const urlVal = document.getElementById("seller-img-url")?.value.trim();
+        const descVal = document.getElementById("seller-prod-desc")?.value.trim();
+
+        const img = urlVal || window.SEOULMATE_FALLBACK.getProduct(catVal, brandVal, nameVal);
+        const discountVal = Math.round(((origVal - priceVal) / origVal) * 100);
+
+        const cr = state.currentCreator || (data.creators && data.creators[0]) || { id: "mariazvinca", name: "Maria Zvinca", handle: "@mariazvinca" };
+
+        const newProd = {
+          id: `cr-prod-${Date.now()}`,
+          name: nameVal,
+          koreanName: nameVal,
+          romanianName: nameVal,
+          englishName: nameVal,
+          brand: brandVal,
+          category: catVal,
+          concerns: [concernVal],
+          skinTypes: ["Mixt", "Sensibil"],
+          price: priceVal,
+          originalPrice: origVal,
+          discount: discountVal > 0 ? discountVal : 15,
+          rating: 5.0,
+          reviewsCount: 1,
+          image: img,
+          badge: `${cr.name}'s Pick`,
+          creatorId: cr.id,
+          creatorName: cr.name,
+          creatorHandle: cr.handle,
+          creatorComment: tipVal,
+          isAntiFakeHighlight: true,
+          cpnpNumber: cpnpVal,
+          lotNumber: `LOT-SE${Date.now().toString().slice(-6)}`,
+          descriptionRo: descVal || "Produs K-Beauty oficial verificat EU CPNP.",
+          descriptionEn: descVal || "Official K-Beauty product verified with EU CPNP.",
+          descriptionKo: descVal || "EU CPNP 공식 등록 안심 K-뷰티 상품입니다."
+        };
+
+        data.products.unshift(newProd);
+        if (!state.creatorProducts) state.creatorProducts = [];
+        state.creatorProducts.unshift(newProd);
+        state.sellerProfile.myProducts.unshift(newProd);
+
+        showToast(tr("Produsul a fost publicat în magazin!", "Product published to live store!", "크리에이터 큐레이션 상품이 공식 매장에 성공적으로 진열되었습니다!"));
+        render();
+      });
+    }
+
+    // 등록 상품 미리보기 및 삭제
+    document.querySelectorAll(".btn-seller-action-view[data-view-product-id]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const pid = btn.getAttribute("data-view-product-id");
+        const prod = data.products.find((p) => p.id === pid);
+        if (prod) {
+          state.selectedProduct = prod;
+          state.activeModal = "product";
+          render();
+        }
+      });
+    });
+
+    document.querySelectorAll(".btn-seller-action-del[data-del-product-id]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const pid = btn.getAttribute("data-del-product-id");
+        state.creatorProducts = (state.creatorProducts || []).filter((p) => p.id !== pid);
+        state.sellerProfile.myProducts = state.sellerProfile.myProducts.filter((p) => p.id !== pid);
+        const idx = data.products.findIndex((p) => p.id === pid);
+        if (idx !== -1) data.products.splice(idx, 1);
+        showToast(tr("Produsul a fost șters.", "Product removed.", "상품이 삭제되었습니다."));
+        render();
+      });
+    });
 
     attachDynamicBodyListeners();
   }
@@ -2607,6 +3623,14 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
   }
+
+  // 발표용 뷰모드 전환 단축키 (Alt+P)
+  window.addEventListener("keydown", (e) => {
+    if ((e.altKey && (e.key === "p" || e.key === "P")) || (e.ctrlKey && e.altKey && (e.key === "p" || e.key === "P"))) {
+      e.preventDefault();
+      setViewMode(state.viewMode === "pc" ? "mobile" : "pc");
+    }
+  });
 
   removeInjectedHostBadges();
   window.addEventListener("load", removeInjectedHostBadges);
