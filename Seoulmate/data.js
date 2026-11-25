@@ -154,7 +154,34 @@ window.SEOULMATE_I18N = {
     // 토스트 피드백
     toastCartAdded: "Produsul a fost adăugat în coș!",
     toastWishlistAdded: "Adăugat la favorite!",
-    toastWishlistRemoved: "Eliminat din favorite!"
+    toastWishlistRemoved: "Eliminat din favorite!",
+
+    // 상세 페이지 (PDP)
+    pdpTabDetail: "Detalii",
+    pdpTabIngredients: "Ingrediente",
+    pdpTabReviews: "Recenzii",
+    pdpTabDelivery: "Livrare & Q&A",
+    pdpMaxBenefit: "Cu cupon -10% prima comandă",
+    pdpDeliveryLabel: "Livrare",
+    pdpDeliveryDesc: "Sameday easybox 24/7 · Gratuit peste 150 lei",
+    pdpPaymentLabel: "Plată",
+    pdpPaymentDesc: "Card la easybox (Ramburs) · Card Online",
+    pdpAuthLabel: "Autenticitate",
+    pdpSkinFitLabel: "Recomandat",
+    pdpOptionTitle: "Selectează Opțiunea",
+    pdpQuantityLabel: "Cantitate",
+    pdpWhyLove: "Puncte Cheie Produs",
+    pdpTextureTitle: "Profil Textură & Formulă",
+    pdpIngredientsTitle: "Ingrediente Active Cheie",
+    pdpHowToTitle: "Mod de Utilizare",
+    pdpSuitabilityTitle: "Potrivire pe Tipuri de Ten",
+    pdpRelatedTitle: "Se combină perfect cu",
+    pdpReviewSummaryTitle: "Recenzii Clienți Verificați",
+    pdpHelpful: "Util",
+    pdpWriteVerify: "Achiziție verificată",
+    pdpSpecTableTitle: "Informații Produs & Conformitate UE",
+    pdpQaTitle: "Întrebări Frecvente",
+    pdpLinkCopied: "Link produs copiat."
   },
 
   en: {
@@ -309,7 +336,34 @@ window.SEOULMATE_I18N = {
     // Toast
     toastCartAdded: "Product added to cart!",
     toastWishlistAdded: "Saved to wishlist!",
-    toastWishlistRemoved: "Removed from wishlist!"
+    toastWishlistRemoved: "Removed from wishlist!",
+
+    // Product Detail Page (PDP)
+    pdpTabDetail: "Details",
+    pdpTabIngredients: "Ingredients",
+    pdpTabReviews: "Reviews",
+    pdpTabDelivery: "Shipping & Q&A",
+    pdpMaxBenefit: "Est. with 10% first-order coupon",
+    pdpDeliveryLabel: "Delivery",
+    pdpDeliveryDesc: "Sameday easybox 24/7 · Free over 150 lei",
+    pdpPaymentLabel: "Payment",
+    pdpPaymentDesc: "Pay at easybox (Ramburs) · Online Card",
+    pdpAuthLabel: "Authenticity",
+    pdpSkinFitLabel: "Best For",
+    pdpOptionTitle: "Select Option",
+    pdpQuantityLabel: "Quantity",
+    pdpWhyLove: "Key Product Highlights",
+    pdpTextureTitle: "Texture & Formula Profile",
+    pdpIngredientsTitle: "Key Active Ingredients",
+    pdpHowToTitle: "How to Use",
+    pdpSuitabilityTitle: "Skin Type Suitability",
+    pdpRelatedTitle: "Pairs Well With",
+    pdpReviewSummaryTitle: "Verified Customer Reviews",
+    pdpHelpful: "Helpful",
+    pdpWriteVerify: "Verified Purchase",
+    pdpSpecTableTitle: "Product Specs & EU Compliance",
+    pdpQaTitle: "Frequently Asked Questions",
+    pdpLinkCopied: "Product link copied."
   },
 
   ko: {
@@ -464,56 +518,73 @@ window.SEOULMATE_I18N = {
     // 토스트 피드백
     toastCartAdded: "장바구니에 상품을 담았습니다.",
     toastWishlistAdded: "찜한 상품에 추가되었습니다.",
-    toastWishlistRemoved: "찜한 상품에서 해제되었습니다."
+    toastWishlistRemoved: "찜한 상품에서 해제되었습니다.",
+
+    // 상세 페이지 (PDP)
+    pdpTabDetail: "상품설명",
+    pdpTabIngredients: "성분·정보",
+    pdpTabReviews: "리뷰",
+    pdpTabDelivery: "배송·Q&A",
+    pdpMaxBenefit: "첫 구매 10% 쿠폰 최대혜택가",
+    pdpDeliveryLabel: "배송정보",
+    pdpDeliveryDesc: "Sameday easybox 24시간 픽업 · 150 lei 이상 무료",
+    pdpPaymentLabel: "결제혜택",
+    pdpPaymentDesc: "보관함 현장 카드결제(Ramburs) · 온라인 결제",
+    pdpAuthLabel: "정품보증",
+    pdpSkinFitLabel: "추천피부",
+    pdpOptionTitle: "옵션 선택",
+    pdpQuantityLabel: "수량",
+    pdpWhyLove: "핵심 체크 포인트",
+    pdpTextureTitle: "제형 및 사용감 지표",
+    pdpIngredientsTitle: "주요 핵심 성분",
+    pdpHowToTitle: "사용 방법",
+    pdpSuitabilityTitle: "피부타입별 추천도",
+    pdpRelatedTitle: "함께 쓰면 좋은 상품",
+    pdpReviewSummaryTitle: "실구매자 리뷰",
+    pdpHelpful: "도움이 돼요",
+    pdpWriteVerify: "실구매 인증",
+    pdpSpecTableTitle: "상품정보 제공고시 및 EU 인증",
+    pdpQaTitle: "자주 묻는 질문 (Q&A)",
+    pdpLinkCopied: "상품 링크가 복사되었습니다."
   }
 };
 
 // ==========================================================================
-// 이미지 깨짐 방지용 고해상도 K-Beauty 인라인 SVG 그래픽 폴백 엔진
+// 이미지 깨짐 방지용 클린 K-Beauty 스카이블루 인라인 SVG 그래픽 폴백 엔진
 // ==========================================================================
 window.SEOULMATE_FALLBACK = {
   getProduct: function(category, brand, name) {
     category = category || "Toner";
     brand = brand || "SEOULMATE";
     name = (name || "K-Beauty Product").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-    
-    let bgStart = "#EBF4FF", bgEnd = "#D6E8FA", accent = "#2563EB", icon = "💧", subType = "K-BEAUTY TONER";
-    let bottleSvg = `<rect x="140" y="110" width="120" height="200" rx="24" fill="#FFFFFF" stroke="${accent}" stroke-width="3" opacity="0.95"/>
-      <rect x="170" y="70" width="60" height="40" rx="8" fill="${accent}" opacity="0.85"/>
-      <circle cx="200" cy="180" r="32" fill="${accent}" opacity="0.1"/>
-      <text x="200" y="188" font-size="28" text-anchor="middle" fill="${accent}">💧</text>`;
 
-    if (category.includes("Serum") || category.includes("Fiole") || category.includes("세럼")) {
-      bgStart = "#FFF1F2"; bgEnd = "#FFE4E6"; accent = "#E11D48"; icon = "🧪"; subType = "CALMING SERUM 50ml";
-      bottleSvg = `<rect x="145" y="130" width="110" height="170" rx="22" fill="#FFFFFF" stroke="${accent}" stroke-width="3" opacity="0.95"/>
-        <path d="M190 70 L210 70 L205 130 L195 130 Z" fill="${accent}" opacity="0.8"/>
-        <circle cx="200" cy="65" r="14" fill="${accent}"/>
-        <text x="200" y="200" font-size="28" text-anchor="middle" fill="${accent}">🧪</text>`;
-    } else if (category.includes("Creme") || category.includes("Hidratare") || category.includes("크림")) {
-      bgStart = "#F0FDF4"; bgEnd = "#DCFCE7"; accent = "#16A34A"; icon = "🛡️"; subType = "BARRIER REPAIR CREAM 80ml";
-      bottleSvg = `<rect x="130" y="140" width="140" height="130" rx="24" fill="#FFFFFF" stroke="${accent}" stroke-width="3" opacity="0.95"/>
-        <rect x="120" y="120" width="160" height="26" rx="10" fill="${accent}" opacity="0.9"/>
-        <text x="200" y="210" font-size="28" text-anchor="middle" fill="${accent}">🛡️</text>`;
-    } else if (category.includes("Solară") || category.includes("SPF") || category.includes("선크림")) {
-      bgStart = "#FEF9C3"; bgEnd = "#FEF08A"; accent = "#D97706"; icon = "☀️"; subType = "DAILY RELIEF SUN SPF50+";
-      bottleSvg = `<path d="M150 110 Q200 90 250 110 L235 280 Q200 290 165 280 Z" fill="#FFFFFF" stroke="${accent}" stroke-width="3" opacity="0.95"/>
-        <rect x="175" y="280" width="50" height="25" rx="5" fill="${accent}" opacity="0.85"/>
-        <text x="200" y="180" font-size="28" text-anchor="middle" fill="${accent}">☀️</text>`;
-    } else if (category.includes("Curățare") || category.includes("Cleanser") || category.includes("클렌징")) {
-      bgStart = "#F5F3FF"; bgEnd = "#EDE9FE"; accent = "#7C3AED"; icon = "🫧"; subType = "GENTLE CLEANSING OIL 200ml";
-      bottleSvg = `<rect x="145" y="110" width="110" height="190" rx="20" fill="#FFFFFF" stroke="${accent}" stroke-width="3" opacity="0.95"/>
-        <rect x="170" y="80" width="60" height="30" rx="6" fill="${accent}" opacity="0.8"/>
-        <text x="200" y="190" font-size="28" text-anchor="middle" fill="${accent}">🫧</text>`;
-    } else if (category.includes("Machiaj") || category.includes("Makeup") || category.includes("메이크업")) {
-      bgStart = "#FDF2F8"; bgEnd = "#FCE7F3"; accent = "#DB2777"; icon = "💄"; subType = "GLOW CUSHION & JUICY TINT";
-      bottleSvg = `<circle cx="200" cy="180" r="70" fill="#FFFFFF" stroke="${accent}" stroke-width="3" opacity="0.95"/>
-        <circle cx="200" cy="180" r="50" fill="${accent}" opacity="0.15"/>
-        <text x="200" y="190" font-size="32" text-anchor="middle" fill="${accent}">💄</text>`;
-    } else if (category.includes("Măști") || category.includes("Mask") || category.includes("마스크")) {
-      bgStart = "#ECFEFF"; bgEnd = "#CFFAFE"; accent = "#0891B2"; icon = "🧖‍♀️"; subType = "HYDROGEL MASK & PADS";
-      bottleSvg = `<rect x="135" y="115" width="130" height="160" rx="20" fill="#FFFFFF" stroke="${accent}" stroke-width="3" opacity="0.95"/>
-        <circle cx="200" cy="195" r="38" fill="${accent}" opacity="0.12"/>
-        <text x="200" y="206" font-size="30" text-anchor="middle" fill="${accent}">✨</text>`;
+    let bgStart = "#F4F9FF", bgEnd = "#E4F1FE", accent = "#2282E2", subType = "K-BEAUTY SKINCARE";
+    let bottleSvg = `<rect x="148" y="106" width="104" height="178" rx="20" fill="#FFFFFF" stroke="${accent}" stroke-width="2.2"/>
+      <rect x="176" y="72" width="48" height="34" rx="7" fill="${accent}" opacity="0.16" stroke="${accent}" stroke-width="2"/>
+      <line x1="168" y1="154" x2="232" y2="154" stroke="${accent}" stroke-width="1.5" opacity="0.4"/>
+      <line x1="176" y1="172" x2="224" y2="172" stroke="${accent}" stroke-width="1.5" opacity="0.25"/>`;
+
+    if (category.includes("Serum") || category.includes("Fiole")) {
+      subType = "CONCENTRATED SERUM";
+      bottleSvg = `<rect x="152" y="128" width="96" height="156" rx="18" fill="#FFFFFF" stroke="${accent}" stroke-width="2.2"/>
+        <path d="M192 74 L208 74 L204 128 L196 128 Z" fill="${accent}" opacity="0.18" stroke="${accent}" stroke-width="1.8"/>
+        <rect x="184" y="64" width="32" height="16" rx="6" fill="${accent}"/>`;
+    } else if (category.includes("Creme") || category.includes("Hidratare")) {
+      subType = "BARRIER MOISTURIZER";
+      bottleSvg = `<rect x="132" y="142" width="136" height="122" rx="20" fill="#FFFFFF" stroke="${accent}" stroke-width="2.2"/>
+        <rect x="124" y="120" width="152" height="24" rx="9" fill="${accent}" opacity="0.18" stroke="${accent}" stroke-width="2"/>`;
+    } else if (category.includes("Solară") || category.includes("SPF")) {
+      subType = "UV DEFENSE SPF50+";
+      bottleSvg = `<path d="M154 102 L246 102 L232 252 L168 252 Z" fill="#FFFFFF" stroke="${accent}" stroke-width="2.2"/>
+        <rect x="178" y="252" width="44" height="24" rx="5" fill="${accent}" opacity="0.18" stroke="${accent}" stroke-width="2"/>`;
+    } else if (category.includes("Machiaj") || category.includes("Makeup")) {
+      subType = "K-BEAUTY MAKEUP";
+      bottleSvg = `<circle cx="200" cy="186" r="68" fill="#FFFFFF" stroke="${accent}" stroke-width="2.2"/>
+        <circle cx="200" cy="186" r="46" fill="${accent}" opacity="0.09" stroke="${accent}" stroke-width="1.4"/>`;
+    } else if (category.includes("Măști") || category.includes("Mask")) {
+      subType = "HYDROGEL & PADS";
+      bottleSvg = `<rect x="138" y="114" width="124" height="156" rx="18" fill="#FFFFFF" stroke="${accent}" stroke-width="2.2"/>
+        <circle cx="200" cy="192" r="34" fill="${accent}" opacity="0.1"/>`;
     }
 
     let displayTitle = name.length > 28 ? name.substring(0, 26) + "..." : name;
@@ -526,73 +597,51 @@ window.SEOULMATE_FALLBACK = {
         </linearGradient>
       </defs>
       <rect width="400" height="400" fill="url(#bgGrad)"/>
-      <circle cx="200" cy="190" r="130" fill="#FFFFFF" opacity="0.6"/>
       ${bottleSvg}
-      <rect x="25" y="22" width="100" height="24" rx="12" fill="#FFFFFF" opacity="0.95" filter="drop-shadow(0 2px 4px rgba(0,0,0,0.06))"/>
-      <text x="75" y="38" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,sans-serif" font-size="10" font-weight="800" text-anchor="middle" fill="${accent}">✓ CPNP 100%</text>
-      <text x="200" y="325" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,sans-serif" font-size="13" font-weight="900" letter-spacing="1.5" text-anchor="middle" fill="${accent}">${brand.toUpperCase()}</text>
-      <text x="200" y="348" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,sans-serif" font-size="12" font-weight="700" text-anchor="middle" fill="#1F2937">${displayTitle}</text>
-      <text x="200" y="370" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,sans-serif" font-size="10" font-weight="600" text-anchor="middle" fill="#6B7280">${subType}</text>
+      <rect x="24" y="24" width="88" height="22" rx="11" fill="#FFFFFF"/>
+      <text x="68" y="39" font-family="sans-serif" font-size="10" font-weight="800" text-anchor="middle" fill="${accent}">EU CPNP</text>
+      <text x="200" y="324" font-family="sans-serif" font-size="12" font-weight="800" letter-spacing="1.6" text-anchor="middle" fill="${accent}">${brand.toUpperCase()}</text>
+      <text x="200" y="346" font-family="sans-serif" font-size="12" font-weight="700" text-anchor="middle" fill="#141922">${displayTitle}</text>
+      <text x="200" y="366" font-family="sans-serif" font-size="10" font-weight="600" text-anchor="middle" fill="#64748B">${subType}</text>
     </svg>`;
 
     return "data:image/svg+xml;charset=utf-8," + encodeURIComponent(svg);
   },
 
-  getAvatar: function(name, handle) {
+  getAvatar: function(name) {
     name = (name || "Creator").replace(/</g, "&lt;");
-    const initials = name.split(" ").map(p => p[0]).join("").substring(0, 2).toUpperCase() || "K";
+    const initials = name.split(" ").map(p => p[0]).join("").substring(0, 2).toUpperCase() || "SM";
     const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="100%" height="100%">
-      <defs>
-        <linearGradient id="avGrad" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0%" stop-color="#FFE4E6"/>
-          <stop offset="100%" stop-color="#FECDD3"/>
-        </linearGradient>
-      </defs>
-      <rect width="200" height="200" rx="100" fill="url(#avGrad)"/>
-      <circle cx="100" cy="100" r="75" fill="#FFFFFF" opacity="0.75"/>
-      <text x="100" y="114" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,sans-serif" font-size="44" font-weight="900" text-anchor="middle" fill="#E11D48">${initials}</text>
-      <circle cx="150" cy="150" r="22" fill="#E11D48"/>
-      <text x="150" y="157" font-size="18" text-anchor="middle" fill="#FFFFFF">✓</text>
+      <rect width="200" height="200" rx="100" fill="#E8F3FE"/>
+      <text x="100" y="114" font-family="sans-serif" font-size="52" font-weight="800" text-anchor="middle" fill="#2282E2">${initials}</text>
     </svg>`;
     return "data:image/svg+xml;charset=utf-8," + encodeURIComponent(svg);
   },
 
   getBanner: function(title, tag) {
     title = (title || "Seoulmate K-Beauty").replace(/<br\s*\/?>/gi, " ");
-    tag = tag || "100% CPNP AUTHENTIC";
+    tag = tag || "EU CPNP AUTHENTIC";
     const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450" width="100%" height="100%">
       <defs>
         <linearGradient id="banGrad" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0%" stop-color="#1E1B4B"/>
-          <stop offset="50%" stop-color="#431407"/>
-          <stop offset="100%" stop-color="#831843"/>
+          <stop offset="0%" stop-color="#0F2942"/>
+          <stop offset="100%" stop-color="#1E65B0"/>
         </linearGradient>
       </defs>
       <rect width="800" height="450" fill="url(#banGrad)"/>
-      <circle cx="680" cy="120" r="160" fill="#FF3F6C" opacity="0.25"/>
-      <circle cx="120" cy="380" r="140" fill="#F43F5E" opacity="0.2"/>
-      <rect x="60" y="130" width="240" height="32" rx="16" fill="#FF3F6C" opacity="0.95"/>
-      <text x="180" y="151" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,sans-serif" font-size="13" font-weight="800" text-anchor="middle" fill="#FFFFFF">✨ ${tag}</text>
-      <text x="60" y="225" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,sans-serif" font-size="32" font-weight="900" fill="#FFFFFF">${title}</text>
-      <text x="60" y="270" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,sans-serif" font-size="18" font-weight="600" fill="#E2E8F0">Seoulmate · K-Beauty Creator Commerce</text>
+      <text x="60" y="160" font-family="sans-serif" font-size="14" font-weight="800" letter-spacing="1.2" fill="#93C5FD">${tag}</text>
+      <text x="60" y="218" font-family="sans-serif" font-size="32" font-weight="800" fill="#FFFFFF">${title}</text>
+      <text x="60" y="264" font-family="sans-serif" font-size="16" font-weight="500" fill="#DBEAFE">Seoulmate · Official K-Beauty Store</text>
     </svg>`;
     return "data:image/svg+xml;charset=utf-8," + encodeURIComponent(svg);
   },
 
-  getFeed: function(creatorName, category) {
+  getFeed: function(creatorName) {
     const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 600" width="100%" height="100%">
-      <defs>
-        <linearGradient id="feedGrad" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0%" stop-color="#FCE7F3"/>
-          <stop offset="100%" stop-color="#E0E7FF"/>
-        </linearGradient>
-      </defs>
-      <rect width="600" height="600" fill="url(#feedGrad)"/>
-      <circle cx="300" cy="270" r="120" fill="#FFFFFF" opacity="0.8"/>
-      <text x="300" y="290" font-size="70" text-anchor="middle">🌸</text>
-      <rect x="120" y="440" width="360" height="70" rx="16" fill="#FFFFFF" opacity="0.95"/>
-      <text x="300" y="472" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,sans-serif" font-size="18" font-weight="800" text-anchor="middle" fill="#1F2937">${creatorName} K-Beauty Look</text>
-      <text x="300" y="496" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,sans-serif" font-size="13" font-weight="600" text-anchor="middle" fill="#DB2777">#KBeautyRoutine #Seoulmate</text>
+      <rect width="600" height="600" fill="#F0F7FF"/>
+      <rect x="80" y="230" width="440" height="140" rx="16" fill="#FFFFFF" stroke="#DBEAFE" stroke-width="2"/>
+      <text x="300" y="290" font-family="sans-serif" font-size="22" font-weight="800" text-anchor="middle" fill="#141922">${creatorName}</text>
+      <text x="300" y="325" font-family="sans-serif" font-size="14" font-weight="600" text-anchor="middle" fill="#2282E2">Seoulmate Creator Routine</text>
     </svg>`;
     return "data:image/svg+xml;charset=utf-8," + encodeURIComponent(svg);
   }
@@ -1325,4 +1374,313 @@ window.SEOULMATE_DATA = {
       distance: "0.8 km"
     }
   ]
+};
+
+// ==========================================================================
+// 올리브영 수준 상세페이지(PDP) 데이터 엔진 (옵션 · 성분 · 사용감 · 사용법 · 리뷰 · Q&A)
+// ==========================================================================
+window.SEOULMATE_PDP = {
+  overrides: {
+    "anua-toner-77": {
+      volume: "250ml",
+      origin: "Republic of Korea (The Founders Inc.)",
+      pao: "12M",
+      options: [
+        { id: "std", labelRo: "250ml Standard", labelEn: "250ml Standard", labelKo: "단품 250ml", priceDelta: 0 },
+        { id: "duo", labelRo: "Set Duo 250ml x 2 (-10%)", labelEn: "Value Duo 250ml x 2 (-10%)", labelKo: "더블 기획 250ml×2 (10% 추가할인)", priceMultiplier: 1.8 }
+      ],
+      highlights: [
+        { ro: "77% extract de Houttuynia Cordata recoltat din Coreea pentru calmare rapidă", en: "77% Korean Heartleaf extract calms visible redness and irritation", ko: "국내산 어성초 추출물 77% 함유로 민감 피부 빠른 진정" },
+        { ro: "Formulă non-comedogenică testată dermatologic, pH slab acid 5.5", en: "Non-comedogenic clinically tested formula with mild pH 5.5 balance", ko: "논코메도제닉 테스트 완료 · 피부 장벽 친화적 약산성 pH 5.5" },
+        { ro: "Textură apoasă ușoară, ideală pentru metoda 7-skin sau compresă cu dischete", en: "Watery light finish ideal for layering or 5-minute soothing toner packs", ko: "끈적임 없는 워터 제형으로 닦토·흡토·스킨팩 모두 활용 가능" }
+      ],
+      ingredients: [
+        { name: "Houttuynia Cordata Extract (77%)", roleRo: "Calmare intensă & anti-roșeață", roleEn: "Rapid soothing & redness relief", roleKo: "트러블·붉은기 집중 진정" },
+        { name: "Panthenol (Pro-Vitamin B5)", roleRo: "Consolidare barieră & hidratare", roleEn: "Barrier repair & moisture retention", roleKo: "수분 보호막 형성 및 장벽 강화" },
+        { name: "Centella Asiatica & Betaine", roleRo: "Echilibrare sebum-apă fără iritație", roleEn: "Gentle water-oil balance care", roleKo: "유수분 밸런스 조절 및 저자극 보습" }
+      ],
+      inci: "Houttuynia Cordata Extract (77%), Water, 1,2-Hexanediol, Glycerin, Betaine, Panthenol, Saccharum Officinarum Extract, Portulaca Oleracea Extract, Butylene Glycol, Vitex Agnus-Castus Extract, Chamomilla Recutita Flower Extract, Arctium Lappa Root Extract, Centella Asiatica Extract.",
+      texture: [
+        { labelRo: "Hidratare", labelEn: "Hydration", labelKo: "수분감", score: 86 },
+        { labelRo: "Absorbție rapidă", labelEn: "Absorption", labelKo: "흡수력", score: 96 },
+        { labelRo: "Fără lipiciozitate", labelEn: "Lightweight", labelKo: "산뜻함", score: 98 },
+        { labelRo: "Toleranță ten sensibil", labelEn: "Gentle", labelKo: "저자극", score: 95 }
+      ]
+    },
+    "boj-relief-sun": {
+      volume: "50ml",
+      origin: "Republic of Korea (Kolmar Korea)",
+      pao: "12M",
+      options: [
+        { id: "std", labelRo: "50ml Standard (EU Formula)", labelEn: "50ml Standard (EU Formula)", labelKo: "단품 50ml (EU 공식 포뮬러)", priceDelta: 0 },
+        { id: "duo", labelRo: "Duo Pack 50ml x 2", labelEn: "Value Duo 50ml x 2", labelKo: "1+1 기획 50ml×2", priceMultiplier: 1.82 }
+      ],
+      highlights: [
+        { ro: "SPF50+ PA++++ testat independent în laboratoare din Coreea și Spania", en: "SPF50+ PA++++ verified by independent Korean & European labs", ko: "한국·유럽 이중 임상 기관 검증 완료 SPF50+ PA++++ 자외선 차단" },
+        { ro: "30% extract de orez și ferment probiotic pentru textură de cremă hidratantă", en: "30% Rice Extract + Grain Probiotics with creamy moisturizer glide", ko: "쌀 추출물 30% + 곡물 발효 성분으로 수분크림처럼 촉촉한 발림성" },
+        { ro: "Zero peliculă albă, zero usturime oculară, perfect sub machiaj", en: "Zero white cast, zero eye stinging, layers seamlessly under makeup", ko: "백탁·눈시림·밀림 없이 메이크업 전 베이스로도 완벽 밀착" }
+      ],
+      ingredients: [
+        { name: "Oryza Sativa (Rice) Extract (30%)", roleRo: "Luminozitate & nutriție delicată", roleEn: "Nourishing glow & skin softening", roleKo: "맑은 톤업 광채 및 부드러운 보습" },
+        { name: "Grain Ferment Probiotics", roleRo: "Susținere microbiom & calmare", roleEn: "Microbiome & barrier comfort", roleKo: "피부 장벽 진정 및 컨디션 케어" },
+        { name: "Niacinamide (2%)", roleRo: "Uniformizare ton & control sebum", roleEn: "Tone evening & balanced sheen", roleKo: "피부결 정돈 및 맑은 광채 케어" }
+      ],
+      inci: "Water, Oryza Sativa (Rice) Extract (30%), Dibutyl Adipate, Propanediol, Diethylamino Hydroxybenzoyl Hexyl Benzoate, Polymethylsilsesquioxane, Ethylhexyl Triazone, Niacinamide, Methylene Bis-Benzotriazolyl Tetramethylbutylphenol, Lactobacillus/Pumpkin Ferment Extract.",
+      texture: [
+        { labelRo: "Hidratare", labelEn: "Hydration", labelKo: "수분감", score: 94 },
+        { labelRo: "Absorbție rapidă", labelEn: "Absorption", labelKo: "흡수력", score: 92 },
+        { labelRo: "Fără peliculă albă", labelEn: "No Whitecast", labelKo: "백탁없음", score: 99 },
+        { labelRo: "Toleranță ten sensibil", labelEn: "Gentle", labelKo: "저자극", score: 94 }
+      ]
+    },
+    "skin1004-centella-ampoule": {
+      volume: "100ml",
+      origin: "Republic of Korea (Craver Corp.)",
+      pao: "12M",
+      options: [
+        { id: "std", labelRo: "100ml Format Mare", labelEn: "100ml Full Size", labelKo: "대용량 본품 100ml", priceDelta: 0 },
+        { id: "mini", labelRo: "55ml Standard", labelEn: "55ml Standard", labelKo: "스탠다드 55ml", priceDelta: -22 }
+      ],
+      highlights: [
+        { ro: "100% extract pur de Centella Asiatica din Madagascar, un singur ingredient", en: "100% pure Madagascar Centella Asiatica — single-ingredient minimalism", ko: "불필요한 성분 배제, 마다가스카르산 순수 병풀추출물 100% 단일 포뮬러" },
+        { ro: "Calmează rapid roșeața și reface bariera pielii iritate în profunzime", en: "Rapidly calms reactive skin and strengthens compromised skin barriers", ko: "외부 자극으로 예민해진 피부 진정 및 약해진 장벽 집중 케어" },
+        { ro: "Absorbție instantanee fără peliculă grasă, ideal pentru toate anotimpurile", en: "Featherlight absorption with zero tackiness across all seasons", ko: "물처럼 가볍게 스며들어 사계절 레이어링하기 좋은 진정 앰플" }
+      ],
+      ingredients: [
+        { name: "Centella Asiatica Extract (100%)", roleRo: "Calmare & regenerare barieră", roleEn: "Pure soothing & barrier recovery", roleKo: "민감 피부 즉각 진정 및 장벽 보호" },
+        { name: "Asiaticoside & Madecassic Acid", roleRo: "Protecție antioxidantă & elasticitate", roleEn: "Natural soothing actives from Centella", roleKo: "병풀 핵심 유효성분으로 피부 컨디션 회복" },
+        { name: "Zero Parfum / Zero Alcool", roleRo: "Siguranță maximă pentru ten reactiv", roleEn: "Fragrance-free & alcohol-free safety", roleKo: "무향료·무알코올 저자극 클린 포뮬러" }
+      ],
+      inci: "Centella Asiatica Extract (100%).",
+      texture: [
+        { labelRo: "Hidratare", labelEn: "Hydration", labelKo: "수분감", score: 90 },
+        { labelRo: "Absorbție rapidă", labelEn: "Absorption", labelKo: "흡수력", score: 97 },
+        { labelRo: "Fără lipiciozitate", labelEn: "Lightweight", labelKo: "산뜻함", score: 96 },
+        { labelRo: "Toleranță ten sensibil", labelEn: "Gentle", labelKo: "저자극", score: 99 }
+      ]
+    },
+    "tirtir-mask-fit-red": {
+      volume: "18g",
+      origin: "Republic of Korea (TIRTIR Inc.)",
+      pao: "12M",
+      options: [
+        { id: "17c", labelRo: "#17C Porcelain (Rece)", labelEn: "#17C Porcelain (Cool)", labelKo: "#17C 포슬린 (밝은 쿨톤)", priceDelta: 0 },
+        { id: "21n", labelRo: "#21N Ivory (Neutru · Best)", labelEn: "#21N Ivory (Neutral · Best)", labelKo: "#21N 아이보리 (베스트 뉴트럴)", priceDelta: 0 },
+        { id: "23n", labelRo: "#23N Sand (Cald/Neutru)", labelEn: "#23N Sand (Warm/Neutral)", labelKo: "#23N 샌드 (자연스러운 23호)", priceDelta: 0 }
+      ],
+      highlights: [
+        { ro: "Rezistență clinică 72H cu finisaj semi-glow satinat și acoperire mare", en: "72-hour long-wear coverage with luminous satin glass-skin finish", ko: "72시간 무너짐 없는 고밀착 커버력과 고급스러운 세미글로우 피니쉬" },
+        { ro: "Pulbere ultra-fină care estompează porii fără efect de mască", en: "Micro-fine powder blurs pores seamlessly without caking", ko: "초미세 커버 파우더가 모공과 잡티를 얇고 균일하게 블러링" },
+        { ro: "Îmbogățit cu astaxantină, propolis și hibiscus pentru confort pe durata zilei", en: "Infused with Astaxanthin, Propolis & Hibiscus to prevent dryness", ko: "아스타잔틴·프로폴리스·히비스커스 추출물로 들뜸 없는 촉촉함 유지" }
+      ],
+      ingredients: [
+        { name: "Hibiscus Sabdariffa & Astaxanthin", roleRo: "Protecție antioxidantă & rezistență", roleEn: "Antioxidant radiance & anti-darkening", roleKo: "다크닝 방지 및 생기 있는 광채 유지" },
+        { name: "Propolis Extract", roleRo: "Aderență fină & hidratare", roleEn: "Smooth adherence & skin nourishment", roleKo: "들뜸 없는 밀착력 및 피부 영양 공급" },
+        { name: "SPF40 PA++ UV Shield", roleRo: "Protecție solară zilnică integrată", roleEn: "Built-in daily broad-spectrum UV care", roleKo: "데일리 자외선 차단 기능성 포뮬러" }
+      ],
+      inci: "Water, Cyclopentasiloxane, Titanium Dioxide (CI 77891), Trimethylsiloxysilicate, Propanediol, Iron Oxides, Niacinamide, Hibiscus Sabdariffa Flower Extract, Propolis Extract, Astaxanthin.",
+      texture: [
+        { labelRo: "Acoperire", labelEn: "Coverage", labelKo: "커버력", score: 95 },
+        { labelRo: "Rezistență 72H", labelEn: "Longevity", labelKo: "지속력", score: 96 },
+        { labelRo: "Finisaj Satinat", labelEn: "Satin Glow", labelKo: "윤광 표현", score: 88 },
+        { labelRo: "Aderență ușoară", labelEn: "Thin Fit", labelKo: "밀착력", score: 93 }
+      ]
+    },
+    "romand-juicy-tint": {
+      volume: "5.5g",
+      origin: "Republic of Korea (iFamilySC)",
+      pao: "12M",
+      options: [
+        { id: "25", labelRo: "#25 Bare Grape (Cool · Best)", labelEn: "#25 Bare Grape (Cool · Best)", labelKo: "#25 베어그레이프 (쿨톤 베스트)", priceDelta: 0 },
+        { id: "23", labelRo: "#23 Nucadamia (Neutru)", labelEn: "#23 Nucadamia (Neutral)", labelKo: "#23 누카다미아 (내추럴 뉴트럴)", priceDelta: 0 },
+        { id: "06", labelRo: "#06 Figfig (Cool/Neutru)", labelEn: "#06 Figfig (Cool/Neutral)", labelKo: "#06 피그피그 (무화과 로즈)", priceDelta: 0 }
+      ],
+      highlights: [
+        { ro: "Efect de luciu siropos care se intensifică natural după 10 secunde", en: "Syrupy fruit-glazed shine that builds cleanly after 10 seconds", ko: "바르고 10초 뒤 차오르는 맑은 탕후루 과즙 광택 피니쉬" },
+        { ro: "Culoare fidelă MLBB fără a usca buzele pe parcursul zilei", en: "True-to-tone MLBB stain that stays comfortable without dryness", ko: "각질 부각 없이 첫 컬러 그대로 자연스럽게 유지되는 착색력" },
+        { ro: "Nuanțe concepute pe sistemul coreean de Personal Color", en: "Curated with Korean personal-color undertone precision", ko: "쿨톤·웜톤·뉴트럴 퍼스널컬러별 정교하게 설계된 데일리 쉐이드" }
+      ],
+      ingredients: [
+        { name: "Fruit Extracts (Fig, Kiwi, Papaya)", roleRo: "Hidratare & suplețe buze", roleEn: "Nourishing botanical lip care", roleKo: "식물성 과일 추출물로 촉촉한 입술 케어" },
+        { name: "Gloss-Locking Oil Complex", roleRo: "Luciu sticlos fără lipiciozitate", roleEn: "Non-sticky glass-like shine coat", roleKo: "끈적임 적은 투명 물막 광택 레이어" },
+        { name: "Clear Tint Pigments", roleRo: "Rezistență naturală a culorii", roleEn: "Long-lasting even lip tinting", roleKo: "얼룩 없이 균일하게 스며드는 맑은 발색" }
+      ],
+      inci: "Water, Octyldodecanol, Dimethicone, Alcohol Denat., Acrylates Copolymer, Sorbitan Stearate, Ethylcellulose, Behenyl Alcohol, Pentylene Glycol, Actinidia Chinensis (Kiwi) Fruit Extract, Carica Papaya Fruit Extract.",
+      texture: [
+        { labelRo: "Luciu Sticlos", labelEn: "Glass Shine", labelKo: "광택감", score: 95 },
+        { labelRo: "Rezistență Culoare", labelEn: "Tint Stain", labelKo: "지속력", score: 88 },
+        { labelRo: "Hidratare Buze", labelEn: "Moisture", labelKo: "촉촉함", score: 90 },
+        { labelRo: "Fără lipiciozitate", labelEn: "Comfort", labelKo: "가벼움", score: 92 }
+      ]
+    }
+  },
+
+  getDetail: function(prod) {
+    const custom = this.overrides[prod.id];
+    const isMakeup = prod.category === "Machiaj";
+    const volMatch = (prod.koreanName || prod.name).match(/(\d+\s?(?:ml|g|ea|매입|매|Pads))/i);
+    const volume = custom ? custom.volume : (volMatch ? volMatch[1] : (isMakeup ? "15g" : "50ml"));
+
+    const defaultOptions = isMakeup
+      ? [
+          { id: "opt1", labelRo: "Nuanță Best (Standard)", labelEn: "Signature Shade (Standard)", labelKo: "베스트 컬러 (본품)", priceDelta: 0 },
+          { id: "opt2", labelRo: "Nuanță Neutră", labelEn: "Natural Neutral Shade", labelKo: "내추럴 뉴트럴 (본품)", priceDelta: 0 }
+        ]
+      : [
+          { id: "std", labelRo: `${volume} Standard`, labelEn: `${volume} Standard`, labelKo: `단품 ${volume}`, priceDelta: 0 },
+          { id: "duo", labelRo: `Set Duo ${volume} x 2 (-10%)`, labelEn: `Value Duo ${volume} x 2 (-10%)`, labelKo: `더블 기획 ${volume}×2 (10% 추가할인)`, priceMultiplier: 1.8 }
+        ];
+
+    const defaultHighlights = [
+      {
+        ro: `Import oficial ${prod.brand} notificat în portalul european CPNP (${prod.cpnpNumber})`,
+        en: `Official ${prod.brand} import verified on the EU CPNP portal (${prod.cpnpNumber})`,
+        ko: `${prod.brand} 본사 공식 유통 · EU CPNP 정식 등록 완료 (${prod.cpnpNumber})`
+      },
+      {
+        ro: "Formulă testată dermatologic, potrivită pentru utilizare zilnică fără iritații",
+        en: "Dermatologically tested gentle formula designed for daily skin comfort",
+        ko: "피부 자극 테스트 완료 · 민감 피부도 매일 부담 없이 사용하는 데일리 포뮬러"
+      },
+      {
+        ro: "Livrare rapidă în toată România prin rețeaua Sameday easybox 24/7",
+        en: "Fast tracked delivery across Romania to 10,000+ Sameday easybox lockers",
+        ko: "루마니아 전역 10,000+ Sameday easybox 보관함 신속 안심 배송 지원"
+      }
+    ];
+
+    const defaultIngredients = [
+      {
+        name: prod.brand + " Signature Active Complex",
+        roleRo: "Îngrijire țintită pentru nevoia principală a tenului",
+        roleEn: "Targeted active care for core skin concerns",
+        roleKo: "핵심 피부 고민에 집중 작용하는 브랜드 시그니처 유효 성분"
+      },
+      {
+        name: "Hyaluronic Acid & Panthenol",
+        roleRo: "Hidratare stratificată și protecția barierei cutanate",
+        roleEn: "Multi-layer moisture lock and barrier comfort",
+        roleKo: "피부 속 수분 충전 및 건강한 수분 장벽 보호"
+      },
+      {
+        name: "Botanical Soothing Extracts",
+        roleRo: "Calmare blândă și finisaj confortabil",
+        roleEn: "Gentle calming finish suitable for daily layering",
+        roleKo: "외부 자극 완화 및 산뜻하고 편안한 마무리감"
+      }
+    ];
+
+    const defaultTexture = isMakeup
+      ? [
+          { labelRo: "Aderență & Rezistență", labelEn: "Long-Wear", labelKo: "지속력", score: 92 },
+          { labelRo: "Culoare & Acoperire", labelEn: "Payoff", labelKo: "발색·커버", score: 91 },
+          { labelRo: "Confort pe piele", labelEn: "Comfort", labelKo: "밀착감", score: 93 },
+          { labelRo: "Finisaj natural", labelEn: "Natural Finish", labelKo: "자연스러움", score: 90 }
+        ]
+      : [
+          { labelRo: "Hidratare", labelEn: "Hydration", labelKo: "보습력", score: 91 },
+          { labelRo: "Absorbție rapidă", labelEn: "Absorption", labelKo: "흡수력", score: 93 },
+          { labelRo: "Fără lipiciozitate", labelEn: "Lightweight", labelKo: "산뜻함", score: 92 },
+          { labelRo: "Toleranță ten sensibil", labelEn: "Gentle", labelKo: "저자극", score: 95 }
+        ];
+
+    const howToUse = isMakeup
+      ? [
+          { ro: "Pregătește pielea cu toner și SPF ușor înainte de aplicare.", en: "Prep skin with hydrating skincare and SPF prior to application.", ko: "기초 스킨케어와 선케어 흡수 후 메이크업 단계에서 사용하세요." },
+          { ro: "Aplică o cantitate mică prin tapotare ușoară pentru un strat subțire și uniform.", en: "Apply a thin layer evenly using gentle tapping motions.", ko: "소량을 덜어 얇게 펴 바르거나 가볍게 두드려 밀착시켜 주세요." },
+          { ro: "Reaplică punctiform acolo unde dorești acoperire sau intensitate suplimentară.", en: "Build lightly on areas needing extra coverage or color depth.", ko: "커버나 발색이 더 필요한 부위에 한 번 더 레이어링하세요." }
+        ]
+      : [
+          { ro: "După curățare, aplică o cantitate adecvată pe tenul curat și uscat.", en: "After cleansing, dispense a moderate amount onto clean skin.", ko: "세안 후 적당량을 덜어 피부결을 따라 부드럽게 펴 발라주세요." },
+          { ro: "Tapotează ușor cu vârfurile degetelor până la absorbția completă.", en: "Gently pat with fingertips until fully absorbed into the skin.", ko: "손바닥으로 가볍게 감싸듯 두드려 유효성분이 충분히 흡수되도록 합니다." },
+          { ro: "Folosește dimineața și seara; dimineața continuă întotdeauna cu SPF50+.", en: "Use AM & PM daily; always finish your morning routine with SPF50+.", ko: "아침·저녁 데일리로 사용하며, 아침에는 선크림으로 마무리해 주세요." }
+        ];
+
+    const reviews = [
+      {
+        id: `${prod.id}-r1`,
+        author: "andreea_m99",
+        skinType: (prod.skinTypes && prod.skinTypes[0]) || "Mixt",
+        rating: 5,
+        date: "2026.11.18",
+        helpful: 34,
+        textRo: `Am comandat a doua oară ${prod.brand} de pe Seoulmate. Textura se absoarbe foarte repede, nu încarcă deloc tenul și am verificat codul CPNP pe cutie — 100% original.`,
+        textEn: `Second repurchase of ${prod.brand} on Seoulmate. Absorbs cleanly without any heaviness, and the official EU CPNP batch label matches 100%.`,
+        textKo: `${prod.brand} 재구매입니다! 흡수력이 정말 빠르고 답답함 없이 산뜻하게 마무리돼요. 박스 정품 CPNP 로트 번호까지 확인돼서 믿고 씁니다.`
+      },
+      {
+        id: `${prod.id}-r2`,
+        author: "claudia.bucharest",
+        skinType: (prod.skinTypes && prod.skinTypes[1]) || "Sensibil",
+        rating: 5,
+        date: "2026.11.12",
+        helpful: 21,
+        textRo: "Tenul meu sensibil reacționează ușor, dar acest produs nu m-a iritat deloc. Coletul a ajuns a doua zi direct în easybox-ul de lângă birou.",
+        textEn: "My reactive skin gets red easily, yet this felt completely calm from day one. Arrived at my neighborhood easybox locker the very next morning.",
+        textKo: "민감성이라 아무거나 못 쓰는데 자극 없이 순해서 데일리로 정착했어요. 주문 다음 날 회사 근처 easybox로 바로 도착해서 편했습니다."
+      },
+      {
+        id: `${prod.id}-r3`,
+        author: "ioana_cluj",
+        skinType: (prod.skinTypes && prod.skinTypes[2]) || "Uscat",
+        rating: 4,
+        date: "2026.11.05",
+        helpful: 12,
+        textRo: "Raport calitate-preț excelent față de alte magazine din România. Ambalat impecabil și exact formula coreeană autentică.",
+        textEn: "Great value compared to local retail markups. Clean tamper-evident packaging and genuine Korean formulation.",
+        textKo: "현지 매장보다 가격도 합리적이고 밀봉 포장 상태도 깔끔해요. 발림성과 지속력 모두 만족스럽습니다."
+      }
+    ];
+
+    const qaList = [
+      {
+        qRo: "Produsul este 100% autentic și înregistrat EU CPNP?",
+        qEn: "Is this item 100% authentic and EU CPNP registered?",
+        qKo: "100% 한국 정품이며 EU CPNP 등록 완료된 제품인가요?",
+        aRo: `Da. Toate loturile ${prod.brand} sunt importate prin distribuitor oficial autorizat UE (cod ${prod.cpnpNumber}, lot ${prod.lotNumber}).`,
+        aEn: `Yes. Every ${prod.brand} batch is imported through an authorized EU Responsible Person (${prod.cpnpNumber}, batch ${prod.lotNumber}).`,
+        aKo: `네, ${prod.brand} 공식 유통망을 통해 EU CPNP 정식 등록 및 통관된 100% 정품입니다 (인증번호 ${prod.cpnpNumber} / 로트 ${prod.lotNumber}).`
+      },
+      {
+        qRo: "Cât durează livrarea la Sameday easybox și pot plăti la ridicare?",
+        qEn: "How fast is Sameday easybox delivery and is Pay on Delivery available?",
+        qKo: "easybox 배송 기간과 수령 시 현장 결제(Ramburs)가 가능한가요?",
+        aRo: "Expediere în 24h (1–2 zile lucrătoare în toată România). Transportul este gratuit peste 150 lei și poți plăti cu cardul direct la ecranul easybox.",
+        aEn: "Dispatched within 24h (1–2 business days nationwide). Free over 150 lei, and card payment directly at the easybox kiosk (Ramburs) is supported.",
+        aKo: "주문 후 24시간 내 출고(영업일 1~2일 소요)되며, 150 lei 이상 무료배송입니다. 보관함 키오스크에서 현장 카드결제(Ramburs)도 가능합니다."
+      }
+    ];
+
+    return {
+      volume,
+      origin: custom ? custom.origin : "Republic of Korea (Official EU CPNP Import)",
+      pao: custom ? custom.pao : "12M",
+      options: custom ? custom.options : defaultOptions,
+      highlights: custom ? custom.highlights : defaultHighlights,
+      ingredients: custom ? custom.ingredients : defaultIngredients,
+      inci: custom ? custom.inci : `${prod.brand} Official EU CPNP Registered Formula (${prod.cpnpNumber}). Water, Glycerin, Butylene Glycol, Panthenol, Centella Asiatica Extract, Sodium Hyaluronate, 1,2-Hexanediol.`,
+      texture: custom ? custom.texture : defaultTexture,
+      howToUse,
+      reviews,
+      qaList,
+      ratingBreakdown: [
+        { star: 5, pct: 89 },
+        { star: 4, pct: 8 },
+        { star: 3, pct: 2 },
+        { star: 2, pct: 1 },
+        { star: 1, pct: 0 }
+      ],
+      surveyMetrics: isMakeup
+        ? [
+            { labelRo: "Rezistență", labelEn: "Longevity", labelKo: "지속력", valueRo: "Rezistă toată ziua", valueEn: "Lasts all day", valueKo: "오래 유지돼요", pct: 94 },
+            { labelRo: "Culoare", labelEn: "Shade Match", labelKo: "발색력", valueRo: "Fidel imaginii", valueEn: "True to tone", valueKo: "화면과 같아요", pct: 96 },
+            { labelRo: "Confort", labelEn: "Comfort", labelKo: "밀착력", valueRo: "Lejer pe piele", valueEn: "Lightweight fit", valueKo: "가볍게 밀착돼요", pct: 92 }
+          ]
+        : [
+            { labelRo: "Toleranță", labelEn: "Irritation", labelKo: "자극도", valueRo: "Fără iritații", valueEn: "Gentle, zero irritation", valueKo: "자극 없이 순해요", pct: 96 },
+            { labelRo: "Absorbție", labelEn: "Absorption", labelKo: "흡수력", valueRo: "Se absoarbe rapid", valueEn: "Absorbs quickly", valueKo: "빠르게 흡수돼요", pct: 94 },
+            { labelRo: "Hidratare", labelEn: "Hydration", labelKo: "보습력", valueRo: "Hidratare durabilă", valueEn: "Long-lasting moisture", valueKo: "속까지 촉촉해요", pct: 91 }
+          ]
+    };
+  }
 };
