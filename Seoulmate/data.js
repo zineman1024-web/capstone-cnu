@@ -949,7 +949,7 @@ window.SEOULMATE_DATA = {
       discount: 17,
       rating: 4.9,
       reviewsCount: 618,
-      image: "https://images.unsplash.com/photo-1608248597359-28c045b8fb32?auto=format&fit=crop&w=500&q=80",
+      image: "https://images.unsplash.com/photo-1611930022073-b7a4ba5fcccd?auto=format&fit=crop&w=900&q=80",
       badge: "Bestseller #1",
       isAntiFakeHighlight: true,
       cpnpNumber: "CPNP-EU-3984021",
@@ -1119,7 +1119,7 @@ window.SEOULMATE_DATA = {
       discount: 21,
       rating: 4.9,
       reviewsCount: 384,
-      image: "https://images.unsplash.com/photo-1608248597359-28c045b8fb32?auto=format&fit=crop&w=500&q=80",
+      image: "https://images.unsplash.com/photo-1617897903246-719242758050?auto=format&fit=crop&w=900&q=80",
       badge: "Pore Care #1",
       isAntiFakeHighlight: true,
       cpnpNumber: "CPNP-EU-3810290",
@@ -1143,7 +1143,7 @@ window.SEOULMATE_DATA = {
       discount: 21,
       rating: 4.9,
       reviewsCount: 289,
-      image: "https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?auto=format&fit=crop&w=500&q=80",
+      image: "https://images.unsplash.com/photo-1571781926291-c477ebfd024b?auto=format&fit=crop&w=900&q=80",
       badge: "100% Autentic",
       isAntiFakeHighlight: true,
       cpnpNumber: "CPNP-EU-3810188",
@@ -1167,7 +1167,7 @@ window.SEOULMATE_DATA = {
       discount: 19,
       rating: 4.9,
       reviewsCount: 345,
-      image: "https://images.unsplash.com/photo-1556228720-195a672e8a03?auto=format&fit=crop&w=500&q=80",
+      image: "https://images.unsplash.com/photo-1556229010-6c3f2c9ca5f8?auto=format&fit=crop&w=900&q=80",
       badge: "5D Hydration",
       cpnpNumber: "CPNP-EU-4092310",
       lotNumber: "LOT-TR2609DC",
@@ -1190,7 +1190,7 @@ window.SEOULMATE_DATA = {
       discount: 19,
       rating: 4.9,
       reviewsCount: 267,
-      image: "https://images.unsplash.com/photo-1608248597359-28c045b8fb32?auto=format&fit=crop&w=500&q=80",
+      image: "https://images.unsplash.com/photo-1612817288484-6f916006741a?auto=format&fit=crop&w=900&q=80",
       badge: "100% Autentic",
       isAntiFakeHighlight: true,
       cpnpNumber: "CPNP-EU-3810204",
@@ -1216,7 +1216,7 @@ window.SEOULMATE_DATA = {
       discount: 18,
       rating: 4.9,
       reviewsCount: 230,
-      image: "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?auto=format&fit=crop&w=500&q=80",
+      image: "https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?auto=format&fit=crop&w=900&q=80",
       badge: "Semi-Matte Pro",
       cpnpNumber: "CPNP-EU-3771920",
       lotNumber: "LOT-CL2607K",
@@ -1239,7 +1239,7 @@ window.SEOULMATE_DATA = {
       discount: 18,
       rating: 4.9,
       reviewsCount: 214,
-      image: "https://images.unsplash.com/photo-1620916566398-39f1143ab7be?auto=format&fit=crop&w=500&q=80",
+      image: "https://images.unsplash.com/photo-1556228453-efd6c1ff04f6?auto=format&fit=crop&w=900&q=80",
       badge: "PDRN Glow",
       cpnpNumber: "CPNP-EU-3984150",
       lotNumber: "LOT-AN2609P",
@@ -1308,7 +1308,7 @@ window.SEOULMATE_DATA = {
       discount: 17,
       rating: 4.8,
       reviewsCount: 178,
-      image: "https://images.unsplash.com/photo-1556228720-195a672e8a03?auto=format&fit=crop&w=500&q=80",
+      image: "https://images.unsplash.com/photo-1556228578-0d85b1a4d571?auto=format&fit=crop&w=900&q=80",
       badge: "Milky Glow",
       cpnpNumber: "CPNP-EU-3984099",
       lotNumber: "LOT-AN2609R",
@@ -1333,7 +1333,7 @@ window.SEOULMATE_DATA = {
       discount: 20,
       rating: 4.9,
       reviewsCount: 284,
-      image: "https://images.unsplash.com/photo-1586495777744-4413f21062fa?auto=format&fit=crop&w=500&q=80",
+      image: "https://images.unsplash.com/photo-1596462502278-27bfdc403348?auto=format&fit=crop&w=900&q=80",
       badge: "Warm Tone Best",
       cpnpNumber: "CPNP-EU-3850244",
       lotNumber: "LOT-RM2609KF",
@@ -1651,10 +1651,54 @@ window.SEOULMATE_PDP = {
       }
     ];
 
+    const mainHiRes = (prod.image || "").replace("w=500", "w=900");
+    const catPhotoSets = {
+      "Toner & Tampoane": [
+        "https://images.unsplash.com/photo-1556228578-0d85b1a4d571?auto=format&fit=crop&w=900&q=80",
+        "https://images.unsplash.com/photo-1617897903246-719242758050?auto=format&fit=crop&w=900&q=80"
+      ],
+      "Serum & Fiole": [
+        "https://images.unsplash.com/photo-1556228453-efd6c1ff04f6?auto=format&fit=crop&w=900&q=80",
+        "https://images.unsplash.com/photo-1612817288484-6f916006741a?auto=format&fit=crop&w=900&q=80"
+      ],
+      "Creme & Hidratare": [
+        "https://images.unsplash.com/photo-1556229010-6c3f2c9ca5f8?auto=format&fit=crop&w=900&q=80",
+        "https://images.unsplash.com/photo-1571781926291-c477ebfd024b?auto=format&fit=crop&w=900&q=80"
+      ],
+      "Protecție Solară": [
+        "https://images.unsplash.com/photo-1611930022073-b7a4ba5fcccd?auto=format&fit=crop&w=900&q=80",
+        "https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?auto=format&fit=crop&w=900&q=80"
+      ],
+      "Curățare": [
+        "https://images.unsplash.com/photo-1556228720-195a672e8a03?auto=format&fit=crop&w=900&q=80",
+        "https://images.unsplash.com/photo-1556228578-0d85b1a4d571?auto=format&fit=crop&w=900&q=80"
+      ],
+      "Machiaj": [
+        "https://images.unsplash.com/photo-1596462502278-27bfdc403348?auto=format&fit=crop&w=900&q=80",
+        "https://images.unsplash.com/photo-1512496015851-a90fb38ba796?auto=format&fit=crop&w=900&q=80"
+      ],
+      "Măști & Tampoane": [
+        "https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?auto=format&fit=crop&w=900&q=80",
+        "https://images.unsplash.com/photo-1556229010-6c3f2c9ca5f8?auto=format&fit=crop&w=900&q=80"
+      ]
+    };
+    const extras = (catPhotoSets[prod.category] || catPhotoSets["Serum & Fiole"]).filter((u) => u !== mainHiRes);
+    const fallbackExtra = "https://images.unsplash.com/photo-1617897903246-719242758050?auto=format&fit=crop&w=900&q=80";
+    const galleryPhotos = [
+      { url: mainHiRes, captionRo: "Fotografie Produs", captionEn: "Product Cut", captionKo: "대표 제품 컷" },
+      { url: extras[0] || fallbackExtra, captionRo: "Textură & Formulă", captionEn: "Formula & Texture", captionKo: "제형·텍스처 컷" },
+      { url: extras[1] || "https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?auto=format&fit=crop&w=900&q=80", captionRo: "Rutină Zilnică", captionEn: "Daily Routine", captionKo: "데일리 사용 컷" }
+    ];
+
+    reviews[0].photo = galleryPhotos[0].url;
+    reviews[1].photo = galleryPhotos[1].url;
+    reviews[2].photo = galleryPhotos[2].url;
+
     return {
       volume,
       origin: custom ? custom.origin : "Republic of Korea (Official EU CPNP Import)",
       pao: custom ? custom.pao : "12M",
+      galleryPhotos,
       options: custom ? custom.options : defaultOptions,
       highlights: custom ? custom.highlights : defaultHighlights,
       ingredients: custom ? custom.ingredients : defaultIngredients,

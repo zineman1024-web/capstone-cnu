@@ -3652,6 +3652,330 @@ body.is-pc-mode .seller-studio-page {
 }
 
 /* ==========================================================================
+   PDP 멀티 포토 갤러리 썸네일 · 상세 화보 컷 · 포토 리뷰 · 사진 확대 라이트박스
+   ========================================================================== */
+.pdp-gallery-column {
+  display: flex;
+  flex-direction: column;
+}
+
+.pdp-hero-media {
+  cursor: zoom-in;
+}
+
+.pdp-photo-caption-pill {
+  position: absolute;
+  top: 14px;
+  right: 16px;
+  background: rgba(20, 25, 34, 0.56);
+  backdrop-filter: blur(6px);
+  color: #FFFFFF;
+  font-size: 10px;
+  font-weight: 600;
+  padding: 4px 9px;
+  border-radius: 6px;
+}
+
+.pdp-thumb-strip {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  padding: 10px 16px 12px;
+  background: var(--surface-white);
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+body.is-pc-mode .pdp-thumb-strip {
+  padding: 10px 0 0;
+  border-bottom: none;
+}
+
+.pdp-thumb-btn {
+  aspect-ratio: 1 / 1;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 2px solid transparent;
+  background: var(--sky-softer);
+  cursor: pointer;
+  padding: 0;
+  transition: border-color 0.15s ease, opacity 0.15s ease;
+  opacity: 0.72;
+}
+
+.pdp-thumb-btn:hover,
+.pdp-thumb-btn.active {
+  opacity: 1;
+  border-color: var(--sky-primary);
+}
+
+.pdp-thumb-btn img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.pdp-thumb-spec {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  border-color: var(--border-hairline);
+  color: var(--sky-primary);
+}
+
+.pdp-thumb-spec span {
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.pdp-thumb-spec small {
+  font-size: 9px;
+  font-weight: 700;
+  color: var(--ink-muted);
+}
+
+/* 상품설명 탭 내부 에디토리얼 제품 사진 스토리 */
+.pdp-visual-story {
+  border: 1px solid var(--border-hairline);
+  border-radius: 14px;
+  overflow: hidden;
+  background: var(--surface-white);
+  margin-bottom: 22px;
+}
+
+.pdp-story-imgwrap {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  background: var(--sky-softer);
+  overflow: hidden;
+  cursor: zoom-in;
+}
+
+.pdp-story-imgwrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.pdp-story-caption {
+  padding: 16px;
+  background: var(--sky-softer);
+  border-top: 1px solid var(--border-subtle);
+}
+
+.pdp-story-headline {
+  font-size: 15.5px;
+  font-weight: 700;
+  color: var(--ink-primary);
+  margin-bottom: 6px;
+  line-height: 1.38;
+}
+
+.pdp-texture-split {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 14px;
+  align-items: center;
+}
+
+@media (min-width: 640px) {
+  body.is-pc-mode .pdp-texture-split {
+    grid-template-columns: 240px 1fr;
+    gap: 22px;
+  }
+}
+
+.pdp-texture-photo {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid var(--border-hairline);
+  background: var(--sky-softer);
+  cursor: zoom-in;
+}
+
+body.is-pc-mode .pdp-texture-photo {
+  aspect-ratio: 1 / 1;
+}
+
+.pdp-texture-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.pdp-mini-cap {
+  position: absolute;
+  bottom: 8px;
+  left: 8px;
+  background: rgba(255, 255, 255, 0.92);
+  color: var(--ink-primary);
+  font-size: 10px;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 5px;
+}
+
+.pdp-visual-duo {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.pdp-duo-card {
+  position: relative;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid var(--border-hairline);
+  aspect-ratio: 4 / 3;
+  background: var(--sky-softer);
+  cursor: zoom-in;
+}
+
+.pdp-duo-card img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.pdp-duo-card span {
+  position: absolute;
+  bottom: 8px;
+  left: 8px;
+  background: rgba(255, 255, 255, 0.92);
+  color: var(--ink-primary);
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 4px;
+}
+
+/* 포토 리뷰 스트립 & 리뷰 썸네일 */
+.pdp-photo-reviews-strip {
+  margin-top: 14px;
+}
+
+.pdp-photo-strip-title {
+  display: block;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--ink-primary);
+  margin-bottom: 8px;
+}
+
+.pdp-photo-strip-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+
+.pdp-rev-photo-tile {
+  aspect-ratio: 1 / 1;
+  border-radius: 9px;
+  overflow: hidden;
+  border: 1px solid var(--border-hairline);
+  padding: 0;
+  background: var(--sky-softer);
+  cursor: zoom-in;
+}
+
+.pdp-rev-photo-tile img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.rev-content-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.rev-content-row .rev-body {
+  flex: 1;
+  margin-bottom: 0;
+}
+
+.rev-photo-thumb {
+  width: 68px;
+  height: 68px;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid var(--border-hairline);
+  padding: 0;
+  background: var(--sky-softer);
+  flex-shrink: 0;
+  cursor: zoom-in;
+}
+
+.rev-photo-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* 사진 확대 라이트박스 */
+.photo-zoom-backdrop {
+  align-items: center !important;
+  justify-content: center !important;
+  background: rgba(10, 18, 30, 0.82) !important;
+  padding: 20px;
+}
+
+.photo-zoom-modal {
+  position: relative;
+  max-width: 560px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.photo-zoom-modal img {
+  width: 100%;
+  max-height: 76vh;
+  object-fit: contain;
+  border-radius: 12px;
+  background: #FFFFFF;
+}
+
+.photo-zoom-close {
+  position: absolute;
+  top: -12px;
+  right: -4px;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: none;
+  background: #FFFFFF;
+  color: var(--ink-primary);
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+}
+
+.photo-zoom-cap {
+  color: #FFFFFF;
+  font-size: 12.5px;
+  font-weight: 600;
+  text-align: center;
+}
+
+/* ==========================================================================
    외부 호스팅 자동 주입 배지 (Powered by Netlify 등) 숨김
    ========================================================================== */
 html > :not(head):not(body),

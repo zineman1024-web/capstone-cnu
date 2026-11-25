@@ -122,6 +122,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // 모달 및 토스트
     activeModal: null,
+    zoomImageUrl: null,
+    zoomImageCaption: "",
     toastMessage: null,
     toastTimer: null
   };
@@ -668,54 +670,81 @@ document.addEventListener("DOMContentLoaded", () => {
     const isWished = state.wishlist.has(prod.id);
     const totalPrice = unitPrice * state.pdpQty;
 
+    const totalGallerySlides = detail.galleryPhotos.length + 1;
+    const currentPhotoSlide = detail.galleryPhotos[state.pdpGalleryIndex];
+
     return `
       <div class="pdp-page">
         <div class="pdp-top-layout">
-          <!-- 1. 상품 대표 갤러리 -->
-          <section class="pdp-gallery-wrap">
-          ${
-            state.pdpGalleryIndex === 0
-              ? `
-            <div class="pdp-hero-media">
-              <img src="${prod.image}" alt="${title}" onerror="this.onerror=null; this.src=window.SEOULMATE_FALLBACK.getProduct('${prod.category}','${prod.brand}','${prod.name.replace(/'/g, "\\'")}')" />
-              <span class="pdp-cpnp-tag">EU CPNP VERIFIED</span>
-            </div>
-          `
-              : `
-            <div class="pdp-spec-slide">
-              <span class="pdp-spec-slide-kicker">${prod.brand} · OFFICIAL SPEC</span>
-              <h4>${title}</h4>
-              <div class="pdp-spec-slide-grid">
-                <div class="pdp-spec-mini">
-                  <span>${tr("Volum", "Volume", "용량")}</span>
-                  <strong>${detail.volume}</strong>
+          <!-- 1. 멀티 포토 상품 갤러리 & 썸네일 스트립 -->
+          <section class="pdp-gallery-column">
+            <div class="pdp-gallery-wrap">
+              ${
+                currentPhotoSlide
+                  ? `
+                <div class="pdp-hero-media" data-zoom-img="${currentPhotoSlide.url}" data-zoom-caption="${title}">
+                  <img src="${currentPhotoSlide.url}" alt="${title}" onerror="this.onerror=null; this.src=window.SEOULMATE_FALLBACK.getProduct('${prod.category}','${prod.brand}','${prod.name.replace(/'/g, "\\'")}')" />
+                  <span class="pdp-cpnp-tag">EU CPNP</span>
+                  <span class="pdp-photo-caption-pill">${tr(currentPhotoSlide.captionRo, currentPhotoSlide.captionEn, currentPhotoSlide.captionKo)}</span>
                 </div>
-                <div class="pdp-spec-mini">
-                  <span>CPNP</span>
-                  <strong>${prod.cpnpNumber}</strong>
+              `
+                  : `
+                <div class="pdp-spec-slide">
+                  <span class="pdp-spec-slide-kicker">${prod.brand} · OFFICIAL SPEC</span>
+                  <h4>${title}</h4>
+                  <div class="pdp-spec-slide-grid">
+                    <div class="pdp-spec-mini">
+                      <span>${tr("Volum", "Volume", "용량")}</span>
+                      <strong>${detail.volume}</strong>
+                    </div>
+                    <div class="pdp-spec-mini">
+                      <span>CPNP</span>
+                      <strong>${prod.cpnpNumber}</strong>
+                    </div>
+                    <div class="pdp-spec-mini">
+                      <span>${tr("Lot Oficial", "Batch Lot", "정품 로트")}</span>
+                      <strong>${prod.lotNumber}</strong>
+                    </div>
+                    <div class="pdp-spec-mini">
+                      <span>PAO</span>
+                      <strong>${detail.pao}</strong>
+                    </div>
+                  </div>
+                  <p class="pdp-spec-slide-note">${desc}</p>
                 </div>
-                <div class="pdp-spec-mini">
-                  <span>${tr("Lot Oficial", "Batch Lot", "정품 로트")}</span>
-                  <strong>${prod.lotNumber}</strong>
-                </div>
-                <div class="pdp-spec-mini">
-                  <span>PAO</span>
-                  <strong>${detail.pao}</strong>
-                </div>
-              </div>
-              <p class="pdp-spec-slide-note">${desc}</p>
-            </div>
-          `
-          }
+              `
+              }
 
-          <div class="pdp-gallery-controls">
-            <div class="pdp-gallery-dots">
-              <button class="pdp-dot ${state.pdpGalleryIndex === 0 ? "active" : ""}" data-pdp-slide="0" aria-label="Photo"></button>
-              <button class="pdp-dot ${state.pdpGalleryIndex === 1 ? "active" : ""}" data-pdp-slide="1" aria-label="Spec card"></button>
+              <button class="hero-arrow-btn prev" id="btn-pdp-prev" aria-label="Previous photo">${ICONS.chevronLeft}</button>
+              <button class="hero-arrow-btn next" id="btn-pdp-next" aria-label="Next photo">${ICONS.chevronRight}</button>
+
+              <div class="pdp-gallery-controls">
+                <div class="pdp-gallery-dots">
+                  ${Array.from({ length: totalGallerySlides })
+                    .map((_, i) => `<button class="pdp-dot ${state.pdpGalleryIndex === i ? "active" : ""}" data-pdp-slide="${i}" aria-label="Slide ${i + 1}"></button>`)
+                    .join("")}
+                </div>
+                <span class="pdp-gallery-counter">${state.pdpGalleryIndex + 1} / ${totalGallerySlides}</span>
+              </div>
             </div>
-            <span class="pdp-gallery-counter">${state.pdpGalleryIndex + 1} / 2</span>
-          </div>
-        </section>
+
+            <!-- 클릭 가능한 4컷 썸네일 갤러리 스트립 -->
+            <div class="pdp-thumb-strip">
+              ${detail.galleryPhotos
+                .map(
+                  (ph, idx) => `
+                  <button class="pdp-thumb-btn ${state.pdpGalleryIndex === idx ? "active" : ""}" data-pdp-slide="${idx}">
+                    <img src="${ph.url}" alt="${tr(ph.captionRo, ph.captionEn, ph.captionKo)}" onerror="this.onerror=null; this.src=window.SEOULMATE_FALLBACK.getProduct('${prod.category}','${prod.brand}','${prod.name.replace(/'/g, "\\'")}')" />
+                  </button>
+                `
+                )
+                .join("")}
+              <button class="pdp-thumb-btn pdp-thumb-spec ${state.pdpGalleryIndex === detail.galleryPhotos.length ? "active" : ""}" data-pdp-slide="${detail.galleryPhotos.length}">
+                <span>CPNP</span>
+                <small>SPEC</small>
+              </button>
+            </div>
+          </section>
 
         <!-- 2. 핵심 상품 정보 & 가격 블록 -->
         <section class="pdp-header-info">
@@ -845,13 +874,24 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function renderPdpTabContent(prod, detail, desc, relatedProducts) {
-    // 탭 1: 상품설명 (올리브영 스타일 에디토리얼 + 체크포인트 + 제형지표 + 핵심성분 + 사용법 + 추천피부 + 리뷰미리보기 + 연관상품)
+    // 탭 1: 상품설명 (올리브영 스타일 제품 화보 · 텍스처 컷 · 체크포인트 · 성분 · 사용법 · 포토 리뷰)
     if (state.pdpTab === "detail") {
+      const p0 = detail.galleryPhotos[0];
+      const p1 = detail.galleryPhotos[1];
+      const p2 = detail.galleryPhotos[2];
+
       return `
         <section class="pdp-block">
-          <div class="pdp-editorial-lead">
-            <span class="pdp-eyebrow">${prod.brand} · OFFICIAL CARE</span>
-            <p class="pdp-lead-copy">${desc}</p>
+          <!-- 에디토리얼 제품 화보 배너 -->
+          <div class="pdp-visual-story">
+            <div class="pdp-story-imgwrap" data-zoom-img="${p0.url}" data-zoom-caption="${getProductDisplayName(prod)}">
+              <img src="${p0.url}" alt="${getProductDisplayName(prod)}" onerror="this.onerror=null; this.src=window.SEOULMATE_FALLBACK.getProduct('${prod.category}','${prod.brand}','${prod.name.replace(/'/g, "\\'")}')" />
+            </div>
+            <div class="pdp-story-caption">
+              <span class="pdp-eyebrow">${prod.brand} · OFFICIAL CARE</span>
+              <h4 class="pdp-story-headline">${getProductDisplayName(prod)}</h4>
+              <p class="pdp-lead-copy">${desc}</p>
+            </div>
           </div>
 
           <h3 class="pdp-sec-title">${t("pdpWhyLove")}</h3>
@@ -873,20 +913,26 @@ document.addEventListener("DOMContentLoaded", () => {
 
         <section class="pdp-block">
           <h3 class="pdp-sec-title">${t("pdpTextureTitle")}</h3>
-          <div class="pdp-meter-list">
-            ${detail.texture
-              .map(
-                (item) => `
-                <div class="pdp-meter-row">
-                  <span class="pdp-meter-label">${tr(item.labelRo, item.labelEn, item.labelKo)}</span>
-                  <div class="pdp-meter-track">
-                    <div class="pdp-meter-fill" style="width:${item.score}%"></div>
+          <div class="pdp-texture-split">
+            <div class="pdp-texture-photo" data-zoom-img="${p1.url}" data-zoom-caption="${tr(p1.captionRo, p1.captionEn, p1.captionKo)}">
+              <img src="${p1.url}" alt="${tr(p1.captionRo, p1.captionEn, p1.captionKo)}" onerror="this.onerror=null; this.src=window.SEOULMATE_FALLBACK.getProduct('${prod.category}','${prod.brand}','${prod.name.replace(/'/g, "\\'")}')" />
+              <span class="pdp-mini-cap">${tr(p1.captionRo, p1.captionEn, p1.captionKo)}</span>
+            </div>
+            <div class="pdp-meter-list">
+              ${detail.texture
+                .map(
+                  (item) => `
+                  <div class="pdp-meter-row">
+                    <span class="pdp-meter-label">${tr(item.labelRo, item.labelEn, item.labelKo)}</span>
+                    <div class="pdp-meter-track">
+                      <div class="pdp-meter-fill" style="width:${item.score}%"></div>
+                    </div>
+                    <span class="pdp-meter-score">${item.score}%</span>
                   </div>
-                  <span class="pdp-meter-score">${item.score}%</span>
-                </div>
-              `
-              )
-              .join("")}
+                `
+                )
+                .join("")}
+            </div>
           </div>
         </section>
 
@@ -918,6 +964,17 @@ document.addEventListener("DOMContentLoaded", () => {
 
         <section class="pdp-block">
           <h3 class="pdp-sec-title">${t("pdpHowToTitle")}</h3>
+          <div class="pdp-visual-duo">
+            <div class="pdp-duo-card" data-zoom-img="${p1.url}" data-zoom-caption="${tr(p1.captionRo, p1.captionEn, p1.captionKo)}">
+              <img src="${p1.url}" alt="${tr(p1.captionRo, p1.captionEn, p1.captionKo)}" onerror="this.onerror=null; this.src=window.SEOULMATE_FALLBACK.getProduct('${prod.category}','${prod.brand}','${prod.name.replace(/'/g, "\\'")}')" />
+              <span>${tr(p1.captionRo, p1.captionEn, p1.captionKo)}</span>
+            </div>
+            <div class="pdp-duo-card" data-zoom-img="${p2.url}" data-zoom-caption="${tr(p2.captionRo, p2.captionEn, p2.captionKo)}">
+              <img src="${p2.url}" alt="${tr(p2.captionRo, p2.captionEn, p2.captionKo)}" onerror="this.onerror=null; this.src=window.SEOULMATE_FALLBACK.getProduct('${prod.category}','${prod.brand}','${prod.name.replace(/'/g, "\\'")}')" />
+              <span>${tr(p2.captionRo, p2.captionEn, p2.captionKo)}</span>
+            </div>
+          </div>
+
           <div class="pdp-steps-list">
             ${detail.howToUse
               .map(
@@ -1054,6 +1111,23 @@ document.addEventListener("DOMContentLoaded", () => {
               .join("")}
           </div>
 
+          <!-- 포토 리뷰 모아보기 스트립 -->
+          <div class="pdp-photo-reviews-strip">
+            <span class="pdp-photo-strip-title">${tr("Fotografii de la clienți", "Customer Photos", "포토 리뷰 모아보기")}</span>
+            <div class="pdp-photo-strip-grid">
+              ${detail.reviews
+                .filter((r) => r.photo)
+                .map(
+                  (r) => `
+                  <button class="pdp-rev-photo-tile" data-zoom-img="${r.photo}" data-zoom-caption="${r.author}">
+                    <img src="${r.photo}" alt="Review photo by ${r.author}" />
+                  </button>
+                `
+                )
+                .join("")}
+            </div>
+          </div>
+
           <!-- 피부타입별 리뷰 필터 -->
           <div class="filter-chips-scroll" style="padding:0; margin:16px 0 12px;">
             ${["all", "Mixt", "Sensibil", "Gras", "Uscat"]
@@ -1122,7 +1196,16 @@ document.addEventListener("DOMContentLoaded", () => {
           <span class="ably-stars">${"★".repeat(rev.rating)}</span>
           <span class="cm-chip">${getSkinTypeLabel(rev.skinType)}</span>
         </div>
-        <p class="rev-body">${tr(rev.textRo, rev.textEn, rev.textKo)}</p>
+        <div class="rev-content-row">
+          <p class="rev-body">${tr(rev.textRo, rev.textEn, rev.textKo)}</p>
+          ${
+            rev.photo
+              ? `<button class="rev-photo-thumb" data-zoom-img="${rev.photo}" data-zoom-caption="${rev.author}">
+                  <img src="${rev.photo}" alt="Customer review" />
+                </button>`
+              : ""
+          }
+        </div>
         <button class="rev-helpful-btn ${isHelpful ? "active" : ""}" data-helpful-id="${rev.id}">
           ${ICONS.thumbUp}
           <span>${t("pdpHelpful")} ${count}</span>
@@ -2567,6 +2650,18 @@ document.addEventListener("DOMContentLoaded", () => {
   function renderActiveModal() {
     if (!state.activeModal) return "";
 
+    if (state.activeModal === "photoZoom" && state.zoomImageUrl) {
+      return `
+        <div class="ably-backdrop photo-zoom-backdrop" id="modal-backdrop">
+          <div class="photo-zoom-modal">
+            <button class="photo-zoom-close" id="modal-close" aria-label="Close">✕</button>
+            <img src="${state.zoomImageUrl}" alt="${state.zoomImageCaption || "Product photo"}" />
+            ${state.zoomImageCaption ? `<p class="photo-zoom-cap">${state.zoomImageCaption}</p>` : ""}
+          </div>
+        </div>
+      `;
+    }
+
     if (state.activeModal === "authenticity") {
       return `
         <div class="ably-backdrop" id="modal-backdrop">
@@ -2851,10 +2946,41 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     });
 
-    // 상세페이지(PDP) 인터랙션 바인딩
+    // 상세페이지(PDP) 멀티 포토 갤러리 & 줌 & 인터랙션 바인딩
     document.querySelectorAll("[data-pdp-slide]").forEach((btn) => {
       btn.addEventListener("click", () => {
         state.pdpGalleryIndex = parseInt(btn.getAttribute("data-pdp-slide"), 10);
+        render();
+      });
+    });
+
+    const pdpPrev = document.getElementById("btn-pdp-prev");
+    if (pdpPrev) {
+      pdpPrev.addEventListener("click", (e) => {
+        e.stopPropagation();
+        const prod = data.products.find((p) => p.id === state.selectedProductId);
+        const total = prod ? pdpProvider.getDetail(prod).galleryPhotos.length + 1 : 4;
+        state.pdpGalleryIndex = (state.pdpGalleryIndex - 1 + total) % total;
+        render();
+      });
+    }
+
+    const pdpNext = document.getElementById("btn-pdp-next");
+    if (pdpNext) {
+      pdpNext.addEventListener("click", (e) => {
+        e.stopPropagation();
+        const prod = data.products.find((p) => p.id === state.selectedProductId);
+        const total = prod ? pdpProvider.getDetail(prod).galleryPhotos.length + 1 : 4;
+        state.pdpGalleryIndex = (state.pdpGalleryIndex + 1) % total;
+        render();
+      });
+    }
+
+    document.querySelectorAll("[data-zoom-img]").forEach((el) => {
+      el.addEventListener("click", () => {
+        state.zoomImageUrl = el.getAttribute("data-zoom-img");
+        state.zoomImageCaption = el.getAttribute("data-zoom-caption") || "";
+        state.activeModal = "photoZoom";
         render();
       });
     });
@@ -3154,7 +3280,7 @@ document.addEventListener("DOMContentLoaded", () => {
           sunscreen: { brand: "Beauty of Joseon", cat: "Protecție Solară", name: "Beauty of Joseon Relief Sun 50ml", price: 65, orig: 80, concern: "hydration", url: "https://images.unsplash.com/photo-1598440947619-2c35fc9aa908?auto=format&fit=crop&w=500&q=80", desc: "Rice + Probiotics SPF50+ daily sunscreen." },
           cream: { brand: "Round Lab", cat: "Creme & Hidratare", name: "Round Lab Birch Juice Moisturizing Cream 80ml", price: 92, orig: 110, concern: "hydration", url: "https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?auto=format&fit=crop&w=500&q=80", desc: "Inje Birch Sap deep moisture barrier cream." },
           serum: { brand: "SKIN1004", cat: "Serum & Fiole", name: "SKIN1004 Madagascar Centella Ampoule 100ml", price: 82, orig: 99, concern: "soothing", url: "https://images.unsplash.com/photo-1620916566398-39f1143ab7be?auto=format&fit=crop&w=500&q=80", desc: "100% pure Madagascar Centella soothing ampoule." },
-          toner: { brand: "Anua", cat: "Toner & Tampoane", name: "Anua Heartleaf 77% Clear Pad (70ea)", price: 89, orig: 105, concern: "pores", url: "https://images.unsplash.com/photo-1608248597359-28c045b8fb32?auto=format&fit=crop&w=500&q=80", desc: "77% Heartleaf PHA gentle pore care pads." }
+          toner: { brand: "Anua", cat: "Toner & Tampoane", name: "Anua Heartleaf 77% Clear Pad (70ea)", price: 89, orig: 105, concern: "pores", url: "https://images.unsplash.com/photo-1611930022073-b7a4ba5fcccd?auto=format&fit=crop&w=900&q=80", desc: "77% Heartleaf PHA gentle pore care pads." }
         };
         const p = presets[btn.getAttribute("data-sample")];
         if (!p) return;
