@@ -670,7 +670,7 @@ window.SEOULMATE_DATA = {
       sublineRo: "Fără riscul falsurilor. Doar rutine testate și aprobate EU CPNP.",
       sublineEn: "Zero counterfeit risk. Only tested, EU CPNP-approved routines.",
       sublineKo: "가품 걱정 0%. 오직 EU CPNP 공식 검증을 통과한 안전한 루틴만 추천합니다.",
-      image: "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?auto=format&fit=crop&w=800&q=80"
+      image: "images/products/tirtir-mask-fit-red.jpg"
     },
     {
       id: "slide-2",
@@ -683,7 +683,7 @@ window.SEOULMATE_DATA = {
       sublineRo: "Toner Anua 77 + Fiolă Centella + SPF Orez la doar 189 lei (-17%)",
       sublineEn: "Anua 77 Toner + Centella Ampoule + Relief Sun at 189 lei (-17%)",
       sublineKo: "아누아 77 토너 + 센텔라 앰플 + 맑은쌀 선크림 세트 189 lei (-17%)",
-      image: "https://images.unsplash.com/photo-1512496015851-a90fb38ba796?auto=format&fit=crop&w=800&q=80"
+      image: "images/products/boj-relief-sun.webp"
     },
     {
       id: "slide-3",
@@ -696,7 +696,7 @@ window.SEOULMATE_DATA = {
       sublineRo: "Loturi verificate direct din Seul pentru o piele sănătoasă și sigură.",
       sublineEn: "Direct verified batches from Seoul for safe and radiant skin.",
       sublineKo: "서울 본사 직송 공식 정품 로트 번호 부여로 안심 케어 보증.",
-      image: "https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?auto=format&fit=crop&w=800&q=80"
+      image: "images/products/biodance-collagen-mask.webp"
     },
     {
       id: "slide-4",
@@ -709,7 +709,7 @@ window.SEOULMATE_DATA = {
       sublineRo: "Transport gratuit la comenzi de peste 150 lei în toată România.",
       sublineEn: "Free express shipping on orders over 150 lei across Romania.",
       sublineKo: "150 lei 이상 구매 시 루마니아 전역 24시간 보관함 무료 배송.",
-      image: "https://images.unsplash.com/photo-1598440947619-2c35fc9aa908?auto=format&fit=crop&w=800&q=80"
+      image: "images/products/medicube-pdrn-serum.webp"
     }
   ],
 
@@ -743,7 +743,7 @@ window.SEOULMATE_DATA = {
       },
       feedPost: {
         id: "post-1",
-        image: "https://images.unsplash.com/photo-1512496015851-a90fb38ba796?auto=format&fit=crop&w=600&q=80",
+        image: "images/details/tirtir-mask-fit-red-3.jpg",
         caption: "Fără filtru, doar rutina mea coreeană de 3 pași! Tonerul Anua 77 + fiola SKIN1004 fac minuni pentru pori.",
         captionEn: "No filter, just my 3-step Korean routine! Anua 77 Toner + SKIN1004 Ampoule do wonders for pores.",
         captionKo: "무보정 피부 비결은 3단계 K-뷰티 루틴! 아누아 77 토너 + 스킨1004 센텔라 앰플 조합은 모공·진정에 최고예요.",
@@ -780,7 +780,7 @@ window.SEOULMATE_DATA = {
       },
       feedPost: {
         id: "post-2",
-        image: "https://images.unsplash.com/photo-1598440947619-2c35fc9aa908?auto=format&fit=crop&w=600&q=80",
+        image: "images/details/boj-relief-sun-3.webp",
         caption: "Bariera pielii salvată în 7 zile! Nu vă lăsați păcălite de falsuri, comandați doar verificat pe Seoulmate.",
         captionEn: "Damaged skin barrier saved in 7 days! Never buy unverified copies, choose verified Seoulmate.",
         captionKo: "무너진 피부장벽 7일 만에 복구 완료! 가품 걱정 없는 CPNP 공식 인증 서울메이트에서 안심하고 구매하세요.",
@@ -817,7 +817,7 @@ window.SEOULMATE_DATA = {
       },
       feedPost: {
         id: "post-3",
-        image: "https://images.unsplash.com/photo-1526045612212-70caf35c14df?auto=format&fit=crop&w=600&q=80",
+        image: "images/details/biodance-collagen-mask-3.jpg",
         caption: "Lookul meu de birou: Cushion coreean + buze glossy cu Rom&nd. Rezistă la căldură!",
         captionEn: "My everyday office look: Korean Cushion + Juicy lips with Rom&nd tint!",
         captionKo: "요즘 데일리 오피스 메이크업: 얇게 밀착되는 한국 쿠션에 롬앤 쥬시 래스팅 틴트 조합이면 하루 종일 무너짐 없어요!",
@@ -854,7 +854,7 @@ window.SEOULMATE_DATA = {
       },
       feedPost: {
         id: "post-4",
-        image: "https://images.unsplash.com/photo-1571781926291-c477ebfd024b?auto=format&fit=crop&w=600&q=80",
+        image: "images/details/medicube-pdrn-serum-3.jpg",
         caption: "Capsulele de colagen Medicube PDRN chiar funcționează. Pielea este catifelată din prima zi!",
         captionEn: "Medicube PDRN collagen capsules really work. Velvety smooth skin from day one!",
         captionKo: "메디큐브 PDRN 핑크 콜라겐 캡슐 크림 진짜 물건이에요. 바른 첫날부터 속건조 없이 쫀쫀한 윤기가 올라와요!",
@@ -949,7 +949,7 @@ window.SEOULMATE_DATA = {
       discount: 17,
       rating: 4.9,
       reviewsCount: 618,
-      image: "https://images.unsplash.com/photo-1611930022073-b7a4ba5fcccd?auto=format&fit=crop&w=900&q=80",
+      image: "images/products/anua-toner-77.webp",
       badge: "Bestseller #1",
       isAntiFakeHighlight: true,
       cpnpNumber: "CPNP-EU-3984021",
@@ -973,7 +973,7 @@ window.SEOULMATE_DATA = {
       discount: 18,
       rating: 5.0,
       reviewsCount: 840,
-      image: "https://images.unsplash.com/photo-1598440947619-2c35fc9aa908?auto=format&fit=crop&w=500&q=80",
+      image: "images/products/boj-relief-sun.webp",
       badge: "Legendary SPF",
       isAntiFakeHighlight: true,
       cpnpNumber: "CPNP-EU-3901712",
@@ -997,7 +997,7 @@ window.SEOULMATE_DATA = {
       discount: 19,
       rating: 4.9,
       reviewsCount: 520,
-      image: "https://images.unsplash.com/photo-1620916566398-39f1143ab7be?auto=format&fit=crop&w=500&q=80",
+      image: "images/products/skin1004-centella-ampoule.jpg",
       badge: "Top Rated",
       isAntiFakeHighlight: true,
       cpnpNumber: "CPNP-EU-4120302",
@@ -1021,7 +1021,7 @@ window.SEOULMATE_DATA = {
       discount: 19,
       rating: 5.0,
       reviewsCount: 612,
-      image: "https://images.unsplash.com/photo-1598440947619-2c35fc9aa908?auto=format&fit=crop&w=500&q=80",
+      image: "images/products/skin1004-hyalu-sun.webp",
       badge: "Zero Whitecast",
       cpnpNumber: "CPNP-EU-4120388",
       lotNumber: "LOT-SK2609HC",
@@ -1046,7 +1046,7 @@ window.SEOULMATE_DATA = {
       discount: 20,
       rating: 4.9,
       reviewsCount: 540,
-      image: "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?auto=format&fit=crop&w=500&q=80",
+      image: "images/products/tirtir-mask-fit-red.jpg",
       badge: "EU #1 Cushion",
       isAntiFakeHighlight: true,
       cpnpNumber: "CPNP-EU-4210551",
@@ -1072,7 +1072,7 @@ window.SEOULMATE_DATA = {
       discount: 20,
       rating: 4.9,
       reviewsCount: 495,
-      image: "https://images.unsplash.com/photo-1586495777744-4413f21062fa?auto=format&fit=crop&w=500&q=80",
+      image: "images/products/romand-juicy-tint.jpg",
       badge: "Cool Tone #1",
       cpnpNumber: "CPNP-EU-3850192",
       lotNumber: "LOT-RM2608BG",
@@ -1095,7 +1095,7 @@ window.SEOULMATE_DATA = {
       discount: 19,
       rating: 4.9,
       reviewsCount: 462,
-      image: "https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?auto=format&fit=crop&w=500&q=80",
+      image: "images/products/biodance-collagen-mask.webp",
       badge: "Glass Skin Mask",
       isAntiFakeHighlight: true,
       cpnpNumber: "CPNP-EU-4309112",
@@ -1119,7 +1119,7 @@ window.SEOULMATE_DATA = {
       discount: 21,
       rating: 4.9,
       reviewsCount: 384,
-      image: "https://images.unsplash.com/photo-1617897903246-719242758050?auto=format&fit=crop&w=900&q=80",
+      image: "images/products/medicube-zero-pore-pad.webp",
       badge: "Pore Care #1",
       isAntiFakeHighlight: true,
       cpnpNumber: "CPNP-EU-3810290",
@@ -1143,7 +1143,7 @@ window.SEOULMATE_DATA = {
       discount: 21,
       rating: 4.9,
       reviewsCount: 289,
-      image: "https://images.unsplash.com/photo-1571781926291-c477ebfd024b?auto=format&fit=crop&w=900&q=80",
+      image: "images/products/medicube-pdrn-cream.png",
       badge: "100% Autentic",
       isAntiFakeHighlight: true,
       cpnpNumber: "CPNP-EU-3810188",
@@ -1167,7 +1167,7 @@ window.SEOULMATE_DATA = {
       discount: 19,
       rating: 4.9,
       reviewsCount: 345,
-      image: "https://images.unsplash.com/photo-1556229010-6c3f2c9ca5f8?auto=format&fit=crop&w=900&q=80",
+      image: "images/products/torriden-divein-cream.jpg",
       badge: "5D Hydration",
       cpnpNumber: "CPNP-EU-4092310",
       lotNumber: "LOT-TR2609DC",
@@ -1190,7 +1190,7 @@ window.SEOULMATE_DATA = {
       discount: 19,
       rating: 4.9,
       reviewsCount: 267,
-      image: "https://images.unsplash.com/photo-1612817288484-6f916006741a?auto=format&fit=crop&w=900&q=80",
+      image: "images/products/medicube-pdrn-serum.webp",
       badge: "100% Autentic",
       isAntiFakeHighlight: true,
       cpnpNumber: "CPNP-EU-3810204",
@@ -1216,7 +1216,7 @@ window.SEOULMATE_DATA = {
       discount: 18,
       rating: 4.9,
       reviewsCount: 230,
-      image: "https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?auto=format&fit=crop&w=900&q=80",
+      image: "images/products/clio-kill-cover-cushion.jpg",
       badge: "Semi-Matte Pro",
       cpnpNumber: "CPNP-EU-3771920",
       lotNumber: "LOT-CL2607K",
@@ -1239,7 +1239,7 @@ window.SEOULMATE_DATA = {
       discount: 18,
       rating: 4.9,
       reviewsCount: 214,
-      image: "https://images.unsplash.com/photo-1556228453-efd6c1ff04f6?auto=format&fit=crop&w=900&q=80",
+      image: "images/products/anua-pdrn-serum.webp",
       badge: "PDRN Glow",
       cpnpNumber: "CPNP-EU-3984150",
       lotNumber: "LOT-AN2609P",
@@ -1262,7 +1262,7 @@ window.SEOULMATE_DATA = {
       discount: 19,
       rating: 4.9,
       reviewsCount: 310,
-      image: "https://images.unsplash.com/photo-1556228720-195a672e8a03?auto=format&fit=crop&w=500&q=80",
+      image: "images/products/skin1004-cleansing-oil.png",
       badge: "Blackhead Care",
       cpnpNumber: "CPNP-EU-4120355",
       lotNumber: "LOT-SK2609CO",
@@ -1285,7 +1285,7 @@ window.SEOULMATE_DATA = {
       discount: 16,
       rating: 4.8,
       reviewsCount: 195,
-      image: "https://images.unsplash.com/photo-1556228720-195a672e8a03?auto=format&fit=crop&w=500&q=80",
+      image: "images/products/anua-cleanser.jpg",
       badge: "Deep Clean",
       cpnpNumber: "CPNP-EU-3984011",
       lotNumber: "LOT-AN2608CF",
@@ -1308,7 +1308,7 @@ window.SEOULMATE_DATA = {
       discount: 17,
       rating: 4.8,
       reviewsCount: 178,
-      image: "https://images.unsplash.com/photo-1556228578-0d85b1a4d571?auto=format&fit=crop&w=900&q=80",
+      image: "images/products/anua-rice-toner.jpg",
       badge: "Milky Glow",
       cpnpNumber: "CPNP-EU-3984099",
       lotNumber: "LOT-AN2609R",
@@ -1333,7 +1333,7 @@ window.SEOULMATE_DATA = {
       discount: 20,
       rating: 4.9,
       reviewsCount: 284,
-      image: "https://images.unsplash.com/photo-1596462502278-27bfdc403348?auto=format&fit=crop&w=900&q=80",
+      image: "images/products/romand-glasting-balm.jpg",
       badge: "Warm Tone Best",
       cpnpNumber: "CPNP-EU-3850244",
       lotNumber: "LOT-RM2609KF",
@@ -1651,43 +1651,122 @@ window.SEOULMATE_PDP = {
       }
     ];
 
-    const mainHiRes = (prod.image || "").replace("w=500", "w=900");
-    const catPhotoSets = {
-      "Toner & Tampoane": [
-        "https://images.unsplash.com/photo-1556228578-0d85b1a4d571?auto=format&fit=crop&w=900&q=80",
-        "https://images.unsplash.com/photo-1617897903246-719242758050?auto=format&fit=crop&w=900&q=80"
-      ],
-      "Serum & Fiole": [
-        "https://images.unsplash.com/photo-1556228453-efd6c1ff04f6?auto=format&fit=crop&w=900&q=80",
-        "https://images.unsplash.com/photo-1612817288484-6f916006741a?auto=format&fit=crop&w=900&q=80"
-      ],
-      "Creme & Hidratare": [
-        "https://images.unsplash.com/photo-1556229010-6c3f2c9ca5f8?auto=format&fit=crop&w=900&q=80",
-        "https://images.unsplash.com/photo-1571781926291-c477ebfd024b?auto=format&fit=crop&w=900&q=80"
-      ],
-      "Protecție Solară": [
-        "https://images.unsplash.com/photo-1611930022073-b7a4ba5fcccd?auto=format&fit=crop&w=900&q=80",
-        "https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?auto=format&fit=crop&w=900&q=80"
-      ],
-      "Curățare": [
-        "https://images.unsplash.com/photo-1556228720-195a672e8a03?auto=format&fit=crop&w=900&q=80",
-        "https://images.unsplash.com/photo-1556228578-0d85b1a4d571?auto=format&fit=crop&w=900&q=80"
-      ],
-      "Machiaj": [
-        "https://images.unsplash.com/photo-1596462502278-27bfdc403348?auto=format&fit=crop&w=900&q=80",
-        "https://images.unsplash.com/photo-1512496015851-a90fb38ba796?auto=format&fit=crop&w=900&q=80"
-      ],
-      "Măști & Tampoane": [
-        "https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?auto=format&fit=crop&w=900&q=80",
-        "https://images.unsplash.com/photo-1556229010-6c3f2c9ca5f8?auto=format&fit=crop&w=900&q=80"
-      ]
+    const prodDetails = {
+      "anua-toner-77": {
+        cut2: "images/details/anua-toner-77-2.jpg",
+        cut3: "images/details/anua-toner-77-3.jpg",
+        cap2Ro: "Textură Lichidă & Calmantă", cap2En: "Watery Calming Texture", cap2Ko: "워터리 진정 토너 제형",
+        cap3Ro: "Tampoane Îmbibate & Mască Toner", cap3En: "Cotton Pad Toner Pack", cap3Ko: "화장솜 토너팩 데일리 루틴"
+      },
+      "boj-relief-sun": {
+        cut2: "images/details/boj-relief-sun-2.webp",
+        cut3: "images/details/boj-relief-sun-3.webp",
+        cap2Ro: "Textură Loțiune Fină cu Orez", cap2En: "Rice Probiotics Lotion Swatch", cap2Ko: "쌀 발효 수분 로션 제형",
+        cap3Ro: "Aplicare Fără Peliculă Albă", cap3En: "Zero White-Cast Routine", cap3Ko: "백탁 없는 투명 밀착 루틴"
+      },
+      "skin1004-centella-ampoule": {
+        cut2: "images/details/skin1004-centella-ampoule-2.jpg",
+        cut3: "images/details/skin1004-centella-ampoule-3.jpg",
+        cap2Ro: "Picătură Centella Pură 100%", cap2En: "Pure Amber Centella Droplet", cap2Ko: "100% 병풀 고농축 앰플 방울",
+        cap3Ro: "Calmare Imediată a Tenului Reactiv", cap3En: "Instant Soothing Care", cap3Ko: "민감 피부 급속 진정 루틴"
+      },
+      "skin1004-hyalu-sun": {
+        cut2: "images/details/skin1004-hyalu-sun-2.jpg",
+        cut3: "images/details/skin1004-hyalu-sun-3.jpg",
+        cap2Ro: "Ser Solar Răcoritor Hyalu-Cica", cap2En: "Water-Fit Serum Texture", cap2Ko: "워터핏 수분 선세럼 제형",
+        cap3Ro: "Protecție UV cu Luciu Natural", cap3En: "Natural Dewy Glow Routine", cap3Ko: "수분 광채 자외선 차단 루틴"
+      },
+      "tirtir-mask-fit-red": {
+        cut2: "images/details/tirtir-mask-fit-red-2.jpg",
+        cut3: "images/details/tirtir-mask-fit-red-3.jpg",
+        cap2Ro: "Burete Puf Rubiniu & Rețea Fină", cap2En: "Ruby Puff & Mesh Cushion", cap2Ko: "루비 퍼프 & 고밀착 메쉬 텍스처",
+        cap3Ro: "Nuanțe Europene & Acoperire Porilor", cap3En: "Shade Match & Pore Coverage", cap3Ko: "모공 커버 & 유럽 쉐이드 스와치"
+      },
+      "romand-juicy-tint": {
+        cut2: "images/details/romand-juicy-tint-2.jpg",
+        cut3: "images/details/romand-juicy-tint-3.jpg",
+        cap2Ro: "Swatche Bare Grape Luciu Sirop", cap2En: "Bare Grape Syrup Swatch", cap2Ko: "베어그레이프 과즙 시럽 발색",
+        cap3Ro: "Luciu de Fructe pe Buze 24H", cap3En: "Glassy Fruit Tint Routine", cap3Ko: "탱글한 물막 광택 립 루틴"
+      },
+      "biodance-collagen-mask": {
+        cut2: "images/details/biodance-collagen-mask-2.jpg",
+        cut3: "images/details/biodance-collagen-mask-3.jpg",
+        cap2Ro: "Foaie Hidrogel cu Colagen Micromolecular", cap2En: "Low-Molecular Collagen Hydrogel", cap2Ko: "초저분자 콜라겐 하이드로겔 시트",
+        cap3Ro: "Mască Transparentă de Noapte Glass Skin", cap3En: "Overnight Transparent Absorption", cap3Ko: "투명 흡수 오버나이트 글래스스킨"
+      },
+      "medicube-zero-pore-pad": {
+        cut2: "images/details/medicube-zero-pore-pad-2.jpg",
+        cut3: "images/details/medicube-zero-pore-pad-3.jpg",
+        cap2Ro: "Dischetă Dublu Texturată AHA+BHA", cap2En: "Dual-Textured AHA/BHA Pad", cap2Ko: "엠보싱 듀얼 필링 패드 텍스처",
+        cap3Ro: "Curățare Pori & Exfoliere Zilnică", cap3En: "Daily Pore Tightening Routine", cap3Ko: "데일리 모공 타이트닝 & 각질 정돈"
+      },
+      "medicube-pdrn-cream": {
+        cut2: "images/details/medicube-pdrn-cream-2.jpg",
+        cut3: "images/details/medicube-pdrn-cream-3.jpg",
+        cap2Ro: "Capsule Roz de Colagen & Gel PDRN", cap2En: "Pink Collagen Capsules & Gel", cap2Ko: "핑크 콜라겐 캡슐 & 수분 젤 제형",
+        cap3Ro: "Refacerea Barierei de Fermitate", cap3En: "Bouncy Skin Barrier Routine", cap3Ko: "탄력 광채 장벽 밀착 케어"
+      },
+      "torriden-divein-cream": {
+        cut2: "images/details/torriden-divein-cream-2.jpg",
+        cut3: "images/details/torriden-divein-cream-3.jpg",
+        cap2Ro: "Textură Răcoritoare Gel-Cremă 5D", cap2En: "5D Hyaluronic Water-Gel Swatch", cap2Ko: "5D 저분자 수분 쿨링 젤 제형",
+        cap3Ro: "Hidratare Profundă Non-Lipicioasă", cap3En: "Deep Weightless Moisture Routine", cap3Ko: "속건조 해결 산뜻 수분 충전"
+      },
+      "medicube-pdrn-serum": {
+        cut2: "images/details/medicube-pdrn-serum-2.jpg",
+        cut3: "images/details/medicube-pdrn-serum-3.jpg",
+        cap2Ro: "Formulă Concentrată cu Peptide & PDRN", cap2En: "Pink Peptide & Salmon PDRN", cap2Ko: "연어 PDRN & 5중 펩타이드 고농축 제형",
+        cap3Ro: "Luminozitate & Elasticitate Intensivă", cap3En: "Intensive Radiance & Firming Routine", cap3Ko: "흔적 케어 & 탄력 리프팅 루틴"
+      },
+      "clio-kill-cover-cushion": {
+        cut2: "images/details/clio-kill-cover-cushion-2.jpg",
+        cut3: "images/details/clio-kill-cover-cushion-3.jpg",
+        cap2Ro: "Acoperire Semi-Mată Subțire & Puf Curbat", cap2En: "Thin Semi-Matte Fit & Curved Puff", cap2Ko: "슬림 세미매트 & 물방울 퍼프 밀착",
+        cap3Ro: "Ten Impecabil Fără Întunecare 72H", cap3En: "72H Flawless Blur Coverage", cap3Ko: "72시간 다크닝 없는 무결점 블러링"
+      },
+      "anua-pdrn-serum": {
+        cut2: "images/details/anua-pdrn-serum-2.jpg",
+        cut3: "images/details/anua-pdrn-serum-3.jpg",
+        cap2Ro: "Capsule Inteligente cu Acid Hialuronic", cap2En: "Smart Capsule 100 Droplet", cap2Ko: "스마트 히알루론산 수분 캡슐 제형",
+        cap3Ro: "Hidratare din Interior & Luciu Glass Skin", cap3En: "Plump Water-Glow Routine", cap3Ko: "차오르는 물광 속보습 루틴"
+      },
+      "skin1004-cleansing-oil": {
+        cut2: "images/details/skin1004-cleansing-oil-2.jpg",
+        cut3: "images/details/skin1004-cleansing-oil-3.jpg",
+        cap2Ro: "Ulei Lejer Botanice cu Emulsionare Rapidă", cap2En: "Milky Emulsifying Botanical Oil", cap2Ko: "가벼운 워터리 오일 & 미세 유화 제형",
+        cap3Ro: "Topirea Punctelor Negre & Machiajului", cap3En: "Melt Waterproof Makeup & Sebum", cap3Ko: "블랙헤드 & 워터프루프 클렌징 루틴"
+      },
+      "anua-cleanser": {
+        cut2: "images/details/anua-cleanser-2.jpg",
+        cut3: "images/details/anua-cleanser-3.jpg",
+        cap2Ro: "Spumă Densă cu Pulbere Houttuynia", cap2En: "Micro-Pore Cleansing Foam Texture", cap2Ko: "어성초 미세 거품 & BHA 딥클렌징",
+        cap3Ro: "Curățarea Porilor Fără Senzație de Strângere", cap3En: "Gentle Pore Cleansing Routine", cap3Ko: "당김 없는 모공 딥클렌징 세안"
+      },
+      "anua-rice-toner": {
+        cut2: "images/details/anua-rice-toner-2.jpg",
+        cut3: "images/details/anua-rice-toner-3.jpg",
+        cap2Ro: "Textură Lăptoasă cu 70% Apă de Orez", cap2En: "Milky Rice Bran Essence Texture", cap2Ko: "쌀겨수 70% 진한 밀키 에센스 제형",
+        cap3Ro: "Stratificare pentru Luminozitate Naturală", cap3En: "Glass Skin Nourishing Layers", cap3Ko: "레이어링 맑은 쌀결 보습 루틴"
+      },
+      "romand-glasting-balm": {
+        cut2: "images/details/romand-glasting-balm-2.jpg",
+        cut3: "images/details/romand-glasting-balm-3.jpg",
+        cap2Ro: "Swatche Balsam Topitor Luciu Trandafiriu", cap2En: "Kaya Fig Melting Balm Swatch", cap2Ko: "카야피그 멜팅 물막 립밤 스와치",
+        cap3Ro: "Hidratare & Luciu Suav de Smochine", cap3En: "Dewy Plump Lip Routine", cap3Ko: "촉촉한 무화과 생기 립밤 루틴"
+      }
     };
-    const extras = (catPhotoSets[prod.category] || catPhotoSets["Serum & Fiole"]).filter((u) => u !== mainHiRes);
-    const fallbackExtra = "https://images.unsplash.com/photo-1617897903246-719242758050?auto=format&fit=crop&w=900&q=80";
+
+    const details = prodDetails[prod.id] || {
+      cut2: prod.image,
+      cut3: prod.image,
+      cap2Ro: "Textură & Formulă", cap2En: "Formula & Texture", cap2Ko: "제형·텍스처 컷",
+      cap3Ro: "Rutină Zilnică", cap3En: "Daily Routine", cap3Ko: "데일리 사용 컷"
+    };
+
     const galleryPhotos = [
-      { url: mainHiRes, captionRo: "Fotografie Produs", captionEn: "Product Cut", captionKo: "대표 제품 컷" },
-      { url: extras[0] || fallbackExtra, captionRo: "Textură & Formulă", captionEn: "Formula & Texture", captionKo: "제형·텍스처 컷" },
-      { url: extras[1] || "https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?auto=format&fit=crop&w=900&q=80", captionRo: "Rutină Zilnică", captionEn: "Daily Routine", captionKo: "데일리 사용 컷" }
+      { url: prod.image, captionRo: "Fotografie Produs", captionEn: "Product Cut", captionKo: "대표 제품 컷" },
+      { url: details.cut2, captionRo: details.cap2Ro, captionEn: details.cap2En, captionKo: details.cap2Ko },
+      { url: details.cut3, captionRo: details.cap3Ro, captionEn: details.cap3En, captionKo: details.cap3Ko }
     ];
 
     reviews[0].photo = galleryPhotos[0].url;
